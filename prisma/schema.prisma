@@ -15,7 +15,9 @@ model WebsiteUrls {
     id        String   @id @default(cuid())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    userId    String
+
+    userId String
+    url    String
 
     // @@index([userId])
 }

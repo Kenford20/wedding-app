@@ -1,5 +1,9 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  privateProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 
 export const websiteUrlsRouter = createTRPCRouter({
   hello: publicProcedure
@@ -8,6 +12,32 @@ export const websiteUrlsRouter = createTRPCRouter({
       return {
         greeting: `Hello ${input.text}`,
       };
+    }),
+  create: privateProcedure
+    .input(
+      z.object({
+        firstName: z.string(),
+        lastName: z.string(),
+        partnerFirstName: z.string(),
+        partnerLastName: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      console.log("userz", ctx.userId);
+      console.log("inputz", input);
+      const userId = ctx.userId;
+
+      const { firstName, lastName, partnerFirstName, partnerLastName } = input;
+      const url = `${firstName}-${lastName}-and-${partnerFirstName}-${partnerLastName}`;
+
+      const websiteUrl = await ctx.prisma.websiteUrls.create({
+        data: {
+          userId,
+          url,
+        },
+      });
+
+      return websiteUrl;
     }),
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.websiteUrls.findMany();
