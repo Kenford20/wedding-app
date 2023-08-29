@@ -1,9 +1,9 @@
-import { z } from "zod";
+import { z } from 'zod';
 import {
   createTRPCRouter,
   privateProcedure,
   publicProcedure,
-} from "~/server/api/trpc";
+} from '~/server/api/trpc';
 
 export const websiteUrlsRouter = createTRPCRouter({
   hello: publicProcedure
@@ -23,8 +23,8 @@ export const websiteUrlsRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      console.log("userz", ctx.userId);
-      console.log("inputz", input);
+      console.log('userz', ctx.userId);
+      console.log('inputz', input);
       const userId = ctx.userId;
 
       const { firstName, lastName, partnerFirstName, partnerLastName } = input;

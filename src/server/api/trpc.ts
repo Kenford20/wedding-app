@@ -6,12 +6,12 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { initTRPC, TRPCError } from "@trpc/server";
-import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
-import superjson from "superjson";
-import { getAuth } from "@clerk/nextjs/server";
-import { ZodError } from "zod";
-import { prisma } from "~/server/db";
+import { initTRPC, TRPCError } from '@trpc/server';
+import { type CreateNextContextOptions } from '@trpc/server/adapters/next';
+import superjson from 'superjson';
+import { getAuth } from '@clerk/nextjs/server';
+import { ZodError } from 'zod';
+import { prisma } from '~/server/db';
 
 /**
  * This is the actual context you will use in your router. It will be used to process every request
@@ -23,7 +23,7 @@ export const createTRPCContext = (_opts: CreateNextContextOptions) => {
   const { req } = _opts;
 
   const session = getAuth(req);
-  console.log("sesh", session);
+  console.log('sesh', session);
 
   const userId = session.userId;
 
@@ -81,7 +81,7 @@ export const publicProcedure = t.procedure;
 const enforceUserIsAuthed = t.middleware(async ({ ctx, next }) => {
   if (!ctx.userId) {
     throw new TRPCError({
-      code: "UNAUTHORIZED",
+      code: 'UNAUTHORIZED',
     });
   }
 
