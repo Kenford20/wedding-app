@@ -39,7 +39,15 @@ export const websiteUrlsRouter = createTRPCRouter({
 
       return websiteUrl;
     }),
-  getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.websiteUrls.findMany();
-  }),
+  find: publicProcedure
+    .input(z.object({ websiteUrl: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const data = await ctx.prisma.websiteUrls.findFirst({
+        where: {
+          url: input.websiteUrl,
+        },
+      });
+      console.log(data);
+      return !!data;
+    }),
 });
