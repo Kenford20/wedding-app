@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import Loader from '~/components/loader';
 import { api } from '~/utils/api';
 
 export default function WebsiteTemplate() {
@@ -15,12 +16,7 @@ export default function WebsiteTemplate() {
   console.log(isLoading);
   console.log('data', doesWebsiteExist);
 
-  if (isLoading)
-    return (
-      <div className='flex h-screen items-center justify-center text-3xl'>
-        Loading...
-      </div>
-    );
+  if (isLoading) return <Loader />;
 
   return doesWebsiteExist ? (
     <main className='flex h-screen flex-col items-center justify-center gap-20'>

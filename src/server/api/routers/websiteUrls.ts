@@ -13,6 +13,7 @@ export const websiteUrlsRouter = createTRPCRouter({
         greeting: `Hello ${input.text}`,
       };
     }),
+
   create: privateProcedure
     .input(
       z.object({
@@ -39,6 +40,18 @@ export const websiteUrlsRouter = createTRPCRouter({
 
       return websiteUrl;
     }),
+
+  getWebsiteUrlByUserId: publicProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(
+      async ({ ctx, input }) =>
+        await ctx.prisma.websiteUrls.findFirst({
+          where: {
+            userId: input.userId,
+          },
+        })
+    ),
+
   find: publicProcedure
     .input(z.object({ websiteUrl: z.string() }))
     .query(async ({ ctx, input }) => {
