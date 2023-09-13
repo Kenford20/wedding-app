@@ -3,9 +3,7 @@
 import { useState } from 'react';
 import { api } from '~/utils/api';
 
-interface NamesFormProps {}
-
-export default function NamesForm(props: NamesFormProps) {
+export default function NamesForm() {
   const hello = api.websiteUrls.hello.useQuery({ text: 'from tRPC' });
   const { mutate } = api.websiteUrls.create.useMutation();
 
