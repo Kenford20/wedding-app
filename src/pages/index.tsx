@@ -4,7 +4,7 @@ import { SignInButton, useUser, SignOutButton } from '@clerk/nextjs';
 import Head from 'next/head';
 import Loader from '~/components/loader';
 import { api } from '~/utils/api';
-import NamesForm from './names-form';
+import NamesForm from '../components/names-form';
 
 export default function Home() {
   const { isSignedIn, user } = useUser();
@@ -26,6 +26,7 @@ export default function Home() {
 
   if (isLoading) return <Loader />;
 
+  console.log(currentUsersWebsite);
   if (!!currentUsersWebsite) window.location.href = '/dashboard';
 
   return (

@@ -1,15 +1,12 @@
 import { useUser, SignOutButton } from '@clerk/nextjs';
+import Layout from './layout';
 
 export default function Dashboard() {
   const { user } = useUser();
 
   return (
-    <div>
-      <div className='flex justify-between bg-pink-300 p-4'>
-        <h1>{user?.firstName ?? 'wee'}</h1>
-        <SignOutButton />
-      </div>
-      Dashboard
-    </div>
+    <Layout>
+      <main>Dashboard</main>
+    </Layout>
   );
 }
