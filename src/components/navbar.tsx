@@ -8,7 +8,7 @@ export default function Navbar() {
     <div className='bottom-2 border px-20 pt-5'>
       <h1 className='pb-4 text-3xl'>{user?.firstName ?? 'wee'}</h1>
       <ul className='flex justify-between'>
-        <div className='flex gap-7 pb-5'>
+        <div className='flex gap-7'>
           <li className='border-b-4 border-transparent pb-5 hover:border-gray-600'>
             <Link className='' href='/'>
               Planning Tools
