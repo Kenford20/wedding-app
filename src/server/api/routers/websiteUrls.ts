@@ -1,3 +1,4 @@
+import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import {
   createTRPCRouter,
@@ -28,6 +29,7 @@ export const websiteUrlsRouter = createTRPCRouter({
       console.log('inputz', input);
       const userId = ctx.userId;
 
+      // TODO: needa check for dupes
       const { firstName, lastName, partnerFirstName, partnerLastName } = input;
       const url = `${firstName}-${lastName}-and-${partnerFirstName}-${partnerLastName}`;
 
@@ -43,14 +45,15 @@ export const websiteUrlsRouter = createTRPCRouter({
 
   getWebsiteUrlByUserId: publicProcedure
     .input(z.object({ userId: z.string() }))
-    .query(
-      async ({ ctx, input }) =>
-        await ctx.prisma.websiteUrls.findFirst({
-          where: {
-            userId: input.userId,
-          },
-        })
-    ),
+    .query(async ({ ctx, input }) => {
+      const websiteUrlByUserId = await ctx.prisma.websiteUrls.findFirst({
+        where: {
+          userId: input.userId,
+        },
+      });
+
+      return websiteUrlByUserId;
+    }),
 
   find: publicProcedure
     .input(z.object({ websiteUrl: z.string() }))
