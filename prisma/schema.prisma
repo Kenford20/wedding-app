@@ -11,19 +11,44 @@ generator client {
     provider = "prisma-client-js"
 }
 
-model WebsiteUrls {
+model Website {
     id        String   @id @default(cuid())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-
-    userId String
-    url    String
-
-    // @@index([userId])
+    userId    String
+    url       String
 }
 
 model User {
     id         String @id @default(cuid())
     websiteUrl String @db.VarChar(255)
     email      String @db.VarChar(255)
+}
+
+model Guest {
+    id             String  @id @default(cuid())
+    guestFirstName String
+    guestLastName  String
+    address1       String?
+    address2       String?
+    city           String?
+    state          String?
+    zipCode        String?
+    country        String?
+    phone          String?
+    email          String?
+    notes          String?
+    eventId        String
+}
+
+model Event {
+    id          String    @id @default(cuid())
+    name        String
+    userId      String
+    date        DateTime? @db.Date
+    startTime   DateTime? @db.Time()
+    endTime     DateTime? @db.Time()
+    venue       String?
+    attire      String?
+    description String?
 }

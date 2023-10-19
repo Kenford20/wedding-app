@@ -1,12 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+import { api } from '~/utils/api';
+import { LoadingSpinner } from '../loader';
 
 type AddGuestFormProps = {
   setShowGuestForm: (x: boolean) => void;
 };
 
 export default function AddGuestForm({ setShowGuestForm }: AddGuestFormProps) {
+  const { mutate, isLoading: isCreatingGuest } = api.guest.create.useMutation();
   const [guestFormData, setGuestFormData] = useState({
     guestFirstName: '',
     guestLastName: '',
@@ -31,8 +34,19 @@ export default function AddGuestForm({ setShowGuestForm }: AddGuestFormProps) {
     console.log(guestFormData);
   };
 
+  const handleSaveGuest = () => {
+    console.log(guestFormData);
+    mutate(guestFormData);
+    setShowGuestForm(false);
+  };
+
   return (
     <div className='absolute top-0 flex h-screen w-screen justify-end bg-transparent/[0.5]'>
+      {isCreatingGuest && (
+        <div className='flex items-center justify-center'>
+          <LoadingSpinner />
+        </div>
+      )}
       <div></div>
       <div className='h-screen w-1/3 bg-pink-200'>
         <div className='bottom-2 border'>
@@ -124,7 +138,7 @@ export default function AddGuestForm({ setShowGuestForm }: AddGuestFormProps) {
         </div>
         <div>
           <button onClick={() => setShowGuestForm(false)}>Cancel</button>
-          <button onClick={() => setShowGuestForm(false)}>Save & Close</button>
+          <button onClick={() => handleSaveGuest()}>Save & Close</button>
         </div>
       </div>
     </div>
