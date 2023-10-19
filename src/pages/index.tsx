@@ -20,7 +20,7 @@ export default function Home() {
     );
 
   const { data: currentUsersWebsite, isLoading } =
-    api.websiteUrls.getWebsiteUrlByUserId.useQuery({
+    api.website.getByUserId.useQuery({
       userId: user.id,
     });
 

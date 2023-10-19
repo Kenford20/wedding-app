@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { api } from '~/utils/api';
 
 export default function NamesForm() {
-  const hello = api.websiteUrls.hello.useQuery({ text: 'from tRPC' });
-  const { mutate } = api.websiteUrls.create.useMutation();
+  const hello = api.website.hello.useQuery({ text: 'from tRPC' });
+  const { mutate } = api.website.create.useMutation();
 
   const [nameData, setNameData] = useState({
     firstName: '',

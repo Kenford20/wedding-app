@@ -6,7 +6,7 @@ import {
   publicProcedure,
 } from '~/server/api/trpc';
 
-export const websiteUrlsRouter = createTRPCRouter({
+export const websitesRouter = createTRPCRouter({
   hello: publicProcedure
     .input(z.object({ text: z.string() }))
     .query(({ input }) => {
@@ -33,7 +33,7 @@ export const websiteUrlsRouter = createTRPCRouter({
       const { firstName, lastName, partnerFirstName, partnerLastName } = input;
       const url = `${firstName}-${lastName}-and-${partnerFirstName}-${partnerLastName}`;
 
-      const websiteUrl = await ctx.prisma.websiteUrls.create({
+      const websiteUrl = await ctx.prisma.website.create({
         data: {
           userId,
           url,
@@ -43,10 +43,10 @@ export const websiteUrlsRouter = createTRPCRouter({
       return websiteUrl;
     }),
 
-  getWebsiteUrlByUserId: publicProcedure
+  getByUserId: publicProcedure
     .input(z.object({ userId: z.string() }))
     .query(async ({ ctx, input }) => {
-      const websiteUrlByUserId = await ctx.prisma.websiteUrls.findFirst({
+      const websiteUrlByUserId = await ctx.prisma.website.findFirst({
         where: {
           userId: input.userId,
         },
@@ -58,7 +58,7 @@ export const websiteUrlsRouter = createTRPCRouter({
   find: publicProcedure
     .input(z.object({ websiteUrl: z.string() }))
     .query(async ({ ctx, input }) => {
-      const data = await ctx.prisma.websiteUrls.findFirst({
+      const data = await ctx.prisma.website.findFirst({
         where: {
           url: input.websiteUrl,
         },

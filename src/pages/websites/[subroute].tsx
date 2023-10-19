@@ -9,7 +9,7 @@ export default function WebsiteTemplate() {
   const router = useRouter();
   const websiteUrl = router.query.subroute;
 
-  const { data: doesWebsiteExist, isLoading } = api.websiteUrls.find.useQuery({
+  const { data: doesWebsiteExist, isLoading } = api.website.find.useQuery({
     websiteUrl: String(router.query.subroute!),
   });
 
