@@ -2,7 +2,7 @@
 
 import { SignInButton, useUser, SignOutButton } from '@clerk/nextjs';
 import Head from 'next/head';
-import Loader from '~/components/loader';
+import { LoadingSpinner } from '~/components/loader';
 import { api } from '~/utils/api';
 import NamesForm from '../components/names-form';
 
@@ -24,7 +24,7 @@ export default function Home() {
       userId: user.id,
     });
 
-  if (isLoading) return <Loader />;
+  if (isLoading) return <LoadingSpinner />;
 
   console.log(currentUsersWebsite);
   if (!!currentUsersWebsite) window.location.href = '/dashboard';

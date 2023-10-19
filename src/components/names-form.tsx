@@ -2,10 +2,12 @@
 
 import { useState } from 'react';
 import { api } from '~/utils/api';
+import { LoadingSpinner } from './loader';
 
 export default function NamesForm() {
   const hello = api.website.hello.useQuery({ text: 'from tRPC' });
-  const { mutate } = api.website.create.useMutation();
+  const { mutate, isLoading: isCreatingWebsite } =
+    api.website.create.useMutation();
 
   const [nameData, setNameData] = useState({
     firstName: '',
@@ -25,6 +27,11 @@ export default function NamesForm() {
 
   return (
     <div className='container flex flex-col items-center justify-center gap-6 px-4 py-16 '>
+      {isCreatingWebsite && (
+        <div className='flex items-center justify-center'>
+          <LoadingSpinner />
+        </div>
+      )}
       <p>{hello.data ? hello.data.greeting : 'Loading tRPC query...'}</p>
       <h1 className='text-3xl'>Welcome ya love birds! Enter your names</h1>
       <input
