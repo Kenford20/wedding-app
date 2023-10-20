@@ -44,11 +44,11 @@ model Guest {
 model Event {
     id          String    @id @default(cuid())
     name        String
-    userId      String
     date        DateTime? @db.Date
     startTime   DateTime? @db.Time()
     endTime     DateTime? @db.Time()
     venue       String?
     attire      String?
     description String?
+    userId      String
 }

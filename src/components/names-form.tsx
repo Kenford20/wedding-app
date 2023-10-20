@@ -6,8 +6,24 @@ import { LoadingSpinner } from './loader';
 
 export default function NamesForm() {
   const hello = api.website.hello.useQuery({ text: 'from tRPC' });
-  const { mutate, isLoading: isCreatingWebsite } =
-    api.website.create.useMutation();
+
+  const { mutate: createWebsite, isLoading: isCreatingWebsite } =
+    api.website.create.useMutation({
+      onSuccess: () => createEvent({ eventName: 'Wedding Day' }),
+    });
+
+  const { mutate: createEvent, isLoading: isCreatingEvent } =
+    api.event.create.useMutation({
+      onSuccess: () => (window.location.href = '/dashboard'),
+      // onError: (e) => {
+      //   const errorMessage = e.data?.zodError?.fieldErrors.content;
+      //   if (errorMessage && errorMessage[0]) {
+      //     toast.error(errorMessage[0]);
+      //   } else {
+      //     toast.error("Failed to post! Please try again later.");
+      //   }
+      // },
+    });
 
   const [nameData, setNameData] = useState({
     firstName: '',
@@ -27,7 +43,7 @@ export default function NamesForm() {
 
   return (
     <div className='container flex flex-col items-center justify-center gap-6 px-4 py-16 '>
-      {isCreatingWebsite && (
+      {(isCreatingWebsite || isCreatingEvent) && (
         <div className='flex items-center justify-center'>
           <LoadingSpinner />
         </div>
@@ -59,7 +75,7 @@ export default function NamesForm() {
         onChange={(e) => handleOnChange('partnerLastName', e.target.value)}
       />
       <button
-        onClick={() => mutate(nameData)}
+        onClick={() => createWebsite(nameData)}
         className='rounded-full bg-pink-400 px-20 py-4 text-white'
       >
         Create our website!

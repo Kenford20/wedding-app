@@ -5,35 +5,32 @@ import {
   publicProcedure,
 } from '~/server/api/trpc';
 
-export const guestRouter = createTRPCRouter({
+export const eventRouter = createTRPCRouter({
   create: privateProcedure
     .input(
       z.object({
-        guestFirstName: z.string(),
-        guestLastName: z.string(),
-        eventId: z.string(),
+        eventName: z.string(),
       })
     )
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.userId;
 
-      const { guestFirstName, guestLastName, eventId } = input;
+      const { eventName: name } = input;
 
-      const newGuest = await ctx.prisma.guest.create({
+      const newEvent = await ctx.prisma.event.create({
         data: {
-          guestFirstName,
-          guestLastName,
-          eventId,
+          name,
+          userId,
         },
       });
 
-      return newGuest;
+      return newEvent;
     }),
 
   // find: publicProcedure
   //   .input(z.object({ websiteUrl: z.string() }))
   //   .query(async ({ ctx, input }) => {
-  //     const data = await ctx.prisma.guest.findFirst({
+  //     const data = await ctx.prisma.event.findFirst({
   //       where: {
   //         eventId: input.eventId,
   //       },
