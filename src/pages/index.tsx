@@ -1,14 +1,11 @@
-'use client';
-
 import { SignInButton, useUser, SignOutButton } from '@clerk/nextjs';
 import Head from 'next/head';
-import { LoadingSpinner } from '~/components/loader';
+import { LoadingPage } from '~/components/loader';
 import { api } from '~/utils/api';
 import NamesForm from '../components/names-form';
 
 export default function Home() {
   const { isSignedIn, user } = useUser();
-  console.log(user);
 
   if (!isSignedIn)
     return (
@@ -24,9 +21,8 @@ export default function Home() {
       userId: user.id,
     });
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading) return <LoadingPage />;
 
-  console.log(currentUsersWebsite);
   if (!!currentUsersWebsite) window.location.href = '/dashboard';
 
   return (

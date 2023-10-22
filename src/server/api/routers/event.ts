@@ -27,15 +27,14 @@ export const eventRouter = createTRPCRouter({
       return newEvent;
     }),
 
-  // find: publicProcedure
-  //   .input(z.object({ websiteUrl: z.string() }))
-  //   .query(async ({ ctx, input }) => {
-  //     const data = await ctx.prisma.event.findFirst({
-  //       where: {
-  //         eventId: input.eventId,
-  //       },
-  //     });
-  //     console.log(data);
-  //     return !!data;
-  //   }),
+  getAll: publicProcedure.query(async ({ ctx }) => {
+    console.log('eventz', ctx.userId);
+    const events = await ctx.prisma.event.findMany({
+      where: {
+        userId: ctx.userId,
+      },
+    });
+    console.log('eventz2', events);
+    return events;
+  }),
 });

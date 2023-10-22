@@ -1,19 +1,37 @@
 'use client';
 
 import { useUser } from '@clerk/nextjs';
-import Link from 'next/link';
 import { useState } from 'react';
 import AddGuestForm from '~/components/guest-list/add-guest-form';
 import Layout from '../layout';
+import { api } from '~/utils/api';
+import { LoadingPage } from '~/components/loader';
+import AddEventForm from '~/components/guest-list/add-event-form';
 
 export default function Dashboard() {
   const { user } = useUser();
-  const [showGuestForm, setShowGuestForm] = useState<boolean>();
+  const [showGuestForm, setShowGuestForm] = useState<boolean>(false);
+  const [showEventForm, setShowEventForm] = useState<boolean>(false);
+
+  const { data: events, isLoading: isFetchingEvents } =
+    api.event.getAll.useQuery();
+  // const events = [
+  //   {
+  //     name: 'Wedding Day',
+  //     id: '123',
+  //   },
+  // ];
+
+  if (isFetchingEvents) return <LoadingPage />;
+  if (!events) return <div>404</div>;
+
+  console.log('eventz', events);
 
   return (
     <Layout>
       <main>
         {showGuestForm && <AddGuestForm setShowGuestForm={setShowGuestForm} />}
+        {showEventForm && <AddEventForm setShowEventForm={setShowEventForm} />}
         <section>
           <div>
             <h1>Your Guest List</h1>
@@ -22,9 +40,10 @@ export default function Dashboard() {
         <section>
           <ul>
             <li>All Events</li>
-            <li>Rehearsal Dinner</li>
-            <li>Wedding Day</li>
-            <button>+ New Event</button>
+            {events.map((event) => {
+              return <li key={event.id}>{event.name}</li>;
+            })}
+            <button onClick={() => setShowEventForm(true)}>+ New Event</button>
           </ul>
           <div>
             <h1>currentEventName</h1>
