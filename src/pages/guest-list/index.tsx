@@ -14,7 +14,7 @@ export default function Dashboard() {
   const [showEventForm, setShowEventForm] = useState<boolean>(false);
 
   const { data: events, isLoading: isFetchingEvents } =
-    api.event.getAll.useQuery();
+    api.event.getAllByUserId.useQuery();
   // const events = [
   //   {
   //     name: 'Wedding Day',
@@ -24,8 +24,6 @@ export default function Dashboard() {
 
   if (isFetchingEvents) return <LoadingPage />;
   if (!events) return <div>404</div>;
-
-  console.log('eventz', events);
 
   return (
     <Layout>

@@ -9,7 +9,7 @@ export const eventRouter = createTRPCRouter({
   create: privateProcedure
     .input(
       z.object({
-        eventName: z.string(),
+        eventName: z.string().nonempty({ message: 'Event name required' }),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -27,7 +27,7 @@ export const eventRouter = createTRPCRouter({
       return newEvent;
     }),
 
-  getAll: publicProcedure.query(async ({ ctx }) => {
+  getAllByUserId: publicProcedure.query(async ({ ctx }) => {
     console.log('eventz', ctx.userId);
     const events = await ctx.prisma.event.findMany({
       where: {

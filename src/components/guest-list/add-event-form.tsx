@@ -9,7 +9,16 @@ type AddEventFormProps = {
 };
 
 export default function AddEventForm({ setShowEventForm }: AddEventFormProps) {
-  const { mutate, isLoading: isCreatingEvent } = api.event.create.useMutation();
+  const { mutate, isLoading: isCreatingEvent } = api.event.create.useMutation({
+    onSuccess: () => {
+      setShowEventForm(false);
+    },
+    onError: (err) => {
+      const errorMessage = err.data?.zodError?.fieldErrors?.eventName;
+      if (errorMessage?.[0]) window.alert(errorMessage);
+      else window.alert('Failed to create event! Please try again later.');
+    },
+  });
 
   const [eventFormData, setEventFormData] = useState({
     eventName: '',
@@ -28,7 +37,6 @@ export default function AddEventForm({ setShowEventForm }: AddEventFormProps) {
         [field]: input,
       };
     });
-    console.log(eventFormData);
   };
 
   return (
