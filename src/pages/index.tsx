@@ -17,9 +17,7 @@ export default function Home() {
     );
 
   const { data: currentUsersWebsite, isLoading } =
-    api.website.getByUserId.useQuery({
-      userId: user.id,
-    });
+    api.website.getByUserId.useQuery();
 
   if (isLoading) return <LoadingPage />;
 

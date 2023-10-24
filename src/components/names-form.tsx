@@ -9,20 +9,15 @@ export default function NamesForm() {
 
   const { mutate: createWebsite, isLoading: isCreatingWebsite } =
     api.website.create.useMutation({
-      onSuccess: () => createEvent({ eventName: 'Wedding Day' }),
-    });
-
-  const { mutate: createEvent, isLoading: isCreatingEvent } =
-    api.event.create.useMutation({
       onSuccess: () => (window.location.href = '/dashboard'),
       // onError: (e) => {
-      //   const errorMessage = e.data?.zodError?.fieldErrors.content;
-      //   if (errorMessage && errorMessage[0]) {
-      //     toast.error(errorMessage[0]);
-      //   } else {
-      //     toast.error("Failed to post! Please try again later.");
-      //   }
-      // },
+      //       const errorMessage = e.data?.zodError?.fieldErrors.content;
+      //       if (errorMessage && errorMessage[0]) {
+      //         toast.error(errorMessage[0]);
+      //       } else {
+      //         toast.error("Failed to post! Please try again later.");
+      //       }
+      //     },
     });
 
   const [nameData, setNameData] = useState({
@@ -43,7 +38,7 @@ export default function NamesForm() {
 
   return (
     <div className='container flex flex-col items-center justify-center gap-6 px-4 py-16 '>
-      {(isCreatingWebsite || isCreatingEvent) && (
+      {isCreatingWebsite && (
         <div className='flex items-center justify-center'>
           <LoadingSpinner />
         </div>

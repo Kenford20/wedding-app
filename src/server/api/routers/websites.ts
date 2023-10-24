@@ -40,20 +40,26 @@ export const websitesRouter = createTRPCRouter({
         },
       });
 
-      return websiteUrl;
-    }),
-
-  getByUserId: publicProcedure
-    .input(z.object({ userId: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const websiteUrlByUserId = await ctx.prisma.website.findFirst({
-        where: {
-          userId: input.userId,
+      await ctx.prisma.event.create({
+        data: {
+          name: 'Wedding Day',
+          userId,
         },
       });
 
-      return websiteUrlByUserId;
+      return websiteUrl;
     }),
+
+  getByUserId: publicProcedure.query(async ({ ctx }) => {
+    if (!ctx.userId) return;
+    const websiteUrlByUserId = await ctx.prisma.website.findFirst({
+      where: {
+        userId: ctx.userId,
+      },
+    });
+
+    return websiteUrlByUserId;
+  }),
 
   find: publicProcedure
     .input(z.object({ websiteUrl: z.string() }))
