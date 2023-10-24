@@ -4,12 +4,40 @@ import { useState } from 'react';
 import { api } from '~/utils/api';
 import { LoadingSpinner } from '../loader';
 
-type AddGuestFormProps = {
-  setShowGuestForm: (x: boolean) => void;
+type Event = {
+  id: string;
+  name: string;
+  date: Date | null;
+  startTime: Date | null;
+  endTime: Date | null;
+  venue: string | null;
+  attire: string | null;
+  description: string | null;
+  userId: string;
 };
 
-export default function AddGuestForm({ setShowGuestForm }: AddGuestFormProps) {
-  const { mutate, isLoading: isCreatingGuest } = api.guest.create.useMutation();
+type AddGuestFormProps = {
+  setShowGuestForm: (x: boolean) => void;
+  events: Event[];
+};
+
+export default function AddGuestForm({
+  setShowGuestForm,
+  events,
+}: AddGuestFormProps) {
+  const { mutate, isLoading: isCreatingGuest } = api.guest.create.useMutation({
+    onSuccess: () => {
+      setShowGuestForm(false);
+    },
+    onError: (err) => {
+      const errorMessage =
+        err.data?.zodError?.fieldErrors?.guestFirstName ??
+        err.data?.zodError?.fieldErrors?.guesLastName;
+      if (errorMessage?.[0]) window.alert('Full name required');
+      else window.alert('Failed to create event! Please try again later.');
+    },
+  });
+
   const [guestFormData, setGuestFormData] = useState({
     guestFirstName: '',
     guestLastName: '',
@@ -24,6 +52,8 @@ export default function AddGuestForm({ setShowGuestForm }: AddGuestFormProps) {
     notes: '',
   });
 
+  const [selectedEvents, setSelectedEvents] = useState<string[]>([]);
+
   const handleOnChange = (field: string, input: string) => {
     setGuestFormData((prev) => {
       return {
@@ -31,13 +61,19 @@ export default function AddGuestForm({ setShowGuestForm }: AddGuestFormProps) {
         [field]: input,
       };
     });
-    console.log(guestFormData);
   };
 
-  const handleSaveGuest = () => {
-    console.log(guestFormData);
-    mutate(guestFormData);
-    setShowGuestForm(false);
+  const handleSelectEvent = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    event: Event
+  ) => {
+    if (e.target.checked) {
+      setSelectedEvents((prevEvents) => [...prevEvents, event.id]);
+    } else {
+      setSelectedEvents((prevEvents) =>
+        prevEvents.filter((ev) => ev !== event.id)
+      );
+    }
   };
 
   return (
@@ -73,10 +109,18 @@ export default function AddGuestForm({ setShowGuestForm }: AddGuestFormProps) {
         </div>
         <div>
           <h3>Invite to the following events:</h3>
-          <input type='checkbox' id='rehearsal-dinner'></input>
-          <span>Rehearsal Dinner</span>
-          <input type='checkbox' id='wedding-day'></input>
-          <span>Wedding Day</span>
+          {events?.map((event) => {
+            return (
+              <>
+                <input
+                  type='checkbox'
+                  id={event.id}
+                  onChange={(e) => handleSelectEvent(e, event)}
+                />
+                <label htmlFor={event.id}>{event.name}</label>
+              </>
+            );
+          })}
         </div>
         <button>+ Add A Guest To This Party</button>
         <div>
@@ -138,7 +182,13 @@ export default function AddGuestForm({ setShowGuestForm }: AddGuestFormProps) {
         </div>
         <div>
           <button onClick={() => setShowGuestForm(false)}>Cancel</button>
-          <button onClick={() => handleSaveGuest()}>Save & Close</button>
+          <button
+            onClick={() =>
+              mutate({ ...guestFormData, eventIds: selectedEvents })
+            }
+          >
+            Save & Close
+          </button>
         </div>
       </div>
     </div>
