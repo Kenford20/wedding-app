@@ -22,11 +22,11 @@ model Website {
 model User {
     id         String @id @default(cuid())
     websiteUrl String @db.VarChar(255)
-    email      String @db.VarChar(255)
+    email      String @unique @db.VarChar(255)
 }
 
 model Guest {
-    id             String  @id @default(cuid())
+    id             String       @id @default(cuid())
     guestFirstName String
     guestLastName  String
     address1       String?
@@ -39,26 +39,33 @@ model Guest {
     email          String?
     notes          String?
     userId         String
+    invitations    Invitation[]
 }
 
 model Event {
-    id          String    @id @default(cuid())
+    id          String       @id @default(cuid())
     name        String
-    date        DateTime? @db.Date
-    startTime   DateTime? @db.Time()
-    endTime     DateTime? @db.Time()
+    date        DateTime?    @db.Date
+    startTime   DateTime?    @db.Time()
+    endTime     DateTime?    @db.Time()
     venue       String?
     attire      String?
     description String?
     userId      String
+    guests      Invitation[]
 }
 
 model Invitation {
-    id        Int      @id @default(autoincrement())
+    guest     Guest?   @relation(fields: [guestId], references: [id])
     guestId   String
+    event     Event?   @relation(fields: [eventId], references: [id])
     eventId   String
     invitedAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     rsvp      String?
     userId    String
+
+    @@id([guestId, eventId])
+    @@index([guestId])
+    @@index([eventId])
 }
