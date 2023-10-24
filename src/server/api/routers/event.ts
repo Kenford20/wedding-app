@@ -28,7 +28,7 @@ export const eventRouter = createTRPCRouter({
     }),
 
   getAllByUserId: publicProcedure.query(async ({ ctx }) => {
-    console.log('eventz', ctx.userId);
+    if (!ctx.userId) return;
     const events = await ctx.prisma.event.findMany({
       where: {
         userId: ctx.userId,

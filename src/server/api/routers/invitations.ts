@@ -11,17 +11,19 @@ export const invitationsRouter = createTRPCRouter({
       z.object({
         guestId: z.string(),
         eventId: z.string(),
+        rsvp: z.string(),
       })
     )
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.userId;
 
-      const { guestId, eventId } = input;
+      const { guestId, eventId, rsvp } = input;
 
       const newInvitation = await ctx.prisma.invitation.create({
         data: {
           guestId,
           eventId,
+          rsvp,
           userId,
         },
       });
@@ -30,6 +32,7 @@ export const invitationsRouter = createTRPCRouter({
     }),
 
   getAllByUserId: publicProcedure.query(async ({ ctx }) => {
+    if (!ctx.userId) return;
     const invitations = await ctx.prisma.invitation.findMany({
       where: {
         userId: ctx.userId,
