@@ -5,58 +5,50 @@ import Layout from '../layout';
 import { api } from '~/utils/api';
 import { LoadingPage } from '~/components/loader';
 import AddEventForm from '~/components/guest-list/add-event-form';
+import GuestHeader from '~/components/guest-list/header';
+import EventsTabs from '~/components/guest-list/events-tabs';
 
 export default function Dashboard() {
   const { user } = useUser();
   const [showGuestForm, setShowGuestForm] = useState<boolean>(false);
   const [showEventForm, setShowEventForm] = useState<boolean>(false);
 
-  // const events = [
-  //   {
-  //     name: 'Wedding Day',
-  //     id: '123',
-  //   },
-  //   {
-  //     name: 'Dinner Rehearsal',
-  //     id: '321',
-  //   },
-  //   {
-  //     name: 'test event',
-  //     id: '13',
-  //   },
-  // ];
+  const events = [
+    {
+      name: 'Wedding Day',
+      id: '123',
+    },
+    {
+      name: 'Dinner Rehearsal',
+      id: '321',
+    },
+    {
+      name: 'test event',
+      id: '13',
+    },
+  ];
 
-  const { data: events, isLoading: isFetchingEvents } =
-    api.event.getAllByUserId.useQuery();
+  // const { data: events, isLoading: isFetchingEvents } =
+  //   api.event.getAllByUserId.useQuery();
 
-  const { data: invitations, isLoading: isFetchingInvitations } =
-    api.invitation.getAllByUserId.useQuery();
+  // const { data: invitations, isLoading: isFetchingInvitations } =
+  //   api.invitation.getAllByUserId.useQuery();
 
-  if (isFetchingEvents || isFetchingInvitations) return <LoadingPage />;
-  if (!events || !invitations) return <div>404</div>;
-  console.log('inv', invitations);
-  console.log('ev', events);
+  // if (isFetchingEvents || isFetchingInvitations) return <LoadingPage />;
+  // if (!events || !invitations) return <div>404</div>;
+  // console.log('inv', invitations);
+  // console.log('ev', events);
 
   return (
     <Layout>
-      <main>
+      <main className=''>
         {showGuestForm && (
           <AddGuestForm setShowGuestForm={setShowGuestForm} events={events} />
         )}
         {showEventForm && <AddEventForm setShowEventForm={setShowEventForm} />}
+        <GuestHeader />
         <section>
-          <div>
-            <h1>Your Guest List</h1>
-          </div>
-        </section>
-        <section>
-          <ul>
-            <li>All Events</li>
-            {events?.map((event) => {
-              return <li key={event.id}>{event.name}</li>;
-            })}
-            <button onClick={() => setShowEventForm(true)}>+ New Event</button>
-          </ul>
+          <EventsTabs events={events} setShowEventForm={setShowEventForm} />
           <div>
             <h1>currentEventName</h1>
             <i>Icon</i>
