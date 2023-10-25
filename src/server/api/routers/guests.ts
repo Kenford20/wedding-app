@@ -9,19 +9,19 @@ export const guestRouter = createTRPCRouter({
   create: privateProcedure
     .input(
       z.object({
-        guestFirstName: z.string().nonempty({ message: 'First name required' }),
-        guestLastName: z.string().nonempty({ message: 'Last name required' }),
+        firstName: z.string().nonempty({ message: 'First name required' }),
+        lastName: z.string().nonempty({ message: 'Last name required' }),
         eventIds: z.array(z.string()),
       })
     )
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.userId;
-      const { guestFirstName, guestLastName, eventIds } = input;
+      const { firstName, lastName, eventIds } = input;
 
       const newGuest = await ctx.prisma.guest.create({
         data: {
-          guestFirstName,
-          guestLastName,
+          firstName,
+          lastName,
           userId,
         },
       });
@@ -52,4 +52,15 @@ export const guestRouter = createTRPCRouter({
 
       return guestList;
     }),
+
+  getAllByUserId: publicProcedure.query(async ({ ctx }) => {
+    if (!ctx.userId) return;
+    const guestList = await ctx.prisma.guest.findMany({
+      where: {
+        userId: ctx.userId,
+      },
+    });
+
+    return guestList;
+  }),
 });

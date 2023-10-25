@@ -26,20 +26,20 @@ model User {
 }
 
 model Guest {
-    id             String       @id @default(cuid())
-    guestFirstName String
-    guestLastName  String
-    address1       String?
-    address2       String?
-    city           String?
-    state          String?
-    zipCode        String?
-    country        String?
-    phone          String?
-    email          String?
-    notes          String?
-    userId         String
-    invitations    Invitation[]
+    id          String       @id @default(cuid())
+    firstName   String
+    lastName    String
+    address1    String?
+    address2    String?
+    city        String?
+    state       String?
+    zipCode     String?
+    country     String?
+    phone       String?
+    email       String?
+    notes       String?
+    userId      String
+    invitations Invitation[]
 }
 
 model Event {

@@ -5,7 +5,7 @@ export default function Navbar() {
   const { user } = useUser();
 
   return (
-    <div className='bottom-2 border px-20 pt-5'>
+    <div className='border-b px-20 pt-5'>
       <h1 className='pb-4 text-3xl'>{user?.firstName ?? 'wee'}</h1>
       <ul className='flex justify-between'>
         <div className='flex gap-7'>

@@ -31,16 +31,16 @@ export default function AddGuestForm({
     },
     onError: (err) => {
       const errorMessage =
-        err.data?.zodError?.fieldErrors?.guestFirstName ??
-        err.data?.zodError?.fieldErrors?.guesLastName;
+        err.data?.zodError?.fieldErrors?.firstName ??
+        err.data?.zodError?.fieldErrors?.lastName;
       if (errorMessage?.[0]) window.alert('Full name required');
       else window.alert('Failed to create event! Please try again later.');
     },
   });
 
   const [guestFormData, setGuestFormData] = useState({
-    guestFirstName: '',
-    guestLastName: '',
+    firstName: '',
+    lastName: '',
     address1: '',
     address2: '',
     city: '',
@@ -98,13 +98,13 @@ export default function AddGuestForm({
           <h2>Guest Name</h2>
           <input
             placeholder='First Name'
-            value={guestFormData.guestFirstName}
-            onChange={(e) => handleOnChange('guestFirstName', e.target.value)}
+            value={guestFormData.firstName}
+            onChange={(e) => handleOnChange('firstName', e.target.value)}
           />
           <input
             placeholder='Last Name'
-            value={guestFormData.guestLastName}
-            onChange={(e) => handleOnChange('guestLastName', e.target.value)}
+            value={guestFormData.lastName}
+            onChange={(e) => handleOnChange('lastName', e.target.value)}
           />
         </div>
         <div>

@@ -1,3 +1,3 @@
 export default function Navbar() {
-  return <div>Footer</div>;
+  return <div className='mt-32'>Footer</div>;
 }
