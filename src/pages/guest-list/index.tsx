@@ -7,11 +7,14 @@ import { LoadingPage } from '~/components/loader';
 import AddEventForm from '~/components/guest-list/add-event-form';
 import GuestHeader from '~/components/guest-list/header';
 import EventsTabs from '~/components/guest-list/events-tabs';
+import GuestTable from '~/components/guest-list/guest-table';
+import GuestSearchFilter from '~/components/guest-list/guest-search-filter';
 
 export default function Dashboard() {
   const { user } = useUser();
   const [showGuestForm, setShowGuestForm] = useState<boolean>(false);
   const [showEventForm, setShowEventForm] = useState<boolean>(false);
+  const [selectedEventTab, setSelectedEventTab] = useState('All Events'); // eventId
 
   const events = [
     {
@@ -34,11 +37,18 @@ export default function Dashboard() {
   // const { data: invitations, isLoading: isFetchingInvitations } =
   //   api.invitation.getAllByUserId.useQuery();
 
+  const { data: guests, isLoading: isFetchingGuests } =
+    api.guest.getAllByUserId.useQuery();
+
+  console.log('g', guests);
+
   // if (isFetchingEvents || isFetchingInvitations) return <LoadingPage />;
-  // if (!events || !invitations) return <div>404</div>;
+  // if (!events || !invitations || !guests) return <div>404</div>;
   // console.log('inv', invitations);
   // console.log('ev', events);
 
+  const numGuests = 5;
+  const numEvents = 3;
   return (
     <Layout>
       <main className=''>
@@ -46,82 +56,52 @@ export default function Dashboard() {
           <AddGuestForm setShowGuestForm={setShowGuestForm} events={events} />
         )}
         {showEventForm && <AddEventForm setShowEventForm={setShowEventForm} />}
-        <GuestHeader />
         <section>
-          <EventsTabs events={events} setShowEventForm={setShowEventForm} />
+          <GuestHeader />
+        </section>
+        <EventsTabs events={events} setShowEventForm={setShowEventForm} />
+        <section>
+          {/* <div>
+        <h1>currentEventName</h1>
+        <i>Icon</i>
+        <span>editEvent</span>
+        <div>
+          <span>numGuestsInvited Guests Invited:</span>
+          <span>numGuestsAccepted Accepted</span>
+          <span>numGuestsDeclined Declined</span>
+          <span>numGuestsNoResponse No Response</span>
+        </div>
+      </div> */}
           <div>
-            <h1>currentEventName</h1>
-            <i>Icon</i>
-            <span>editEvent</span>
-            <div>
-              <span>numGuestsInvited Guests Invited:</span>
-              <span>numGuestsAccepted Accepted</span>
-              <span>numGuestsDeclined Declined</span>
-              <span>numGuestsNoResponse No Response</span>
+            <div className='px-16 py-8'>
+              <span className='text-sm'>
+                TOTAL HOUSEHOLDS: <span className='font-bold'>{numGuests}</span>
+              </span>
+              <span className='px-3 text-neutral-400'>|</span>
+              <span className='text-sm'>
+                TOTAL GUESTS: <span className='font-bold'>{numGuests}</span>
+              </span>
+              <span className='px-3 text-neutral-400'>|</span>
+              <span className='text-sm'>
+                TOTAL EVENTS: <span className='font-bold'>{numEvents}</span>
+              </span>
             </div>
           </div>
-          <div>
+          <div className='mb-8 flex justify-between px-16'>
+            <GuestSearchFilter />
             <div>
-              <input placeholder='Find Guests'></input>
-              <button>
-                <i>Icon</i>
+              <button className='rounded-full border border-pink-500 px-12 py-3 font-semibold text-pink-500'>
+                Download List
+              </button>
+              <button
+                className='ml-5 rounded-full bg-pink-500 px-12 py-3 font-semibold text-white'
+                onClick={() => setShowGuestForm(true)}
+              >
+                Add Guest
               </button>
             </div>
-            <div>
-              <select name='guestsFilter' id='guestsFilter'>
-                <option defaultValue='Filter By'>Filter By</option>
-                <option value='invited'>Invited</option>
-                <option value='attending'>Attending</option>
-                <option value='Declined'>Declined</option>
-              </select>
-            </div>
-            <div>
-              <button>Download List</button>
-              <button onClick={() => setShowGuestForm(true)}>Add Guest</button>
-            </div>
           </div>
-          <div>
-            <div>
-              <div>
-                <input type='checkbox' id='check-all'></input>
-                <h3>Name</h3>
-                <button>nameSort</button>
-              </div>
-              <div>
-                <h3>Party Of</h3>
-                <button>partySort</button>
-              </div>
-              <div>
-                <h3>Contact</h3>
-              </div>
-              <div>
-                <h3>RSVP Status</h3>
-              </div>
-              <div>
-                <h3>My Notes</h3>
-              </div>
-            </div>
-            <div>
-              {/* guests.map(guest => { */}
-              <input type='checkbox' id='check-all'></input>
-              <h3>guest.firstName guest.lastName</h3>
-              <div>guest.partyNumber</div>
-              <div>
-                <i>homeIcon</i>
-                <i>phoneIcon</i>
-                <i>mailIcon</i>
-              </div>
-              <div>
-                <select name='guestRSVP' id='guestRSVP'>
-                  <option value='invited'>Not Invited</option>
-                  <option value='invited'>Invited</option>
-                  <option value='attending'>Attending</option>
-                  <option value='Declined'>Declined</option>
-                </select>
-              </div>
-              <div>guest.userNotes</div>
-            </div>
-          </div>
+          <GuestTable events={events} guests={guests} />
         </section>
       </main>
     </Layout>

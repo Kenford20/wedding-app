@@ -20,9 +20,9 @@ export default function EventsTabs({
   setShowEventForm,
 }: EventsTabsProps) {
   return (
-    <div className='border-b-2'>
+    <div className='border-b'>
       <ul className='flex gap-5 px-16'>
-        <li className='cursor-pointer border-b-4 border-transparent py-3 text-sm hover:border-gray-600'>
+        <li className='cursor-pointer border-b-4 border-gray-600 border-transparent py-3 text-sm hover:border-gray-600'>
           All Events
         </li>
         {events?.map((event) => {
@@ -36,7 +36,7 @@ export default function EventsTabs({
           );
         })}
         <button
-          className='text-sm text-pink-400'
+          className='pb-1 text-sm font-semibold text-pink-500'
           onClick={() => setShowEventForm(true)}
         >
           + New Event

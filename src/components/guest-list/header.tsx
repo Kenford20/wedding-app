@@ -1,6 +1,6 @@
 export default function GuestHeader() {
   return (
-    <section className='px-16 pb-5 pt-10'>
+    <div className='px-16 pb-5 pt-10'>
       <div className='flex justify-between'>
         <h1 className='text-3xl font-bold'>Your Guest List</h1>
         <div>
@@ -24,6 +24,6 @@ export default function GuestHeader() {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
