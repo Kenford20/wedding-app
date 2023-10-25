@@ -16,23 +16,23 @@ export default function Dashboard() {
   const [showEventForm, setShowEventForm] = useState<boolean>(false);
   const [selectedEventTab, setSelectedEventTab] = useState('All Events'); // eventId
 
-  const events = [
-    {
-      name: 'Wedding Day',
-      id: '123',
-    },
-    {
-      name: 'Dinner Rehearsal',
-      id: '321',
-    },
-    {
-      name: 'test event',
-      id: '13',
-    },
-  ];
+  // const events = [
+  //   {
+  //     name: 'Wedding Day',
+  //     id: '123',
+  //   },
+  //   {
+  //     name: 'Dinner Rehearsal',
+  //     id: '321',
+  //   },
+  //   {
+  //     name: 'test event',
+  //     id: '13',
+  //   },
+  // ];
 
-  // const { data: events, isLoading: isFetchingEvents } =
-  //   api.event.getAllByUserId.useQuery();
+  const { data: events, isLoading: isFetchingEvents } =
+    api.event.getAllByUserId.useQuery();
 
   // const { data: invitations, isLoading: isFetchingInvitations } =
   //   api.invitation.getAllByUserId.useQuery();
@@ -42,8 +42,8 @@ export default function Dashboard() {
 
   console.log('g', guests);
 
-  // if (isFetchingEvents || isFetchingInvitations) return <LoadingPage />;
-  // if (!events || !invitations || !guests) return <div>404</div>;
+  if (isFetchingEvents || isFetchingGuests) return <LoadingPage />;
+  if (!events || !guests) return <div>404</div>;
   // console.log('inv', invitations);
   // console.log('ev', events);
 

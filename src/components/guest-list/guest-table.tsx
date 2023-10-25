@@ -35,7 +35,7 @@ export default function GuestTable({ events, guests }: GuestTableProps) {
   return (
     <div className='px-16'>
       <div
-        className={`guest-table grid grid-cols-[40px_175px_100px_repeat(${events.length},_auto)_1fr] gap-12 border-b py-6 font-extralight`}
+        className={`guest-table grid grid-cols-[40px_175px_100px_repeat(${guests?.length},_auto)_1fr] gap-12 border-b py-6 font-extralight`}
       >
         <input type='checkbox' id='check-all'></input>
         <h5>Name</h5>
@@ -51,7 +51,7 @@ export default function GuestTable({ events, guests }: GuestTableProps) {
           return (
             <div
               key={guest.id}
-              className={`guest-table grid grid-cols-[40px_175px_100px_repeat(${events.length},_150px)_1fr] gap-12 border-b py-4`}
+              className={`guest-table grid grid-cols-[40px_175px_100px_repeat(${guests?.length},_150px)_1fr] gap-12 border-b py-4`}
             >
               <input type='checkbox' id={`check-guest-${guest.id}`}></input>
               <h3>{`${guest.firstName} ${guest.lastName}`}</h3>

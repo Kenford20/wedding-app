@@ -1,4 +1,4 @@
-type GuestSearchFilterProps = {};
+type GuestSearchFilterProps = object;
 
 export default function GuestSearchFilter({}: GuestSearchFilterProps) {
   return (
