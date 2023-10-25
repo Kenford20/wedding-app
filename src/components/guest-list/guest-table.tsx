@@ -54,7 +54,7 @@ export default function GuestTable({ events, guests }: GuestTableProps) {
               className={`guest-table grid grid-cols-[40px_175px_100px_repeat(${events.length},_150px)_1fr] gap-12 border-b py-4`}
             >
               <input type='checkbox' id={`check-guest-${guest.id}`}></input>
-              <h3>{`${guest.guestFirstName} ${guest.guestLastName}`}</h3>
+              <h3>{`${guest.firstName} ${guest.lastName}`}</h3>
               <div>
                 <i>HO</i>
                 <i>PH</i>
