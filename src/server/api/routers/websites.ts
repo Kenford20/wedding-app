@@ -64,12 +64,11 @@ export const websitesRouter = createTRPCRouter({
   find: publicProcedure
     .input(z.object({ websiteUrl: z.string() }))
     .query(async ({ ctx, input }) => {
-      const data = await ctx.prisma.website.findFirst({
+      const website = await ctx.prisma.website.findFirst({
         where: {
           url: input.websiteUrl,
         },
       });
-      console.log(data);
-      return !!data;
+      return !!website;
     }),
 });
