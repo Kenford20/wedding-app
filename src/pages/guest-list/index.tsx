@@ -9,6 +9,7 @@ import GuestHeader from '~/components/guest-list/header';
 import EventsTabs from '~/components/guest-list/events-tabs';
 import GuestTable from '~/components/guest-list/guest-table';
 import GuestSearchFilter from '~/components/guest-list/guest-search-filter';
+import { guestListData } from '~/components/db-mocks';
 
 export default function Dashboard() {
   const { user } = useUser();
@@ -16,36 +17,26 @@ export default function Dashboard() {
   const [showEventForm, setShowEventForm] = useState<boolean>(false);
   const [selectedEventTab, setSelectedEventTab] = useState('All Events'); // eventId
 
-  // const events = [
-  //   {
-  //     name: 'Wedding Day',
-  //     id: '123',
-  //   },
-  //   {
-  //     name: 'Dinner Rehearsal',
-  //     id: '321',
-  //   },
-  //   {
-  //     name: 'test event',
-  //     id: '13',
-  //   },
-  // ];
+  // const { data: guestListData, isLoading: isFetchingGuestListData } =
+  //   api.guestList.getAllByUserId.useQuery();
 
-  const { data: events, isLoading: isFetchingEvents } =
-    api.event.getAllByUserId.useQuery();
+  // const { data: events, isLoading: isFetchingEvents } =
+  //   api.event.getAllByUserId.useQuery();
 
   // const { data: invitations, isLoading: isFetchingInvitations } =
   //   api.invitation.getAllByUserId.useQuery();
 
-  const { data: guests, isLoading: isFetchingGuests } =
-    api.guest.getAllByUserId.useQuery();
+  // const { data: guests, isLoading: isFetchingGuests } =
+  //   api.guest.getAllByUserId.useQuery();
 
-  console.log('g', guests);
+  // console.log('g', guests);
 
-  if (isFetchingEvents || isFetchingGuests) return <LoadingPage />;
-  if (!events || !guests) return <div>404</div>;
+  // if (isFetchingEvents || isFetchingGuests) return <LoadingPage />;
+  // if (!events || !guests) return <div>404</div>;
   // console.log('inv', invitations);
   // console.log('ev', events);
+
+  console.log(guestListData);
 
   const numGuests = 5;
   const numEvents = 3;
@@ -53,13 +44,19 @@ export default function Dashboard() {
     <Layout>
       <main className=''>
         {showGuestForm && (
-          <AddGuestForm setShowGuestForm={setShowGuestForm} events={events} />
+          <AddGuestForm
+            setShowGuestForm={setShowGuestForm}
+            events={guestListData.events}
+          />
         )}
         {showEventForm && <AddEventForm setShowEventForm={setShowEventForm} />}
         <section>
           <GuestHeader />
         </section>
-        <EventsTabs events={events} setShowEventForm={setShowEventForm} />
+        <EventsTabs
+          events={guestListData.events}
+          setShowEventForm={setShowEventForm}
+        />
         <section>
           {/* <div>
         <h1>currentEventName</h1>
@@ -90,18 +87,21 @@ export default function Dashboard() {
           <div className='mb-8 flex justify-between px-16'>
             <GuestSearchFilter />
             <div>
-              <button className='rounded-full border border-pink-500 px-12 py-3 font-semibold text-pink-500'>
+              <button className='rounded-full border border-pink-400 px-12 py-3 font-semibold text-pink-400'>
                 Download List
               </button>
               <button
-                className='ml-5 rounded-full bg-pink-500 px-12 py-3 font-semibold text-white'
+                className='ml-5 rounded-full bg-pink-400 px-12 py-3 font-semibold text-white'
                 onClick={() => setShowGuestForm(true)}
               >
                 Add Guest
               </button>
             </div>
           </div>
-          <GuestTable events={events} guests={guests} />
+          <GuestTable
+            events={guestListData.events}
+            guests={guestListData.guests}
+          />
         </section>
       </main>
     </Layout>

@@ -36,7 +36,7 @@ export default function EventsTabs({
           );
         })}
         <button
-          className='pb-1 text-sm font-semibold text-pink-500'
+          className='pb-1 text-sm font-semibold text-pink-400'
           onClick={() => setShowEventForm(true)}
         >
           + New Event

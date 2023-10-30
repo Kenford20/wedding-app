@@ -8,7 +8,7 @@ export default function GuestSearchFilter({}: GuestSearchFilterProps) {
           className='w-64 border-2 px-3 py-2'
           placeholder='Find Guests'
         ></input>
-        <button className='h-11 w-24 bg-pink-500'>
+        <button className='h-11 w-24 bg-pink-400'>
           <i className='text-white'>Search</i>
         </button>
       </div>

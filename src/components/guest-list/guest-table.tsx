@@ -24,6 +24,12 @@ type Guest = {
   email: string | null;
   notes: string | null;
   userId: string;
+  rsvps: Rsvp[];
+};
+
+type Rsvp = {
+  eventId: string;
+  rsvp: string;
 };
 
 type GuestTableProps = {
@@ -37,10 +43,14 @@ export default function GuestTable({ events, guests }: GuestTableProps) {
       <div
         className={`guest-table grid gap-12 border-b py-6 font-extralight`}
         style={{
-          gridTemplateColumns: `40px 175px 100px repeat(${guests.length}, auto) 1fr`,
+          gridTemplateColumns: `40px 200px 100px repeat(${guests.length}, 175px) 1fr`,
         }}
       >
-        <input type='checkbox' id='check-all'></input>
+        <input
+          className='accent-pink-400'
+          type='checkbox'
+          id='check-all'
+        ></input>
         <h5>Name</h5>
         <h5>Contact</h5>
         {events.map((event) => {
@@ -56,10 +66,14 @@ export default function GuestTable({ events, guests }: GuestTableProps) {
               key={guest.id}
               className={`guest-table grid gap-12 border-b py-4`}
               style={{
-                gridTemplateColumns: `40px 175px 100px repeat(${guests.length}, 150px) 1fr`,
+                gridTemplateColumns: `40px 200px 100px repeat(${guests.length}, 175px) 1fr`,
               }}
             >
-              <input type='checkbox' id={`check-guest-${guest.id}`}></input>
+              <input
+                className='accent-pink-400'
+                type='checkbox'
+                id={`check-guest-${guest.id}`}
+              ></input>
               <h3>{`${guest.firstName} ${guest.lastName}`}</h3>
               <div>
                 <i>HO</i>

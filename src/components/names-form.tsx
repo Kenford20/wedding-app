@@ -71,7 +71,7 @@ export default function NamesForm() {
       />
       <button
         onClick={() => createWebsite(nameData)}
-        className='rounded-full bg-pink-500 px-20 py-4 text-white'
+        className='rounded-full bg-pink-400 px-20 py-4 text-white'
       >
         Create our website!
       </button>
