@@ -9,7 +9,7 @@ import GuestHeader from '~/components/guest-list/header';
 import EventsTabs from '~/components/guest-list/events-tabs';
 import GuestTable from '~/components/guest-list/guest-table';
 import GuestSearchFilter from '~/components/guest-list/guest-search-filter';
-import { guestListData } from '~/components/db-mocks';
+// import { guestListData } from '~/components/db-mocks';
 
 export default function Dashboard() {
   const { user } = useUser();
@@ -17,24 +17,11 @@ export default function Dashboard() {
   const [showEventForm, setShowEventForm] = useState<boolean>(false);
   const [selectedEventTab, setSelectedEventTab] = useState('All Events'); // eventId
 
-  // const { data: guestListData, isLoading: isFetchingGuestListData } =
-  //   api.guestList.getAllByUserId.useQuery();
+  const { data: guestListData, isLoading: isFetchingGuestListData } =
+    api.guestList.getAllByUserId.useQuery();
 
-  // const { data: events, isLoading: isFetchingEvents } =
-  //   api.event.getAllByUserId.useQuery();
-
-  // const { data: invitations, isLoading: isFetchingInvitations } =
-  //   api.invitation.getAllByUserId.useQuery();
-
-  // const { data: guests, isLoading: isFetchingGuests } =
-  //   api.guest.getAllByUserId.useQuery();
-
-  // console.log('g', guests);
-
-  // if (isFetchingEvents || isFetchingGuests) return <LoadingPage />;
-  // if (!events || !guests) return <div>404</div>;
-  // console.log('inv', invitations);
-  // console.log('ev', events);
+  if (isFetchingGuestListData) return <LoadingPage />;
+  if (!guestListData) return <div>404</div>;
 
   console.log(guestListData);
 
