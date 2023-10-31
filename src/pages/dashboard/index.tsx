@@ -1,24 +1,25 @@
 import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 import Layout from '../layout';
+import { api } from '~/utils/api';
+import { LoadingPage } from '~/components/loader';
+import DashboardHeader from '~/components/dashboard/website-header';
 
 export default function Dashboard() {
-  const { user } = useUser();
+  const { data: currentUsersWebsite, isLoading } =
+    api.website.getByUserId.useQuery();
+  console.log('user website ', currentUsersWebsite);
+
+  if (isLoading) return <LoadingPage />;
+  if (typeof window !== 'undefined' && currentUsersWebsite === null) {
+    window.location.href = '/';
+  }
 
   return (
     <Layout>
       <main>
         <section>
-          <div>
-            <h1>Your Website</h1>
-            <p>window.location.href/nameinfostuff</p>
-            <button>Copy</button>
-            <button>Edit</button>
-          </div>
-          <div>
-            <button>Share your Website</button>
-            <button>Preview Site</button>
-          </div>
+          <DashboardHeader websiteUrl={currentUsersWebsite?.url} />
         </section>
         <section>
           <h2>Let&apos;s set up your registry</h2>
