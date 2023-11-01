@@ -29,7 +29,7 @@ type Guest = {
 
 type Rsvp = {
   eventId: string;
-  rsvp: string;
+  rsvp: string | null;
 };
 
 type GuestTableProps = {
