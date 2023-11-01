@@ -16,10 +16,10 @@ export default function DashboardHeader({ websiteUrl }: DashboardHeaderProps) {
         </div>
       </div>
       <div>
-        <button className={sharedStyles.secondaryButton}>
+        <button className={sharedStyles.secondaryButton()}>
           Share your Website
         </button>
-        <button className={`ml-5 ${sharedStyles.primaryButton}`}>
+        <button className={`ml-5 ${sharedStyles.primaryButton()}`}>
           Preview Site
         </button>
       </div>

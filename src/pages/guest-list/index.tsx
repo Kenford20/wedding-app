@@ -77,11 +77,11 @@ export default function Dashboard() {
           >
             <GuestSearchFilter />
             <div>
-              <button className={sharedStyles.secondaryButton}>
+              <button className={sharedStyles.secondaryButton()}>
                 Download List
               </button>
               <button
-                className={`ml-5 ${sharedStyles.primaryButton}`}
+                className={`ml-5 ${sharedStyles.primaryButton()}`}
                 onClick={() => setShowGuestForm(true)}
               >
                 Add Guest

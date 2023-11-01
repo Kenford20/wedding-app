@@ -28,7 +28,12 @@ export default function RegistrySetup({
         </p>
         <div>
           <Link href='/registry'>
-            <button className={`${sharedStyles.secondaryButton} px-6 py-1`}>
+            <button
+              className={`${sharedStyles.secondaryButton({
+                px: 'px-7',
+                py: 'py-1',
+              })}`}
+            >
               Get Started
             </button>
           </Link>
