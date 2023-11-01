@@ -1,3 +1,5 @@
+import { sharedStyles } from '../shared-styles';
+
 type GuestSearchFilterProps = object;
 
 export default function GuestSearchFilter({}: GuestSearchFilterProps) {
@@ -8,7 +10,7 @@ export default function GuestSearchFilter({}: GuestSearchFilterProps) {
           className='w-64 border-2 px-3 py-2'
           placeholder='Find Guests'
         ></input>
-        <button className='h-11 w-24 bg-pink-400'>
+        <button className={`h-11 w-24 bg-${sharedStyles.primaryColor}`}>
           <i className='text-white'>Search</i>
         </button>
       </div>

@@ -1,3 +1,5 @@
+import { sharedStyles } from '../shared-styles';
+
 type Event = {
   id: string;
   name: string;
@@ -21,7 +23,7 @@ export default function EventsTabs({
 }: EventsTabsProps) {
   return (
     <div className='border-b'>
-      <ul className='flex gap-5 px-16'>
+      <ul className={`flex gap-5 ${sharedStyles.desktopPaddingSides}`}>
         <li className='cursor-pointer border-b-4 border-gray-600 border-transparent py-3 text-sm hover:border-gray-600'>
           All Events
         </li>
@@ -36,7 +38,7 @@ export default function EventsTabs({
           );
         })}
         <button
-          className='pb-1 text-sm font-semibold text-pink-400'
+          className={`pb-1 text-sm font-semibold text-${sharedStyles.primaryColor}`}
           onClick={() => setShowEventForm(true)}
         >
           + New Event

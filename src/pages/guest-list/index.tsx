@@ -9,7 +9,7 @@ import GuestHeader from '~/components/guest-list/header';
 import EventsTabs from '~/components/guest-list/events-tabs';
 import GuestTable from '~/components/guest-list/guest-table';
 import GuestSearchFilter from '~/components/guest-list/guest-search-filter';
-// import { guestListData } from '~/components/db-mocks';
+import { guestListData } from '~/components/db-mocks';
 import { sharedStyles } from '~/components/shared-styles';
 
 export default function Dashboard() {
@@ -18,11 +18,11 @@ export default function Dashboard() {
   const [showEventForm, setShowEventForm] = useState<boolean>(false);
   const [selectedEventTab, setSelectedEventTab] = useState('All Events'); // eventId
 
-  const { data: guestListData, isLoading: isFetchingGuestListData } =
-    api.guestList.getAllByUserId.useQuery();
+  // const { data: guestListData, isLoading: isFetchingGuestListData } =
+  //   api.guestList.getAllByUserId.useQuery();
 
-  if (isFetchingGuestListData) return <LoadingPage />;
-  if (!guestListData) return <div>404</div>;
+  // if (isFetchingGuestListData) return <LoadingPage />;
+  // if (!guestListData) return <div>404</div>;
 
   console.log(guestListData);
 
@@ -62,11 +62,11 @@ export default function Dashboard() {
               <span className='text-sm'>
                 TOTAL HOUSEHOLDS: <span className='font-bold'>{numGuests}</span>
               </span>
-              <span className='px-3 text-neutral-400'>|</span>
+              <span className={sharedStyles.verticalDivider}>|</span>
               <span className='text-sm'>
                 TOTAL GUESTS: <span className='font-bold'>{numGuests}</span>
               </span>
-              <span className='px-3 text-neutral-400'>|</span>
+              <span className={sharedStyles.verticalDivider}>|</span>
               <span className='text-sm'>
                 TOTAL EVENTS: <span className='font-bold'>{numEvents}</span>
               </span>

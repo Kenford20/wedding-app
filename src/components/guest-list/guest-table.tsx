@@ -49,7 +49,7 @@ export default function GuestTable({ events, guests }: GuestTableProps) {
         }}
       >
         <input
-          className='accent-pink-400'
+          className={`accent-${sharedStyles.primaryColor}`}
           type='checkbox'
           id='check-all'
         ></input>
@@ -72,7 +72,7 @@ export default function GuestTable({ events, guests }: GuestTableProps) {
               }}
             >
               <input
-                className='accent-pink-400'
+                className={`accent-${sharedStyles.primaryColor}`}
                 type='checkbox'
                 id={`check-guest-${guest.id}`}
               ></input>

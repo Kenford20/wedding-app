@@ -11,8 +11,12 @@ export default function DashboardHeader({ websiteUrl }: DashboardHeaderProps) {
         <h1 className='text-3xl font-bold'>Your Website</h1>
         <div className='mt-2 flex'>
           <p>{websiteUrl}</p>
-          <button className='ml-5 text-pink-400'>Copy</button>
-          <button className='ml-5 text-pink-400'>Edit</button>
+          <button className={`ml-5 text-${sharedStyles.primaryColor}`}>
+            Copy
+          </button>
+          <button className={`ml-5 text-${sharedStyles.primaryColor}`}>
+            Edit
+          </button>
         </div>
       </div>
       <div>

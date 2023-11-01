@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { api } from '~/utils/api';
 import { LoadingSpinner } from './loader';
+import { sharedStyles } from './shared-styles';
 
 export default function NamesForm() {
   const hello = api.website.hello.useQuery({ text: 'from tRPC' });
@@ -26,6 +27,8 @@ export default function NamesForm() {
     partnerFirstName: '',
     partnerLastName: '',
   });
+
+  console.log('or', window.location.origin);
 
   const handleOnChange = (field: string, input: string) => {
     setNameData((prev) => {
@@ -71,7 +74,7 @@ export default function NamesForm() {
       />
       <button
         onClick={() => createWebsite(nameData)}
-        className='rounded-full bg-pink-400 px-20 py-4 text-white'
+        className={`rounded-full bg-${sharedStyles.primaryColor} px-20 py-4 text-white`}
       >
         Create our website!
       </button>
