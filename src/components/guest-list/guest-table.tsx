@@ -1,3 +1,5 @@
+import { sharedStyles } from '../shared-styles';
+
 type Event = {
   id: string;
   name: string;
@@ -39,7 +41,7 @@ type GuestTableProps = {
 
 export default function GuestTable({ events, guests }: GuestTableProps) {
   return (
-    <div className='px-16'>
+    <div className={sharedStyles.desktopPaddingSides}>
       <div
         className={`guest-table grid gap-12 border-b py-6 font-extralight`}
         style={{

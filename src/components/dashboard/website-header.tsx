@@ -5,9 +5,8 @@ type DashboardHeaderProps = {
 };
 
 export default function DashboardHeader({ websiteUrl }: DashboardHeaderProps) {
-  console.log('or', window.location.origin);
   return (
-    <div className='flex justify-between px-16 pb-5 pt-10'>
+    <div className={`flex justify-between ${sharedStyles.desktopPaddingSides}`}>
       <div className=''>
         <h1 className='text-3xl font-bold'>Your Website</h1>
         <div className='mt-2 flex'>

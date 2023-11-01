@@ -1,14 +1,23 @@
-import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 import Layout from '../layout';
 import { api } from '~/utils/api';
 import { LoadingPage } from '~/components/loader';
 import DashboardHeader from '~/components/dashboard/website-header';
+import RegistrySetup from '~/components/dashboard/registry-setup';
+import { useEffect, useState } from 'react';
+import { sharedStyles } from '~/components/shared-styles';
 
 export default function Dashboard() {
+  const [showRegistrySetup, setShowRegistrySetup] = useState(true);
+
+  useEffect(() => {
+    setShowRegistrySetup(
+      localStorage.getItem('registrySectionStatus') !== 'hidden'
+    );
+  }, []);
+
   const { data: currentUsersWebsite, isLoading } =
     api.website.getByUserId.useQuery();
-  console.log('user website ', currentUsersWebsite);
 
   if (isLoading) return <LoadingPage />;
   if (typeof window !== 'undefined' && currentUsersWebsite === null) {
@@ -18,20 +27,16 @@ export default function Dashboard() {
   return (
     <Layout>
       <main>
-        <section>
+        <section className='border-b py-10'>
           <DashboardHeader websiteUrl={currentUsersWebsite?.url} />
         </section>
-        <section>
-          <h2>Let&apos;s set up your registry</h2>
-          <p>
-            Share your wish list with guests by linking an existing registry or
-            starting a new one.
-          </p>
-          <div>
-            <button>Get Started</button>
-            <button>Maybe Later</button>
-          </div>
-        </section>
+        {showRegistrySetup && (
+          <section
+            className={`${sharedStyles.desktopPaddingSides} border-b py-10`}
+          >
+            <RegistrySetup setShowRegistrySetup={setShowRegistrySetup} />
+          </section>
+        )}
         <br />
         <h1>Pages</h1>
         <section>

@@ -10,6 +10,7 @@ import EventsTabs from '~/components/guest-list/events-tabs';
 import GuestTable from '~/components/guest-list/guest-table';
 import GuestSearchFilter from '~/components/guest-list/guest-search-filter';
 // import { guestListData } from '~/components/db-mocks';
+import { sharedStyles } from '~/components/shared-styles';
 
 export default function Dashboard() {
   const { user } = useUser();
@@ -57,7 +58,7 @@ export default function Dashboard() {
         </div>
       </div> */}
           <div>
-            <div className='px-16 py-8'>
+            <div className={`py-8 ${sharedStyles.desktopPaddingSides}`}>
               <span className='text-sm'>
                 TOTAL HOUSEHOLDS: <span className='font-bold'>{numGuests}</span>
               </span>
@@ -71,14 +72,16 @@ export default function Dashboard() {
               </span>
             </div>
           </div>
-          <div className='mb-8 flex justify-between px-16'>
+          <div
+            className={`mb-8 flex justify-between ${sharedStyles.desktopPaddingSides}`}
+          >
             <GuestSearchFilter />
             <div>
-              <button className='rounded-full border border-pink-400 px-12 py-3 font-semibold text-pink-400'>
+              <button className={sharedStyles.secondaryButton}>
                 Download List
               </button>
               <button
-                className='ml-5 rounded-full bg-pink-400 px-12 py-3 font-semibold text-white'
+                className={`ml-5 ${sharedStyles.primaryButton}`}
                 onClick={() => setShowGuestForm(true)}
               >
                 Add Guest
