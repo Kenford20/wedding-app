@@ -33,7 +33,7 @@ export default function PageSectionsTemplate({
         <>
           <div className='border-t'></div>
           <div className='p-5'>
-            <div className='flex'>
+            <div className='flex cursor-pointer'>
               <AiOutlinePlusCircle
                 size={25}
                 color={sharedStyles.primaryColorHex}

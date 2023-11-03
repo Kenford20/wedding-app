@@ -22,6 +22,7 @@ export const websitesRouter = createTRPCRouter({
         lastName: z.string(),
         partnerFirstName: z.string(),
         partnerLastName: z.string(),
+        basePath: z.string(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -30,8 +31,15 @@ export const websitesRouter = createTRPCRouter({
       const userId = ctx.userId;
 
       // TODO: needa check for dupes
-      const { firstName, lastName, partnerFirstName, partnerLastName } = input;
-      const url = `${firstName}-${lastName}-and-${partnerFirstName}-${partnerLastName}`;
+      const {
+        firstName,
+        lastName,
+        partnerFirstName,
+        partnerLastName,
+        basePath,
+      } = input;
+      const url =
+        `${basePath}/websites/${firstName}${lastName}and${partnerFirstName}${partnerLastName}`.toLowerCase();
 
       const websiteUrl = await ctx.prisma.website.create({
         data: {

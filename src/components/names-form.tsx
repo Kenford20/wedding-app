@@ -73,7 +73,12 @@ export default function NamesForm() {
         onChange={(e) => handleOnChange('partnerLastName', e.target.value)}
       />
       <button
-        onClick={() => createWebsite(nameData)}
+        onClick={() =>
+          createWebsite({
+            ...nameData,
+            basePath: window.location.origin,
+          })
+        }
         className={`rounded-full bg-${sharedStyles.primaryColor} px-20 py-4 text-white`}
       >
         Create our website!
