@@ -23,6 +23,7 @@ export const websitesRouter = createTRPCRouter({
         partnerFirstName: z.string(),
         partnerLastName: z.string(),
         basePath: z.string(),
+        email: z.string(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -37,14 +38,17 @@ export const websitesRouter = createTRPCRouter({
         partnerFirstName,
         partnerLastName,
         basePath,
+        email,
       } = input;
-      const url =
-        `${basePath}/websites/${firstName}${lastName}and${partnerFirstName}${partnerLastName}`.toLowerCase();
+      const subUrl =
+        `${firstName}${lastName}and${partnerFirstName}${partnerLastName}`.toLowerCase();
+      const url = `${basePath}/websites/${subUrl}`;
 
       const websiteUrl = await ctx.prisma.website.create({
         data: {
           userId,
           url,
+          subUrl,
         },
       });
 
@@ -52,6 +56,18 @@ export const websitesRouter = createTRPCRouter({
         data: {
           name: 'Wedding Day',
           userId,
+        },
+      });
+
+      await ctx.prisma.user.create({
+        data: {
+          id: userId,
+          websiteUrl: url,
+          email,
+          groomFirstName: firstName,
+          groomLastName: lastName,
+          brideFirstName: partnerFirstName,
+          brideLastName: partnerLastName,
         },
       });
 
@@ -74,7 +90,7 @@ export const websitesRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const website = await ctx.prisma.website.findFirst({
         where: {
-          url: input.websiteUrl,
+          subUrl: input.websiteUrl,
         },
       });
       return !!website;

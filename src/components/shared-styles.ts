@@ -9,12 +9,12 @@ type ButtonOptions = {
 };
 
 const primaryButton = (options: ButtonOptions = { px: 'px-12', py: 'py-3' }) =>
-  `rounded-full bg-${primaryColor} ${options.px} ${options.py} font-semibold text-white hover:bg-[#d700a0]`;
+  `rounded-full bg-pink-400 ${options.px} ${options.py} font-semibold text-white hover:bg-[#d700a0]`;
 
 const secondaryButton = (
   options: ButtonOptions = { px: 'px-12', py: 'py-3' }
 ) =>
-  `rounded-full border border-${primaryColor} ${options.px} ${options.py} font-semibold text-${primaryColor} hover:bg-pink-100`;
+  `rounded-full border border-pink-400 ${options.px} ${options.py} font-semibold text-pink-400 hover:bg-pink-100`;
 
 export const sharedStyles = {
   desktopPaddingSides,

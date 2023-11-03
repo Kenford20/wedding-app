@@ -17,12 +17,17 @@ model Website {
     updatedAt DateTime @updatedAt
     userId    String
     url       String
+    subUrl    String
 }
 
 model User {
-    id         String @id @default(cuid())
-    websiteUrl String @db.VarChar(255)
-    email      String @unique @db.VarChar(255)
+    id             String @id
+    websiteUrl     String @db.VarChar(255)
+    email          String @unique @db.VarChar(255)
+    groomFirstName String
+    groomLastName  String
+    brideFirstName String
+    brideLastName  String
 }
 
 model Guest {

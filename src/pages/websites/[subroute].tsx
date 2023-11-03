@@ -1,19 +1,23 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { LoadingSpinner } from '~/components/loader';
 import { api } from '~/utils/api';
 
 export default function WebsiteTemplate() {
+  const router = useRouter();
+  const websiteUrl = router.query.subroute;
+
   const { data: doesWebsiteExist, isLoading } = api.website.find.useQuery({
-    websiteUrl: window.location.href,
+    websiteUrl: String(router.query.subroute!),
   });
 
   if (isLoading) return <LoadingSpinner />;
 
   return doesWebsiteExist ? (
     <main className='flex h-screen flex-col items-center justify-center gap-20'>
-      <p>websiteUrl</p>
+      <p>{websiteUrl}</p>
       <div className='text-center'>
         <h1 className='text-3xl'>*firstName & partnerFirstName</h1>
         <p className='text-md'>*weddingDate: October 15, 2024</p>

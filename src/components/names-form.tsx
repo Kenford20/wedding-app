@@ -1,5 +1,6 @@
 'use client';
 
+import { useUser } from '@clerk/nextjs';
 import { useState } from 'react';
 import { api } from '~/utils/api';
 import { LoadingSpinner } from './loader';
@@ -7,6 +8,7 @@ import { sharedStyles } from './shared-styles';
 
 export default function NamesForm() {
   const hello = api.website.hello.useQuery({ text: 'from tRPC' });
+  const user = useUser();
 
   const { mutate: createWebsite, isLoading: isCreatingWebsite } =
     api.website.create.useMutation({
@@ -27,8 +29,6 @@ export default function NamesForm() {
     partnerFirstName: '',
     partnerLastName: '',
   });
-
-  console.log('or', window.location.origin);
 
   const handleOnChange = (field: string, input: string) => {
     setNameData((prev) => {
@@ -77,6 +77,7 @@ export default function NamesForm() {
           createWebsite({
             ...nameData,
             basePath: window.location.origin,
+            email: user?.user?.primaryEmailAddress?.emailAddress ?? '',
           })
         }
         className={`rounded-full bg-${sharedStyles.primaryColor} px-20 py-4 text-white`}
