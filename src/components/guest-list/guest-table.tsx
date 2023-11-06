@@ -55,7 +55,7 @@ export default function GuestTable({ events, guests }: GuestTableProps) {
         ></input>
         <h5>Name</h5>
         <h5>Contact</h5>
-        {events.map((event) => {
+        {events?.map((event) => {
           return <h5 key={event.id}>{event.name} RSVP</h5>;
         })}
         <h5>My Notes</h5>

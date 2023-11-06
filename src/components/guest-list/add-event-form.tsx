@@ -1,17 +1,36 @@
 'use client';
 
-import { useState } from 'react';
+import { type Dispatch, type SetStateAction, useState } from 'react';
 import { api } from '~/utils/api';
 import { LoadingSpinner } from '../loader';
 
-type AddEventFormProps = {
-  setShowEventForm: (x: boolean) => void;
+type Event = {
+  id: string;
+  name: string;
+  date: Date | null;
+  startTime: Date | null;
+  endTime: Date | null;
+  venue: string | null;
+  attire: string | null;
+  description: string | null;
+  userId: string;
 };
 
-export default function AddEventForm({ setShowEventForm }: AddEventFormProps) {
+type AddEventFormProps = {
+  setShowEventForm: (x: boolean) => void;
+  setEvents: Dispatch<SetStateAction<Event[] | undefined>>;
+};
+
+export default function AddEventForm({
+  setShowEventForm,
+  setEvents,
+}: AddEventFormProps) {
   const { mutate, isLoading: isCreatingEvent } = api.event.create.useMutation({
-    onSuccess: () => {
+    onSuccess: (response) => {
       setShowEventForm(false);
+      setEvents((prevEvents) =>
+        prevEvents ? [...prevEvents, response] : [response]
+      );
     },
     onError: (err) => {
       const errorMessage = err.data?.zodError?.fieldErrors?.eventName;

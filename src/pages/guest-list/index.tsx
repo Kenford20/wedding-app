@@ -1,28 +1,48 @@
 import { useUser } from '@clerk/nextjs';
-import { useState } from 'react';
-import AddGuestForm from '~/components/guest-list/add-guest-form';
-import Layout from '../layout';
+import { useEffect, useState } from 'react';
 import { api } from '~/utils/api';
 import { LoadingPage } from '~/components/loader';
+import { guestListData } from '~/components/db-mocks';
+import { sharedStyles } from '~/components/shared-styles';
+
+import AddGuestForm from '~/components/guest-list/add-guest-form';
+import Layout from '../layout';
 import AddEventForm from '~/components/guest-list/add-event-form';
 import GuestHeader from '~/components/guest-list/header';
 import EventsTabs from '~/components/guest-list/events-tabs';
 import GuestTable from '~/components/guest-list/guest-table';
 import GuestSearchFilter from '~/components/guest-list/guest-search-filter';
-import { guestListData } from '~/components/db-mocks';
-import { sharedStyles } from '~/components/shared-styles';
+
+type Event = {
+  id: string;
+  name: string;
+  date: Date | null;
+  startTime: Date | null;
+  endTime: Date | null;
+  venue: string | null;
+  attire: string | null;
+  description: string | null;
+  userId: string;
+};
 
 export default function Dashboard() {
   const { user } = useUser();
   const [showGuestForm, setShowGuestForm] = useState<boolean>(false);
   const [showEventForm, setShowEventForm] = useState<boolean>(false);
   const [selectedEventTab, setSelectedEventTab] = useState('All Events'); // eventId
+  // const [events, setEvents] = useState<Event[]>(guestListData.events);
+  const [events, setEvents] = useState<Event[]>();
+  console.log('events', events);
 
-  // const { data: guestListData, isLoading: isFetchingGuestListData } =
-  //   api.guestList.getAllByUserId.useQuery();
+  const { data: guestListData, isLoading: isFetchingGuestListData } =
+    api.guestList.getAllByUserId.useQuery();
 
-  // if (isFetchingGuestListData) return <LoadingPage />;
-  // if (!guestListData) return <div>404</div>;
+  useEffect(() => {
+    setEvents(guestListData?.events);
+  }, [guestListData?.events]);
+
+  if (isFetchingGuestListData) return <LoadingPage />;
+  if (!guestListData || !events) return <div>404</div>;
 
   console.log(guestListData);
 
@@ -32,19 +52,18 @@ export default function Dashboard() {
     <Layout>
       <main className=''>
         {showGuestForm && (
-          <AddGuestForm
-            setShowGuestForm={setShowGuestForm}
-            events={guestListData.events}
+          <AddGuestForm setShowGuestForm={setShowGuestForm} events={events} />
+        )}
+        {showEventForm && (
+          <AddEventForm
+            setShowEventForm={setShowEventForm}
+            setEvents={setEvents}
           />
         )}
-        {showEventForm && <AddEventForm setShowEventForm={setShowEventForm} />}
         <section>
           <GuestHeader />
         </section>
-        <EventsTabs
-          events={guestListData.events}
-          setShowEventForm={setShowEventForm}
-        />
+        <EventsTabs events={events} setShowEventForm={setShowEventForm} />
         <section>
           {/* <div>
         <h1>currentEventName</h1>
@@ -88,10 +107,7 @@ export default function Dashboard() {
               </button>
             </div>
           </div>
-          <GuestTable
-            events={guestListData.events}
-            guests={guestListData.guests}
-          />
+          <GuestTable events={events} guests={guestListData.guests} />
         </section>
       </main>
     </Layout>
