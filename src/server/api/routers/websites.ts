@@ -5,6 +5,7 @@ import {
   privateProcedure,
   publicProcedure,
 } from '~/server/api/trpc';
+import { formatDateNumber } from '../utils';
 
 export const websitesRouter = createTRPCRouter({
   hello: publicProcedure
@@ -140,11 +141,20 @@ export const websitesRouter = createTRPCRouter({
         },
       });
 
+      const weddingDate = events.find(
+        (event) => event.name === 'Wedding Day'
+      )?.date;
+
       const weddingData = {
         groomFirstName: weddingUser.groomFirstName,
         groomLastName: weddingUser.groomLastName,
         brideFirstName: weddingUser.brideFirstName,
         brideLastName: weddingUser.brideLastName,
+        date: {
+          standardFormat: weddingDate ?? 'October 30, 2024',
+          numberFormat: formatDateNumber(weddingDate) ?? '10.30.2024',
+        },
+        daysRemaining: 100,
         events,
       };
 
