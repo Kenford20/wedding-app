@@ -62,7 +62,7 @@ export default function GuestTable({ events, guests }: GuestTableProps) {
       </div>
 
       <div>
-        {guests.map((guest) => {
+        {guests?.map((guest) => {
           return (
             <div
               key={guest.id}
@@ -82,7 +82,7 @@ export default function GuestTable({ events, guests }: GuestTableProps) {
                 <i>PH</i>
                 <i>MA</i>
               </div>
-              {events.map((event) => {
+              {events?.map((event) => {
                 return (
                   <div key={event.id}>
                     <select name='guestRSVP' id={`guest-rsvp-${guest.id}`}>
