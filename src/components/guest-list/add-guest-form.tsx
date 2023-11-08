@@ -53,6 +53,11 @@ export default function AddGuestForm({
     email: '',
     notes: '',
   });
+  const formRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    formRef?.current?.classList.add('overflow-scroll');
+  }, []);
 
   const handleOnChange = (field: string, input: string) => {
     setGuestFormData((prev) => {
@@ -80,6 +85,7 @@ export default function AddGuestForm({
     <div
       id='foobar'
       className='absolute top-0 flex h-screen w-screen justify-end bg-transparent/[0.5]'
+      ref={formRef}
     >
       {isCreatingGuest && (
         <div className='flex items-center justify-center'>
