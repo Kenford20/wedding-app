@@ -1,40 +1,7 @@
+import { type Guest, type Event } from '~/types/schema';
 import { sharedStyles } from '../shared-styles';
 import GuestSearchFilter from './guest-search-filter';
 import GuestTable from './guest-table';
-
-type Event = {
-  id: string;
-  name: string;
-  date: Date | null;
-  startTime: Date | null;
-  endTime: Date | null;
-  venue: string | null;
-  attire: string | null;
-  description: string | null;
-  userId: string;
-};
-
-type Guest = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  address1: string | null;
-  address2: string | null;
-  city: string | null;
-  state: string | null;
-  zipCode: string | null;
-  country: string | null;
-  phone: string | null;
-  email: string | null;
-  notes: string | null;
-  userId: string;
-  rsvps: Rsvp[];
-};
-
-type Rsvp = {
-  eventId: string;
-  rsvp: string | null;
-};
 
 type GuestsViewProps = {
   events: Event[];

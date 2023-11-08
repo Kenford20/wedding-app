@@ -1,16 +1,5 @@
 import { sharedStyles } from '../shared-styles';
-
-type Event = {
-  id: string;
-  name: string;
-  date: Date | null;
-  startTime: Date | null;
-  endTime: Date | null;
-  venue: string | null;
-  attire: string | null;
-  description: string | null;
-  userId: string;
-};
+import { type Event } from '../../types/schema';
 
 type EventsTabsProps = {
   setShowEventForm: (x: boolean) => void;

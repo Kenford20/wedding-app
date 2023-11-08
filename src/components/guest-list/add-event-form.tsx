@@ -3,18 +3,7 @@
 import { type Dispatch, type SetStateAction, useState } from 'react';
 import { api } from '~/utils/api';
 import { LoadingSpinner } from '../loader';
-
-type Event = {
-  id: string;
-  name: string;
-  date: Date | null;
-  startTime: Date | null;
-  endTime: Date | null;
-  venue: string | null;
-  attire: string | null;
-  description: string | null;
-  userId: string;
-};
+import { type Event } from '../../types/schema';
 
 type AddEventFormProps = {
   setShowEventForm: (x: boolean) => void;

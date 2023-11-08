@@ -11,18 +11,7 @@ import GuestHeader from '~/components/guest-list/header';
 import EventsTabs from '~/components/guest-list/events-tabs';
 import { NoGuestsView } from '~/components/guest-list/no-guests-view';
 import { GuestsView } from '~/components/guest-list/guests-view';
-
-type Event = {
-  id: string;
-  name: string;
-  date: Date | null;
-  startTime: Date | null;
-  endTime: Date | null;
-  venue: string | null;
-  attire: string | null;
-  description: string | null;
-  userId: string;
-};
+import { type Event } from '~/types/schema';
 
 export default function Dashboard() {
   const { user } = useUser();
