@@ -68,7 +68,7 @@ export default function Dashboard() {
             setShowGuestForm={setShowGuestForm}
           />
         ) : (
-          <NoGuestsView />
+          <NoGuestsView setShowGuestForm={setShowGuestForm} />
         )}
       </main>
     </Layout>

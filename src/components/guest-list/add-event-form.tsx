@@ -26,10 +26,10 @@ export default function AddEventForm({
   setEvents,
 }: AddEventFormProps) {
   const { mutate, isLoading: isCreatingEvent } = api.event.create.useMutation({
-    onSuccess: (response) => {
+    onSuccess: (createdEvent) => {
       setShowEventForm(false);
       setEvents((prevEvents) =>
-        prevEvents ? [...prevEvents, response] : [response]
+        prevEvents ? [...prevEvents, createdEvent] : [createdEvent]
       );
     },
     onError: (err) => {
