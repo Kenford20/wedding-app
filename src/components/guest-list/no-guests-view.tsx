@@ -8,7 +8,7 @@ type NoGuestsViewProps = {
 export function NoGuestsView({ setShowGuestForm }: NoGuestsViewProps) {
   return (
     <section className={sharedStyles.desktopPaddingSides}>
-      <div className='my-10 w-[500px] cursor-pointer rounded-md p-8 shadow-[0_3px_10px_rgb(0,0,0,0.2)]'>
+      <div className='my-10 w-[500px] rounded-md p-8 shadow-[0_3px_10px_rgb(0,0,0,0.2)]'>
         <h2 className='pb-3 text-2xl font-semibold'>
           Add Guests to This Event
         </h2>

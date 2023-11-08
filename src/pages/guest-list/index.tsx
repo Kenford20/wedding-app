@@ -40,6 +40,14 @@ export default function Dashboard() {
     setEvents(guestListData?.events);
   }, [guestListData?.events]);
 
+  useEffect(() => {
+    if (showGuestForm || showEventForm) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
+  }, [showGuestForm, showEventForm]);
+
   if (isFetchingGuestListData) return <LoadingPage />;
   if (!guestListData || !events) return <div>404</div>;
 

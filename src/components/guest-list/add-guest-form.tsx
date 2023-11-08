@@ -38,6 +38,7 @@ export default function AddGuestForm({
     },
   });
 
+  const [selectedEvents, setSelectedEvents] = useState<string[]>([]);
   const [guestFormData, setGuestFormData] = useState({
     firstName: '',
     lastName: '',
@@ -51,8 +52,6 @@ export default function AddGuestForm({
     email: '',
     notes: '',
   });
-
-  const [selectedEvents, setSelectedEvents] = useState<string[]>([]);
 
   const handleOnChange = (field: string, input: string) => {
     setGuestFormData((prev) => {
@@ -111,14 +110,14 @@ export default function AddGuestForm({
           <h3>Invite to the following events:</h3>
           {events?.map((event) => {
             return (
-              <>
+              <div key={event.id} className='inline-block'>
                 <input
                   type='checkbox'
                   id={event.id}
                   onChange={(e) => handleSelectEvent(e, event)}
                 />
                 <label htmlFor={event.id}>{event.name}</label>
-              </>
+              </div>
             );
           })}
         </div>
