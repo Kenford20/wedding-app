@@ -64,7 +64,7 @@ export default function Dashboard() {
           <GuestHeader />
         </section>
         <EventsTabs events={events} setShowEventForm={setShowEventForm} />
-        {guestListData?.guests.length > 0 ? (
+        {guests.length > 0 ? (
           <GuestsView
             events={events}
             guests={guests}
