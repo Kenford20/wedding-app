@@ -9,7 +9,7 @@ export const invitationsRouter = createTRPCRouter({
   create: privateProcedure
     .input(
       z.object({
-        guestId: z.string(),
+        guestId: z.number(),
         eventId: z.string(),
         rsvp: z.string(),
       })
@@ -30,6 +30,28 @@ export const invitationsRouter = createTRPCRouter({
 
       return newInvitation;
     }),
+
+  // update: privateProcedure
+  //   .input(
+  //     z.object({
+  //       guestId: z.number(),
+  //       eventId: z.string(),
+  //       rsvp: z.string(),
+  //     })
+  //   )
+  //   .mutation(async ({ input, ctx }) => {
+  //     const { guestId, eventId, rsvp } = input;
+
+  //     await ctx.prisma.invitation.update({
+  //       where: {
+  //         guestId,
+  //         eventId,
+  //       },
+  //       data: {
+  //         rsvp,
+  //       },
+  //     });
+  //   }),
 
   getAllByUserId: publicProcedure.query(async ({ ctx }) => {
     if (!ctx.userId) return;
