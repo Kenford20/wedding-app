@@ -29,7 +29,7 @@ type Guest = {
   email: string | null;
   notes: string | null;
   userId: string;
-  rsvps: Rsvp[];
+  rsvps?: Rsvp[];
 };
 
 export { type Event, type Rsvp, type Guest };

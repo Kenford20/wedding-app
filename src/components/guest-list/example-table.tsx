@@ -11,7 +11,7 @@ export default function ExampleTable() {
       >
         <div>
           <input
-            className={`accent-${sharedStyles.primaryColor} h-7 w-7`}
+            className='h-7 w-7'
             type='checkbox'
             id='check-all'
             disabled={true}
@@ -34,7 +34,7 @@ export default function ExampleTable() {
         >
           <div>
             <input
-              className={`accent-${sharedStyles.primaryColor} h-7 w-7`}
+              className='h-7 w-7'
               type='checkbox'
               id={`check-guest-example`}
               disabled={true}
@@ -62,7 +62,7 @@ export default function ExampleTable() {
           <div>-</div>
           <div>
             <input
-              className={`accent-${sharedStyles.primaryColor} h-7 w-7`}
+              className='h-7 w-7'
               type='checkbox'
               id={`check-guest-example`}
               disabled={true}

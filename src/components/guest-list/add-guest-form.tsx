@@ -1,23 +1,29 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { type Dispatch, type SetStateAction } from 'react';
 import { api } from '~/utils/api';
 import { LoadingSpinner } from '../loader';
 import { sharedStyles } from '../shared-styles';
-import { type Event } from '../../types/schema';
+import { type Event, type Guest } from '../../types/schema';
 
 type AddGuestFormProps = {
   setShowGuestForm: (x: boolean) => void;
   events: Event[];
+  setGuests: Dispatch<SetStateAction<Guest[] | undefined>>;
 };
 
 export default function AddGuestForm({
   setShowGuestForm,
   events,
+  setGuests,
 }: AddGuestFormProps) {
   const { mutate, isLoading: isCreatingGuest } = api.guest.create.useMutation({
-    onSuccess: () => {
+    onSuccess: (createdGuest) => {
       setShowGuestForm(false);
+      setGuests((prevGuests) =>
+        prevGuests ? [...prevGuests, createdGuest] : [createdGuest]
+      );
     },
     onError: (err) => {
       const errorMessage =
@@ -72,8 +78,7 @@ export default function AddGuestForm({
 
   return (
     <div
-      id='foobar'
-      className='absolute top-0 flex h-screen w-screen justify-end bg-transparent/[0.5]'
+      className='fixed top-0 flex h-screen w-screen justify-end bg-transparent/[0.5]'
       ref={formRef}
     >
       {isCreatingGuest && (
@@ -115,15 +120,18 @@ export default function AddGuestForm({
           <div className='grid grid-cols-2 gap-3'>
             {events?.map((event) => {
               return (
-                <div key={event.id} className=''>
+                <div key={event.id}>
                   <div className='flex items-center gap-3'>
                     <input
-                      className={`h-6 w-6 border p-3 accent-${sharedStyles.primaryColor}`}
+                      className='h-6 w-6 cursor-pointer border p-3'
+                      style={{ accentColor: sharedStyles.primaryColorHex }}
                       type='checkbox'
                       id={event.id}
                       onChange={(e) => handleSelectEvent(e, event)}
                     />
-                    <label htmlFor={event.id}>{event.name}</label>
+                    <label className='cursor-pointer' htmlFor={event.id}>
+                      {event.name}
+                    </label>
                   </div>
                 </div>
               );
@@ -199,7 +207,7 @@ export default function AddGuestForm({
               />
             </div>
           </div>
-          <h2 className='my-5 text-xl font-semibold'>My Notes</h2>
+          <h2 className='my-4 text-xl font-semibold'>My Notes</h2>
           <textarea
             placeholder='Enter notes about your guests, like food allergies'
             value={guestFormData.notes}

@@ -11,7 +11,7 @@ import GuestHeader from '~/components/guest-list/header';
 import EventsTabs from '~/components/guest-list/events-tabs';
 import { NoGuestsView } from '~/components/guest-list/no-guests-view';
 import { GuestsView } from '~/components/guest-list/guests-view';
-import { type Event } from '~/types/schema';
+import { type Guest, type Event } from '~/types/schema';
 
 export default function Dashboard() {
   const { user } = useUser();
@@ -20,14 +20,16 @@ export default function Dashboard() {
   const [selectedEventTab, setSelectedEventTab] = useState('All Events'); // eventId
   // const [events, setEvents] = useState<Event[]>(guestListData.events);
   const [events, setEvents] = useState<Event[]>();
+  const [guests, setGuests] = useState<Guest[]>();
   console.log('events', events);
 
   const { data: guestListData, isLoading: isFetchingGuestListData } =
     api.guestList.getAllByUserId.useQuery();
 
   useEffect(() => {
-    setEvents(guestListData?.events);
-  }, [guestListData?.events]);
+    setEvents(guestListData?.events ?? []);
+    setGuests(guestListData?.guests ?? []);
+  }, [guestListData]);
 
   useEffect(() => {
     if (showGuestForm || showEventForm) {
@@ -38,7 +40,7 @@ export default function Dashboard() {
   }, [showGuestForm, showEventForm]);
 
   if (isFetchingGuestListData) return <LoadingPage />;
-  if (!guestListData || !events) return <div>404</div>;
+  if (!guestListData || !events || !guests) return <div>404</div>;
 
   console.log(guestListData);
 
@@ -46,7 +48,11 @@ export default function Dashboard() {
     <Layout>
       <main className=''>
         {showGuestForm && (
-          <AddGuestForm setShowGuestForm={setShowGuestForm} events={events} />
+          <AddGuestForm
+            setShowGuestForm={setShowGuestForm}
+            events={events}
+            setGuests={setGuests}
+          />
         )}
         {showEventForm && (
           <AddEventForm
@@ -61,7 +67,7 @@ export default function Dashboard() {
         {guestListData?.guests.length > 0 ? (
           <GuestsView
             events={events}
-            guests={guestListData.guests}
+            guests={guests}
             setShowGuestForm={setShowGuestForm}
           />
         ) : (

@@ -12,14 +12,17 @@ export default function GuestTable({ events, guests }: GuestTableProps) {
       <div
         className={`guest-table grid gap-12 border-b py-6 font-extralight`}
         style={{
-          gridTemplateColumns: `40px 200px 100px repeat(${guests.length}, 175px) 1fr`,
+          gridTemplateColumns: `40px 200px 100px repeat(${events.length}, 175px) 1fr`,
         }}
       >
-        <input
-          className={`accent-${sharedStyles.primaryColor}`}
-          type='checkbox'
-          id='check-all'
-        ></input>
+        <div>
+          <input
+            style={{ accentColor: sharedStyles.primaryColorHex }}
+            type='checkbox'
+            id='check-all'
+            className='h-7 w-7'
+          />
+        </div>
         <h5>Name</h5>
         <h5>Contact</h5>
         {events?.map((event) => {
@@ -35,14 +38,17 @@ export default function GuestTable({ events, guests }: GuestTableProps) {
               key={guest.id}
               className={`guest-table grid gap-12 border-b py-4`}
               style={{
-                gridTemplateColumns: `40px 200px 100px repeat(${guests.length}, 175px) 1fr`,
+                gridTemplateColumns: `40px 200px 100px repeat(${events.length}, 175px) 1fr`,
               }}
             >
-              <input
-                className={`accent-${sharedStyles.primaryColor}`}
-                type='checkbox'
-                id={`check-guest-${guest.id}`}
-              ></input>
+              <div>
+                <input
+                  className='h-7 w-7'
+                  style={{ accentColor: sharedStyles.primaryColorHex }}
+                  type='checkbox'
+                  id={`check-guest-${guest.id}`}
+                />
+              </div>
               <h3>{`${guest.firstName} ${guest.lastName}`}</h3>
               <div>
                 <i>HO</i>
