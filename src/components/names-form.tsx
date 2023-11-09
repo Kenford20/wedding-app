@@ -50,25 +50,25 @@ export default function NamesForm() {
       <h1 className='text-3xl'>Welcome ya love birds! Enter your names</h1>
       <input
         placeholder='First name'
-        className='rounded-md border-2 border-slate-400 p-4'
+        className='w-64 rounded-md border-2 border-slate-400 p-4'
         value={nameData.firstName}
         onChange={(e) => handleOnChange('firstName', e.target.value)}
       />
       <input
         placeholder='Last name'
-        className='rounded-md border-2 border-slate-400 p-4'
+        className='w-64 rounded-md border-2 border-slate-400 p-4'
         value={nameData.lastName}
         onChange={(e) => handleOnChange('lastName', e.target.value)}
       />
       <input
         placeholder="Partner's first name"
-        className='rounded-md border-2 border-slate-400 p-4'
+        className='w-64 rounded-md border-2 border-slate-400 p-4'
         value={nameData.partnerFirstName}
         onChange={(e) => handleOnChange('partnerFirstName', e.target.value)}
       />
       <input
         placeholder="Partner's last name"
-        className='rounded-md border-2 border-slate-400 p-4'
+        className='w-64 rounded-md border-2 border-slate-400 p-4'
         value={nameData.partnerLastName}
         onChange={(e) => handleOnChange('partnerLastName', e.target.value)}
       />
@@ -80,7 +80,7 @@ export default function NamesForm() {
             email: user?.user?.primaryEmailAddress?.emailAddress ?? '',
           })
         }
-        className={`rounded-full bg-${sharedStyles.primaryColor} px-20 py-4 text-white`}
+        className={`rounded-full bg-${sharedStyles.primaryColor} px-16 py-4 text-white`}
       >
         Create our website!
       </button>

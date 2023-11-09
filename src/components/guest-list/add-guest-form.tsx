@@ -78,7 +78,7 @@ export default function AddGuestForm({
 
   return (
     <div
-      className='fixed top-0 flex h-screen w-screen justify-end bg-transparent/[0.5]'
+      className='fixed top-0 flex h-screen w-screen justify-end bg-transparent/[0.5] pb-16'
       ref={formRef}
     >
       {isCreatingGuest && (
@@ -101,13 +101,13 @@ export default function AddGuestForm({
           <div className='flex justify-between gap-3'>
             <input
               className='w-1/2 border p-3'
-              placeholder='First Name'
+              placeholder='First Name*'
               value={guestFormData.firstName}
               onChange={(e) => handleOnChange('firstName', e.target.value)}
             />
             <input
               className='w-1/2 border p-3'
-              placeholder='Last Name'
+              placeholder='Last Name*'
               value={guestFormData.lastName}
               onChange={(e) => handleOnChange('lastName', e.target.value)}
             />
@@ -216,7 +216,10 @@ export default function AddGuestForm({
             style={{ resize: 'none' }}
           />
         </div>
-        <div className='flex gap-3 p-5'>
+        <div
+          className='fixed bottom-0 flex gap-3 border-t bg-white p-5'
+          style={{ width: 'inherit' }}
+        >
           <button
             onClick={() => setShowGuestForm(false)}
             className={`${sharedStyles.secondaryButton({
