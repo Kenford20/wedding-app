@@ -5,6 +5,7 @@ import {
   privateProcedure,
   publicProcedure,
 } from '~/server/api/trpc';
+import { type User } from '~/types/schema';
 import { formatDateNumber } from '../utils';
 
 export const websitesRouter = createTRPCRouter({
@@ -100,8 +101,6 @@ export const websitesRouter = createTRPCRouter({
   fetchWeddingData: publicProcedure
     .input(z.object({ subUrl: z.string() }))
     .query(async ({ ctx, input }) => {
-      if (!ctx.userId) return;
-
       const currentWebsite = await ctx.prisma.website.findFirst({
         where: {
           subUrl: input.subUrl,
@@ -115,14 +114,7 @@ export const websitesRouter = createTRPCRouter({
         });
       }
 
-      type TweddingUser = {
-        groomFirstName: string;
-        groomLastName: string;
-        brideFirstName: string;
-        brideLastName: string;
-      };
-
-      const weddingUser: TweddingUser | null = await ctx.prisma.user.findFirst({
+      const weddingUser: User | null = await ctx.prisma.user.findFirst({
         where: {
           id: currentWebsite.userId,
         },
@@ -137,7 +129,7 @@ export const websitesRouter = createTRPCRouter({
 
       const events = await ctx.prisma.event.findMany({
         where: {
-          userId: ctx.userId,
+          userId: currentWebsite.userId,
         },
       });
 
