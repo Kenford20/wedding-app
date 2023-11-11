@@ -9,6 +9,7 @@ import Layout from '../layout';
 import DashboardHeader from '~/components/dashboard/website-header';
 import RegistrySetup from '~/components/dashboard/registry-setup';
 import PageSectionsTemplate from '~/components/dashboard/page-sections-template';
+import { AiOutlinePlusCircle } from 'react-icons/ai';
 
 export default function Dashboard() {
   const [showRegistrySetup, setShowRegistrySetup] = useState(true);
@@ -19,11 +20,12 @@ export default function Dashboard() {
     );
   }, []);
 
-  const { data: currentUsersWebsite, isLoading } =
-    api.website.getByUserId.useQuery();
+  const { data: dashboardData, isLoading: isFetchingDashboardData } =
+    api.guestList.getByUserId.useQuery();
+  console.log(dashboardData);
 
-  if (isLoading) return <LoadingPage />;
-  if (typeof window !== 'undefined' && currentUsersWebsite === null) {
+  if (isFetchingDashboardData) return <LoadingPage />;
+  if (typeof window !== 'undefined' && dashboardData === null) {
     window.location.href = '/';
   }
 
@@ -31,7 +33,9 @@ export default function Dashboard() {
     <Layout>
       <main>
         <section className='border-b py-10'>
-          <DashboardHeader websiteUrl={currentUsersWebsite?.url} />
+          <DashboardHeader
+            websiteUrl={dashboardData?.weddingData?.websiteUrl}
+          />
         </section>
         {showRegistrySetup && (
           <section
@@ -69,26 +73,41 @@ export default function Dashboard() {
             <section className='mb-10'>
               <PageSectionsTemplate title={'Home'}>
                 <>
-                  <h2>Home</h2>
-                  <h2>Name1 & Name2</h2>
-                  <i>Icon</i>
-                  <span>WeddingDate</span>
-                  <span>|</span>
-                  <span>daysRemaining!</span>
-                  <i>Icon</i>
-                  <span>
-                    <button>Add your wedding location</button>
-                  </span>
-                  <h3>Events (map through them here)</h3>
-                  <div>
-                    <button>Edit Icon Button</button>
-                    <h2>Rehearsal Dinner</h2>
+                  <div className='px-10'>
+                    <div className='flex cursor-pointer items-center justify-center border py-16 transition-colors duration-300 ease-in-out hover:bg-gray-100'>
+                      <div className='flex'>
+                        <AiOutlinePlusCircle
+                          size={25}
+                          color={sharedStyles.primaryColorHex}
+                        />
+                        <p className={`pl-3 text-${sharedStyles.primaryColor}`}>
+                          Add a Cover Photo
+                        </p>
+                      </div>
+                    </div>
+                    <h2>
+                      {dashboardData?.weddingData?.groomFirstName} &{' '}
+                      {dashboardData?.weddingData?.brideFirstName}
+                    </h2>
                     <i>Icon</i>
-                    <span>eventDate</span>
+                    <span>WeddingDate</span>
+                    <span>|</span>
+                    <span>daysRemaining!</span>
                     <i>Icon</i>
-                    <span>eventTime</span>
-                    <i>Icon</i>
-                    <span>eventVenue</span>
+                    <span>
+                      <button>Add your wedding location</button>
+                    </span>
+                    <h3>Events (map through them here)</h3>
+                    <div>
+                      <button>Edit Icon Button</button>
+                      <h2>Rehearsal Dinner</h2>
+                      <i>Icon</i>
+                      <span>eventDate</span>
+                      <i>Icon</i>
+                      <span>eventTime</span>
+                      <i>Icon</i>
+                      <span>eventVenue</span>
+                    </div>
                   </div>
                 </>
               </PageSectionsTemplate>

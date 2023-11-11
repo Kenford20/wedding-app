@@ -32,4 +32,14 @@ type Guest = {
   rsvps?: Rsvp[];
 };
 
-export { type Event, type Rsvp, type Guest };
+type User = {
+  id: string;
+  websiteUrl: string;
+  email: string;
+  groomFirstName: string;
+  groomLastName: string;
+  brideFirstName: string;
+  brideLastName: string;
+};
+
+export { type Event, type Rsvp, type Guest, type User };

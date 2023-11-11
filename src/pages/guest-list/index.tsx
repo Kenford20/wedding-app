@@ -24,7 +24,7 @@ export default function Dashboard() {
   console.log('events', events);
 
   const { data: guestListData, isLoading: isFetchingGuestListData } =
-    api.guestList.getAllByUserId.useQuery();
+    api.guestList.getByUserId.useQuery();
 
   useEffect(() => {
     setEvents(guestListData?.events ?? []);
