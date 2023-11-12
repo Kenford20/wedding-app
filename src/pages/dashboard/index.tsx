@@ -9,14 +9,7 @@ import Layout from '../layout';
 import DashboardHeader from '~/components/dashboard/website-header';
 import RegistrySetup from '~/components/dashboard/registry-setup';
 import PageSectionsTemplate from '~/components/dashboard/page-sections-template';
-import {
-  AiOutlineCalendar,
-  AiOutlineClockCircle,
-  AiOutlinePlusCircle,
-} from 'react-icons/ai';
-import { CiLocationOn } from 'react-icons/ci';
-import { BsPencil } from 'react-icons/bs';
-import { TfiNewWindow } from 'react-icons/tfi';
+import HomeContent from '~/components/dashboard/home-content';
 
 export default function Dashboard() {
   const [showRegistrySetup, setShowRegistrySetup] = useState(true);
@@ -80,84 +73,7 @@ export default function Dashboard() {
             </div>
             <section className='mb-10'>
               <PageSectionsTemplate title={'Home'}>
-                <>
-                  <div className='px-10'>
-                    <div className='flex cursor-pointer items-center justify-center border py-16 transition-colors duration-300 ease-in-out hover:bg-gray-100'>
-                      <div className='flex'>
-                        <AiOutlinePlusCircle
-                          size={25}
-                          color={sharedStyles.primaryColorHex}
-                        />
-                        <p className={`pl-3 text-${sharedStyles.primaryColor}`}>
-                          Add a Cover Photo
-                        </p>
-                      </div>
-                    </div>
-                    <h2>
-                      {dashboardData?.weddingData?.groomFirstName} &{' '}
-                      {dashboardData?.weddingData?.brideFirstName}
-                    </h2>
-                    <AiOutlineCalendar />
-                    <span>WeddingDate</span>
-                    <span>|</span>
-                    <span>daysRemaining!</span>
-                    <CiLocationOn />
-                    <span>
-                      <button>Add your wedding location</button>
-                    </span>
-                    <h2 className='text-xs'>Events</h2>
-                    {dashboardData?.events?.map((event) => {
-                      return (
-                        <div key={event.id}>
-                          <div>
-                            <h3>{event.name}</h3>
-                            <BsPencil />
-                            <button>Edit Icon Button</button>
-                          </div>
-                          <div>
-                            <div>
-                              <AiOutlineCalendar />
-                              {!!event.date ? (
-                                <p>{event.date.toString()}</p>
-                              ) : (
-                                <button className='underline'>Add date</button>
-                              )}
-                            </div>
-                            <div>
-                              <AiOutlineClockCircle />
-                              {!!event.startTime ? (
-                                <p>{event.startTime.toString()}</p>
-                              ) : (
-                                <button className='underline'>Add time</button>
-                              )}
-                            </div>
-                            <div>
-                              <CiLocationOn />
-                              {!!event.venue ? (
-                                <p>{event.venue}</p>
-                              ) : (
-                                <div>
-                                  <button className='underline'>
-                                    Add venue
-                                  </button>
-                                  <span
-                                    className={sharedStyles.verticalDivider}
-                                  >
-                                    |
-                                  </span>
-                                  <button className='underline'>
-                                    Browse venues
-                                  </button>
-                                  <TfiNewWindow />
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </>
+                <HomeContent dashboardData={dashboardData} />
               </PageSectionsTemplate>
             </section>
             <section className='mb-10'>

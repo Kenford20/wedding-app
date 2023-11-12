@@ -1,4 +1,4 @@
-const desktopPaddingSides = 'px-16';
+const desktopPaddingSides = 'px-28';
 const verticalDivider = 'px-3 text-neutral-300';
 const primaryColor = 'pink-400';
 const primaryColorHex = '#f472b6';

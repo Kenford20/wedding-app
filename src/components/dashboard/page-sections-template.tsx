@@ -25,26 +25,24 @@ export default function PageSectionsTemplate({
           <Link href='/dashboard/preview'>
             <button className='text-pink-400'>Preview</button>
           </Link>
-          <span className={sharedStyles.verticalDivider}>|</span>
-          <BsThreeDotsVertical size={23} />
+          {title !== 'Home' && (
+            <>
+              <span className={sharedStyles.verticalDivider}>|</span>
+              <BsThreeDotsVertical size={23} />
+            </>
+          )}
         </div>
       </div>
-      {children ?? (
-        <>
-          <div className='border-t'></div>
-          <div className='p-5'>
-            <div className='flex cursor-pointer'>
-              <AiOutlinePlusCircle
-                size={25}
-                color={sharedStyles.primaryColorHex}
-              />
-              <p className={`pl-3 text-${sharedStyles.primaryColor}`}>
-                Add More to {title}
-              </p>
-            </div>
-          </div>
-        </>
-      )}
+      {children}
+      <div className='border-t'></div>
+      <div className='p-5'>
+        <div className='flex cursor-pointer'>
+          <AiOutlinePlusCircle size={25} color={sharedStyles.primaryColorHex} />
+          <p className={`pl-3 text-${sharedStyles.primaryColor}`}>
+            Add More to {title}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

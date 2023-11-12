@@ -58,7 +58,6 @@ export const guestListRouter = createTRPCRouter({
         numberFormat: formatDateNumber(weddingDate) ?? '10.30.2024',
       },
       daysRemaining: 100,
-      events,
     };
 
     type Rsvp = {

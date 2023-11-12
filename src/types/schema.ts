@@ -42,4 +42,19 @@ type User = {
   brideLastName: string;
 };
 
-export { type Event, type Rsvp, type Guest, type User };
+type WeddingDate = {
+  standardFormat: string;
+  numberFormat: string;
+};
+
+type WeddingData = {
+  groomFirstName: string;
+  groomLastName: string;
+  brideFirstName: string;
+  brideLastName: string;
+  daysRemaining: number;
+  websiteUrl: string;
+  date: WeddingDate;
+};
+
+export { type Event, type Rsvp, type Guest, type User, type WeddingData };
