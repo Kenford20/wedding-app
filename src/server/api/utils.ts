@@ -11,4 +11,37 @@ function formatDateNumber(date: Date | null | undefined) {
   return [month, day, year].join('.');
 }
 
-export { formatDateNumber };
+function convertDate(date: Date | null) {
+  if (!date) return date;
+  const day = date.getDay();
+  const month = date.getMonth();
+  const datee = date.getDate();
+
+  const abbreviatedMonths = [
+    'Jan,',
+    'Feb.',
+    'Mar.',
+    'Apr.',
+    'May',
+    'Jun.',
+    'Jul.',
+    'Aug.',
+    'Sep.',
+    'Oct.',
+    'Nov.',
+    'Dec.',
+  ];
+  const daysOfTheWeek = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+  ];
+
+  return `${daysOfTheWeek[day]}, ${abbreviatedMonths[month]} ${datee + 1}`;
+}
+
+export { formatDateNumber, convertDate };

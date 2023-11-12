@@ -10,17 +10,37 @@ export const eventRouter = createTRPCRouter({
     .input(
       z.object({
         eventName: z.string().nonempty({ message: 'Event name required' }),
+        date: z.string(),
+        startTime: z.string(),
+        endTime: z.string(),
+        venue: z.string(),
+        attire: z.string(),
+        description: z.string(),
       })
     )
     .mutation(async ({ input, ctx }) => {
       const userId = ctx.userId;
 
-      const { eventName: name } = input;
+      const {
+        eventName: name,
+        date,
+        startTime,
+        endTime,
+        venue,
+        attire,
+        description,
+      } = input;
 
       const newEvent = await ctx.prisma.event.create({
         data: {
           name,
           userId,
+          date: new Date(date),
+          startTime,
+          endTime,
+          venue,
+          attire,
+          description,
         },
       });
 

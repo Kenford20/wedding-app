@@ -51,8 +51,8 @@ model Event {
     id          String       @id @default(cuid())
     name        String
     date        DateTime?    @db.Date
-    startTime   DateTime?    @db.Time()
-    endTime     DateTime?    @db.Time()
+    startTime   String?
+    endTime     String?
     venue       String?
     attire      String?
     description String?

@@ -8,6 +8,7 @@ import { BsPencil } from 'react-icons/bs';
 import { TfiNewWindow } from 'react-icons/tfi';
 import { sharedStyles } from '../shared-styles';
 import { type WeddingData, type Event, type Guest } from '~/types/schema';
+import { convertDate } from '~/server/api/utils';
 
 type DashboardData = {
   events: Event[];
@@ -75,7 +76,7 @@ export default function HomeContent({ dashboardData }: HomeContentProps) {
                   <div className='flex gap-2'>
                     <AiOutlineCalendar size={20} />
                     {!!event.date ? (
-                      <p>{event.date.toString()}</p>
+                      <p>{convertDate(event.date)}</p>
                     ) : (
                       <button className='underline'>Add date</button>
                     )}
@@ -93,7 +94,7 @@ export default function HomeContent({ dashboardData }: HomeContentProps) {
                     {!!event.venue ? (
                       <p>{event.venue}</p>
                     ) : (
-                      <div className='flex items-center gap-2'>
+                      <div className='flex gap-2'>
                         <button className='underline'>Add venue</button>
                         <span className='text-neutral-300'>|</span>
                         <button className='underline'>Browse venues</button>
