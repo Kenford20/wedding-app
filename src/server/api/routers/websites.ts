@@ -143,7 +143,13 @@ export const websitesRouter = createTRPCRouter({
         brideFirstName: weddingUser.brideFirstName,
         brideLastName: weddingUser.brideLastName,
         date: {
-          standardFormat: weddingDate ?? 'October 30, 2024',
+          standardFormat:
+            weddingDate?.toLocaleDateString('en-us', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+            }) ?? 'October 30, 2024',
           numberFormat: formatDateNumber(weddingDate) ?? '10.30.2024',
         },
         daysRemaining: 100,
