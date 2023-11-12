@@ -7,6 +7,7 @@ type GuestTableProps = {
 };
 
 export default function GuestTable({ events, guests }: GuestTableProps) {
+  console.log('guest propz', guests);
   return (
     <div className={sharedStyles.desktopPaddingSides}>
       <div
@@ -59,9 +60,9 @@ export default function GuestTable({ events, guests }: GuestTableProps) {
                 return (
                   <div key={event.id}>
                     <select name='guestRSVP' id={`guest-rsvp-${guest.id}`}>
-                      <option value='invited'>Not Invited</option>
-                      <option value='invited'>Invited</option>
-                      <option value='attending'>Attending</option>
+                      <option value='Not Invited'>Not Invited</option>
+                      <option value='Invited'>Invited</option>
+                      <option value='Attending'>Attending</option>
                       <option value='Declined'>Declined</option>
                     </select>
                   </div>

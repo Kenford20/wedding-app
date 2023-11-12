@@ -9,7 +9,14 @@ import Layout from '../layout';
 import DashboardHeader from '~/components/dashboard/website-header';
 import RegistrySetup from '~/components/dashboard/registry-setup';
 import PageSectionsTemplate from '~/components/dashboard/page-sections-template';
-import { AiOutlinePlusCircle } from 'react-icons/ai';
+import {
+  AiOutlineCalendar,
+  AiOutlineClockCircle,
+  AiOutlinePlusCircle,
+} from 'react-icons/ai';
+import { CiLocationOn } from 'react-icons/ci';
+import { BsPencil } from 'react-icons/bs';
+import { TfiNewWindow } from 'react-icons/tfi';
 
 export default function Dashboard() {
   const [showRegistrySetup, setShowRegistrySetup] = useState(true);
@@ -44,8 +51,9 @@ export default function Dashboard() {
             <RegistrySetup setShowRegistrySetup={setShowRegistrySetup} />
           </section>
         )}
-        <br />
-        <div className='grid grid-cols-[4fr_1fr] gap-5 px-16'>
+        <div
+          className={`mt-14 grid grid-cols-[4fr_1fr] gap-5 ${sharedStyles.desktopPaddingSides}`}
+        >
           <section className=''>
             <div className='mb-5 flex justify-between'>
               <h2 className='text-xl font-semibold'>Pages</h2>
@@ -89,25 +97,65 @@ export default function Dashboard() {
                       {dashboardData?.weddingData?.groomFirstName} &{' '}
                       {dashboardData?.weddingData?.brideFirstName}
                     </h2>
-                    <i>Icon</i>
+                    <AiOutlineCalendar />
                     <span>WeddingDate</span>
                     <span>|</span>
                     <span>daysRemaining!</span>
-                    <i>Icon</i>
+                    <CiLocationOn />
                     <span>
                       <button>Add your wedding location</button>
                     </span>
-                    <h3>Events (map through them here)</h3>
-                    <div>
-                      <button>Edit Icon Button</button>
-                      <h2>Rehearsal Dinner</h2>
-                      <i>Icon</i>
-                      <span>eventDate</span>
-                      <i>Icon</i>
-                      <span>eventTime</span>
-                      <i>Icon</i>
-                      <span>eventVenue</span>
-                    </div>
+                    <h2 className='text-xs'>Events</h2>
+                    {dashboardData?.events?.map((event) => {
+                      return (
+                        <div key={event.id}>
+                          <div>
+                            <h3>{event.name}</h3>
+                            <BsPencil />
+                            <button>Edit Icon Button</button>
+                          </div>
+                          <div>
+                            <div>
+                              <AiOutlineCalendar />
+                              {!!event.date ? (
+                                <p>{event.date.toString()}</p>
+                              ) : (
+                                <button className='underline'>Add date</button>
+                              )}
+                            </div>
+                            <div>
+                              <AiOutlineClockCircle />
+                              {!!event.startTime ? (
+                                <p>{event.startTime.toString()}</p>
+                              ) : (
+                                <button className='underline'>Add time</button>
+                              )}
+                            </div>
+                            <div>
+                              <CiLocationOn />
+                              {!!event.venue ? (
+                                <p>{event.venue}</p>
+                              ) : (
+                                <div>
+                                  <button className='underline'>
+                                    Add venue
+                                  </button>
+                                  <span
+                                    className={sharedStyles.verticalDivider}
+                                  >
+                                    |
+                                  </span>
+                                  <button className='underline'>
+                                    Browse venues
+                                  </button>
+                                  <TfiNewWindow />
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </>
               </PageSectionsTemplate>
