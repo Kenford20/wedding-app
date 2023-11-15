@@ -1,3 +1,4 @@
+import { useToggleGuestForm } from '~/contexts/guest-form-context';
 import { type Guest, type Event } from '~/types/schema';
 import { sharedStyles } from '../shared-styles';
 import GuestSearchFilter from './guest-search-filter';
@@ -6,16 +7,12 @@ import GuestTable from './guest-table';
 type GuestsViewProps = {
   events: Event[];
   guests: Guest[];
-  setShowGuestForm: (x: boolean) => void;
 };
 
-export function GuestsView({
-  events,
-  guests,
-  setShowGuestForm,
-}: GuestsViewProps) {
+export function GuestsView({ events, guests }: GuestsViewProps) {
   const numGuests = 5;
   const numEvents = 3;
+  const toggleGuestForm = useToggleGuestForm();
   return (
     <section>
       <div>
@@ -43,7 +40,7 @@ export function GuestsView({
           </button>
           <button
             className={`ml-5 ${sharedStyles.primaryButton()}`}
-            onClick={() => setShowGuestForm(true)}
+            onClick={() => toggleGuestForm()}
           >
             Add Guest
           </button>

@@ -2,23 +2,21 @@
 
 import { useState, useRef } from 'react';
 import { type Dispatch, type SetStateAction } from 'react';
+import { type Event } from '../../types/schema';
 import { api } from '~/utils/api';
 import { LoadingSpinner } from '../loader';
-import { type Event } from '../../types/schema';
 import { sharedStyles } from '../shared-styles';
+import { useToggleEventForm } from '~/contexts/event-form-context';
 
 type AddEventFormProps = {
-  setShowEventForm: (x: boolean) => void;
   setEvents: Dispatch<SetStateAction<Event[] | undefined>>;
 };
 
-export default function AddEventForm({
-  setShowEventForm,
-  setEvents,
-}: AddEventFormProps) {
+export default function AddEventForm({ setEvents }: AddEventFormProps) {
+  const toggleEventForm = useToggleEventForm();
   const { mutate, isLoading: isCreatingEvent } = api.event.create.useMutation({
     onSuccess: (createdEvent) => {
-      setShowEventForm(false);
+      toggleEventForm();
       setEvents((prevEvents) =>
         prevEvents ? [...prevEvents, createdEvent] : [createdEvent]
       );
@@ -63,10 +61,7 @@ export default function AddEventForm({
       <div className='h-full w-[500px] bg-white'>
         <div className='flex justify-between border-b p-5'>
           <h1 className='text-xl font-semibold'>Add Event</h1>
-          <span
-            className='cursor-pointer'
-            onClick={() => setShowEventForm(false)}
-          >
+          <span className='cursor-pointer' onClick={() => toggleEventForm()}>
             X
           </span>
         </div>
@@ -137,7 +132,7 @@ export default function AddEventForm({
               px: 'px-12',
               py: 'py-2',
             })}`}
-            onClick={() => setShowEventForm(false)}
+            onClick={() => toggleEventForm()}
           >
             Cancel
           </button>

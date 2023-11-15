@@ -1,26 +1,24 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { type Dispatch, type SetStateAction } from 'react';
 import { api } from '~/utils/api';
 import { LoadingSpinner } from '../loader';
 import { sharedStyles } from '../shared-styles';
+import { useToggleGuestForm } from '~/contexts/guest-form-context';
+
+import { type Dispatch, type SetStateAction } from 'react';
 import { type Event, type Guest } from '../../types/schema';
 
 type AddGuestFormProps = {
-  setShowGuestForm: (x: boolean) => void;
   events: Event[];
   setGuests: Dispatch<SetStateAction<Guest[] | undefined>>;
 };
 
-export default function AddGuestForm({
-  setShowGuestForm,
-  events,
-  setGuests,
-}: AddGuestFormProps) {
+export default function AddGuestForm({ events, setGuests }: AddGuestFormProps) {
+  const toggleGuestForm = useToggleGuestForm();
   const { mutate, isLoading: isCreatingGuest } = api.guest.create.useMutation({
     onSuccess: (createdGuest) => {
-      setShowGuestForm(false);
+      toggleGuestForm();
       setGuests((prevGuests) =>
         prevGuests ? [...prevGuests, createdGuest] : [createdGuest]
       );
@@ -89,10 +87,7 @@ export default function AddGuestForm({
       <div className='h-fit w-[500px] bg-white'>
         <div className='flex justify-between border-b p-5'>
           <h1 className='text-xl font-semibold'>Add Party</h1>
-          <span
-            className='cursor-pointer'
-            onClick={() => setShowGuestForm(false)}
-          >
+          <span className='cursor-pointer' onClick={() => toggleGuestForm()}>
             X
           </span>
         </div>
@@ -221,7 +216,7 @@ export default function AddGuestForm({
           style={{ width: 'inherit' }}
         >
           <button
-            onClick={() => setShowGuestForm(false)}
+            onClick={() => toggleGuestForm()}
             className={`${sharedStyles.secondaryButton({
               px: 'px-12',
               py: 'py-2',

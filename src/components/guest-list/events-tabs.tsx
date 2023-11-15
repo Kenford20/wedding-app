@@ -1,15 +1,13 @@
 import { sharedStyles } from '../shared-styles';
 import { type Event } from '../../types/schema';
+import { useToggleEventForm } from '~/contexts/event-form-context';
 
 type EventsTabsProps = {
-  setShowEventForm: (x: boolean) => void;
   events: Event[];
 };
 
-export default function EventsTabs({
-  events,
-  setShowEventForm,
-}: EventsTabsProps) {
+export default function EventsTabs({ events }: EventsTabsProps) {
+  const toggleEventForm = useToggleEventForm();
   return (
     <div className='border-b'>
       <ul className={`flex gap-5 ${sharedStyles.desktopPaddingSides}`}>
@@ -28,7 +26,7 @@ export default function EventsTabs({
         })}
         <button
           className={`pb-1 text-sm font-semibold text-${sharedStyles.primaryColor}`}
-          onClick={() => setShowEventForm(true)}
+          onClick={() => toggleEventForm()}
         >
           + New Event
         </button>

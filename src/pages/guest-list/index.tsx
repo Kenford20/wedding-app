@@ -1,4 +1,3 @@
-import { useUser } from '@clerk/nextjs';
 import { useEffect, useState } from 'react';
 import { api } from '~/utils/api';
 import { LoadingPage } from '~/components/loader';
@@ -12,16 +11,15 @@ import EventsTabs from '~/components/guest-list/events-tabs';
 import { NoGuestsView } from '~/components/guest-list/no-guests-view';
 import { GuestsView } from '~/components/guest-list/guests-view';
 import { type Guest, type Event } from '~/types/schema';
+import { useEventForm } from '~/contexts/event-form-context';
+import { useGuestForm } from '~/contexts/guest-form-context';
 
 export default function Dashboard() {
-  const { user } = useUser();
-  const [showGuestForm, setShowGuestForm] = useState<boolean>(false);
-  const [showEventForm, setShowEventForm] = useState<boolean>(false);
+  const isEventFormOpen = useEventForm();
+  const isGuestFormOpen = useGuestForm();
   const [selectedEventTab, setSelectedEventTab] = useState('All Events'); // eventId
-  // const [events, setEvents] = useState<Event[]>(guestListData.events);
   const [events, setEvents] = useState<Event[]>();
   const [guests, setGuests] = useState<Guest[]>();
-  console.log('events', events);
 
   const { data: guestListData, isLoading: isFetchingGuestListData } =
     api.guestList.getByUserId.useQuery();
@@ -32,46 +30,33 @@ export default function Dashboard() {
   }, [guestListData]);
 
   useEffect(() => {
-    if (showGuestForm || showEventForm) {
+    if (isGuestFormOpen || isEventFormOpen) {
       document.body.classList.add('overflow-hidden');
     } else {
       document.body.classList.remove('overflow-hidden');
     }
-  }, [showGuestForm, showEventForm]);
+  }, [isGuestFormOpen, isEventFormOpen]);
 
   if (isFetchingGuestListData) return <LoadingPage />;
   if (!guestListData || !events || !guests) return <div>404</div>;
 
-  console.log(guestListData);
+  console.log('guestListIndex');
 
   return (
     <Layout>
       <main className=''>
-        {showGuestForm && (
-          <AddGuestForm
-            setShowGuestForm={setShowGuestForm}
-            events={events}
-            setGuests={setGuests}
-          />
+        {isGuestFormOpen && (
+          <AddGuestForm events={events} setGuests={setGuests} />
         )}
-        {showEventForm && (
-          <AddEventForm
-            setShowEventForm={setShowEventForm}
-            setEvents={setEvents}
-          />
-        )}
+        {isEventFormOpen && <AddEventForm setEvents={setEvents} />}
         <section>
           <GuestHeader />
         </section>
-        <EventsTabs events={events} setShowEventForm={setShowEventForm} />
+        <EventsTabs events={events} />
         {guests.length > 0 ? (
-          <GuestsView
-            events={events}
-            guests={guests}
-            setShowGuestForm={setShowGuestForm}
-          />
+          <GuestsView events={events} guests={guests} />
         ) : (
-          <NoGuestsView setShowGuestForm={setShowGuestForm} />
+          <NoGuestsView />
         )}
       </main>
     </Layout>

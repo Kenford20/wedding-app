@@ -1,11 +1,9 @@
+import { useToggleGuestForm } from '~/contexts/guest-form-context';
 import { sharedStyles } from '../shared-styles';
 import ExampleTable from './example-table';
 
-type NoGuestsViewProps = {
-  setShowGuestForm: (x: boolean) => void;
-};
-
-export function NoGuestsView({ setShowGuestForm }: NoGuestsViewProps) {
+export function NoGuestsView() {
+  const toggleGuestForm = useToggleGuestForm();
   return (
     <section className={sharedStyles.desktopPaddingSides}>
       <div className='my-10 w-[500px] rounded-md p-8 shadow-[0_3px_10px_rgb(0,0,0,0.2)]'>
@@ -24,7 +22,7 @@ export function NoGuestsView({ setShowGuestForm }: NoGuestsViewProps) {
           </button>
           <button
             className={sharedStyles.primaryButton({ px: 'px-12', py: 'py-2' })}
-            onClick={() => setShowGuestForm(true)}
+            onClick={() => toggleGuestForm()}
           >
             Add Guest
           </button>
