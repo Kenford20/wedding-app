@@ -1,15 +1,22 @@
+import { CiLocationOn } from 'react-icons/ci';
+import { BsPencil } from 'react-icons/bs';
+import { TfiNewWindow } from 'react-icons/tfi';
+import { sharedStyles } from '../shared-styles';
+import { convertDate } from '~/server/api/utils';
+import { useToggleEventForm } from '~/contexts/event-form-context';
 import {
   AiOutlineCalendar,
   AiOutlineClockCircle,
   AiOutlinePlusCircle,
 } from 'react-icons/ai';
-import { CiLocationOn } from 'react-icons/ci';
-import { BsPencil } from 'react-icons/bs';
-import { TfiNewWindow } from 'react-icons/tfi';
-import { sharedStyles } from '../shared-styles';
-import { type WeddingData, type Event, type Guest } from '~/types/schema';
-import { convertDate } from '~/server/api/utils';
-import { useToggleEventForm } from '~/contexts/event-form-context';
+
+import { type Dispatch, type SetStateAction } from 'react';
+import {
+  type WeddingData,
+  type Event,
+  type Guest,
+  type EventFormData,
+} from '~/types/schema';
 
 type DashboardData = {
   events: Event[];
@@ -22,13 +29,35 @@ type DashboardData = {
 type HomeContentProps = {
   dashboardData: DashboardData;
   events: Event[];
+  setPrefillEvent: Dispatch<SetStateAction<EventFormData | undefined>>;
 };
 
 export default function HomeContent({
   dashboardData,
   events,
+  setPrefillEvent,
 }: HomeContentProps) {
   const toggleEventForm = useToggleEventForm();
+
+  const handleEditEvent = (event: Event) => {
+    const standardDate = event?.date?.toLocaleDateString('en-us', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+
+    setPrefillEvent({
+      eventName: event.name,
+      date: standardDate ?? '',
+      startTime: event.startTime ?? '',
+      endTime: event.endTime ?? '',
+      venue: event.venue ?? '',
+      attire: event.attire ?? '',
+      description: event.description ?? '',
+    });
+    toggleEventForm();
+  };
+
   return (
     <div className=''>
       <div className='px-10'>
@@ -74,7 +103,10 @@ export default function HomeContent({
           {events.map((event) => {
             return (
               <div key={event.id} className='relative border p-6'>
-                <button className='absolute right-5 top-5'>
+                <button
+                  className='absolute right-5 top-5'
+                  onClick={() => handleEditEvent(event)}
+                >
                   <BsPencil size={24} color={sharedStyles.primaryColorHex} />
                 </button>
                 <h3 className='mb-4 text-lg font-semibold'>{event.name}</h3>

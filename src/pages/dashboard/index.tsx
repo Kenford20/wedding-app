@@ -8,18 +8,19 @@ import DashboardHeader from '~/components/dashboard/website-header';
 import RegistrySetup from '~/components/dashboard/registry-setup';
 import PageSectionsTemplate from '~/components/dashboard/page-sections-template';
 import HomeContent from '~/components/dashboard/home-content';
-import AddEventForm from '~/components/guest-list/add-event-form';
+import EventForm from '~/components/forms/event-form';
 import OopsPage from '~/components/oops';
-
-import { type Event } from '~/types/schema';
 import RsvpContent from '~/components/dashboard/rsvp-content';
 import DashboardControls from '~/components/dashboard/controls';
 import SidebarPanel from '~/components/dashboard/sidebar-panel';
+
+import { type EventFormData, type Event } from '~/types/schema';
 
 export default function Dashboard() {
   const isEventFormOpen = useEventForm();
   const [showRegistrySetup, setShowRegistrySetup] = useState(true);
   const [events, setEvents] = useState<Event[]>();
+  const [prefillEvent, setPrefillEvent] = useState<EventFormData | undefined>();
 
   useEffect(() => {
     setShowRegistrySetup(
@@ -44,7 +45,9 @@ export default function Dashboard() {
   return (
     <Layout>
       <main>
-        {isEventFormOpen && <AddEventForm setEvents={setEvents} />}
+        {isEventFormOpen && (
+          <EventForm setEvents={setEvents} prefillFormData={prefillEvent} />
+        )}
         <DashboardHeader websiteUrl={dashboardData?.weddingData?.websiteUrl} />
         {showRegistrySetup && (
           <RegistrySetup setShowRegistrySetup={setShowRegistrySetup} />
@@ -58,7 +61,11 @@ export default function Dashboard() {
               <DashboardControls />
             </div>
             <PageSectionsTemplate title={'Home'}>
-              <HomeContent dashboardData={dashboardData} events={events} />
+              <HomeContent
+                dashboardData={dashboardData}
+                events={events}
+                setPrefillEvent={setPrefillEvent}
+              />
             </PageSectionsTemplate>
             <PageSectionsTemplate title={'Our Story'} />
             <PageSectionsTemplate title={'Wedding Party'} />

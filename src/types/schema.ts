@@ -57,4 +57,21 @@ type WeddingData = {
   date: WeddingDate;
 };
 
-export { type Event, type Rsvp, type Guest, type User, type WeddingData };
+type EventFormData = {
+  eventName: string;
+  date: string;
+  startTime: string;
+  endTime: string;
+  venue: string;
+  attire: string;
+  description: string;
+};
+
+export {
+  type Event,
+  type Rsvp,
+  type Guest,
+  type User,
+  type WeddingData,
+  type EventFormData,
+};

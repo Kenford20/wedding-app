@@ -1,18 +1,33 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { type Dispatch, type SetStateAction } from 'react';
-import { type Event } from '../../types/schema';
 import { api } from '~/utils/api';
 import { LoadingSpinner } from '../loader';
 import { sharedStyles } from '../shared-styles';
 import { useToggleEventForm } from '~/contexts/event-form-context';
 
-type AddEventFormProps = {
+import { type Dispatch, type SetStateAction } from 'react';
+import { type EventFormData, type Event } from '../../types/schema';
+
+type EventFormProps = {
   setEvents: Dispatch<SetStateAction<Event[] | undefined>>;
+  prefillFormData: EventFormData | undefined;
 };
 
-export default function AddEventForm({ setEvents }: AddEventFormProps) {
+const defaultFormData = {
+  eventName: '',
+  date: '',
+  startTime: '',
+  endTime: '',
+  venue: '',
+  attire: '',
+  description: '',
+};
+
+export default function EventForm({
+  setEvents,
+  prefillFormData,
+}: EventFormProps) {
   const toggleEventForm = useToggleEventForm();
   const { mutate, isLoading: isCreatingEvent } = api.event.create.useMutation({
     onSuccess: (createdEvent) => {
@@ -28,15 +43,9 @@ export default function AddEventForm({ setEvents }: AddEventFormProps) {
     },
   });
 
-  const [eventFormData, setEventFormData] = useState({
-    eventName: '',
-    date: '',
-    startTime: '',
-    endTime: '',
-    venue: '',
-    attire: '',
-    description: '',
-  });
+  const [eventFormData, setEventFormData] = useState(
+    prefillFormData ?? defaultFormData
+  );
   const formRef = useRef<HTMLInputElement>(null);
 
   const handleOnChange = (field: string, input: string) => {
