@@ -1,11 +1,12 @@
 import { useUser, SignOutButton } from '@clerk/nextjs';
 import Link from 'next/link';
+import { sharedStyles } from './shared-styles';
 
 export default function Navbar() {
   const { user } = useUser();
 
   return (
-    <div className='border-b px-20 pt-5'>
+    <div className={`border-b pt-5 ${sharedStyles.desktopPaddingSides}`}>
       <h1 className='pb-4 text-3xl'>{user?.firstName ?? 'wee'}</h1>
       <ul className='flex justify-between'>
         <div className='flex gap-7'>

@@ -4,15 +4,22 @@ import { sharedStyles } from '~/components/shared-styles';
 import { LoadingPage } from '~/components/loader';
 import { BiCollapseVertical } from 'react-icons/bi';
 import { HiOutlineArrowsUpDown } from 'react-icons/hi2';
+import { useEventForm } from '~/contexts/event-form-context';
 import Link from 'next/link';
 import Layout from '../layout';
 import DashboardHeader from '~/components/dashboard/website-header';
 import RegistrySetup from '~/components/dashboard/registry-setup';
 import PageSectionsTemplate from '~/components/dashboard/page-sections-template';
 import HomeContent from '~/components/dashboard/home-content';
+import AddEventForm from '~/components/guest-list/add-event-form';
+import OopsPage from '~/components/oops';
+
+import { type Event } from '~/types/schema';
 
 export default function Dashboard() {
+  const isEventFormOpen = useEventForm();
   const [showRegistrySetup, setShowRegistrySetup] = useState(true);
+  const [events, setEvents] = useState<Event[]>();
 
   useEffect(() => {
     setShowRegistrySetup(
@@ -24,19 +31,21 @@ export default function Dashboard() {
     api.guestList.getByUserId.useQuery();
   console.log(dashboardData);
 
+  useEffect(() => {
+    setEvents(dashboardData?.events ?? []);
+  }, [dashboardData]);
+
   if (isFetchingDashboardData) return <LoadingPage />;
   if (typeof window !== 'undefined' && dashboardData === null) {
     window.location.href = '/';
   }
+  if (!dashboardData || !events) return <OopsPage />;
 
   return (
     <Layout>
       <main>
-        <section className='border-b py-10'>
-          <DashboardHeader
-            websiteUrl={dashboardData?.weddingData?.websiteUrl}
-          />
-        </section>
+        {isEventFormOpen && <AddEventForm setEvents={setEvents} />}
+        <DashboardHeader websiteUrl={dashboardData?.weddingData?.websiteUrl} />
         {showRegistrySetup && (
           <section
             className={`${sharedStyles.desktopPaddingSides} border-b py-10`}
@@ -73,7 +82,7 @@ export default function Dashboard() {
             </div>
             <section className='mb-10'>
               <PageSectionsTemplate title={'Home'}>
-                <HomeContent dashboardData={dashboardData} />
+                <HomeContent dashboardData={dashboardData} events={events} />
               </PageSectionsTemplate>
             </section>
             <section className='mb-10'>

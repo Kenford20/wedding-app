@@ -51,7 +51,7 @@ export default function AddEventForm({ setEvents }: AddEventFormProps) {
   return (
     <div
       ref={formRef}
-      className='fixed top-0 flex h-screen w-screen justify-end bg-transparent/[0.5]'
+      className='fixed top-0 z-10 flex h-screen w-screen justify-end bg-transparent/[0.5]'
     >
       {isCreatingEvent && (
         <div className='flex items-center justify-center'>

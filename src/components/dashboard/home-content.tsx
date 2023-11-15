@@ -9,6 +9,7 @@ import { TfiNewWindow } from 'react-icons/tfi';
 import { sharedStyles } from '../shared-styles';
 import { type WeddingData, type Event, type Guest } from '~/types/schema';
 import { convertDate } from '~/server/api/utils';
+import { useToggleEventForm } from '~/contexts/event-form-context';
 
 type DashboardData = {
   events: Event[];
@@ -20,9 +21,14 @@ type DashboardData = {
 
 type HomeContentProps = {
   dashboardData: DashboardData;
+  events: Event[];
 };
 
-export default function HomeContent({ dashboardData }: HomeContentProps) {
+export default function HomeContent({
+  dashboardData,
+  events,
+}: HomeContentProps) {
+  const toggleEventForm = useToggleEventForm();
   return (
     <div className=''>
       <div className='px-10'>
@@ -65,7 +71,7 @@ export default function HomeContent({ dashboardData }: HomeContentProps) {
       <div className='px-10 py-5'>
         <h2 className='mb-3 text-sm'>Events</h2>
         <div className='grid grid-cols-3 gap-5'>
-          {dashboardData?.events?.map((event) => {
+          {events.map((event) => {
             return (
               <div key={event.id} className='relative border p-6'>
                 <button className='absolute right-5 top-5'>
@@ -106,8 +112,10 @@ export default function HomeContent({ dashboardData }: HomeContentProps) {
               </div>
             );
           })}
-          {/* TODO: useContext here to trigger add event form */}
-          <div className='flex items-center justify-center border'>
+          <div
+            onClick={() => toggleEventForm()}
+            className='flex cursor-pointer items-center justify-center border transition-colors duration-300 ease-in-out hover:bg-gray-100'
+          >
             <div className='flex'>
               <AiOutlinePlusCircle
                 size={25}

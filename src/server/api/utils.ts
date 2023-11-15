@@ -18,7 +18,7 @@ function convertDate(date: Date | null) {
   const datee = date.getDate();
 
   const abbreviatedMonths = [
-    'Jan,',
+    'Jan.',
     'Feb.',
     'Mar.',
     'Apr.',
