@@ -2,7 +2,7 @@ import { useToggleGuestForm } from '~/contexts/guest-form-context';
 import { sharedStyles } from '../shared-styles';
 import ExampleTable from './example-table';
 
-export function NoGuestsView() {
+export default function NoGuestsView() {
   const toggleGuestForm = useToggleGuestForm();
   return (
     <section className={sharedStyles.desktopPaddingSides}>

@@ -21,7 +21,6 @@ export const EventFormProvider = ({ children }: EventFormProviderProps) => {
   const [isEventFormOpen, setIsEventFormOpen] = useState<boolean>(false);
 
   const toggleEventForm = () => {
-    console.log('modalz', isEventFormOpen);
     setIsEventFormOpen((prevState) => !prevState);
   };
 

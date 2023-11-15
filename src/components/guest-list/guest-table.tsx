@@ -7,7 +7,6 @@ type GuestTableProps = {
 };
 
 export default function GuestTable({ events, guests }: GuestTableProps) {
-  console.log('guest propz', guests);
   return (
     <div className={sharedStyles.desktopPaddingSides}>
       <div

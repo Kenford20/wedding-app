@@ -22,7 +22,6 @@ export const GuestFormProvider = ({ children }: GuestFormProviderProps) => {
   const [isGuestFormOpen, setIsGuestFormOpen] = useState<boolean>(false);
 
   const toggleGuestForm = () => {
-    console.log('guestz', isGuestFormOpen);
     setIsGuestFormOpen((prevState) => !prevState);
   };
 

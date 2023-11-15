@@ -9,7 +9,7 @@ type GuestsViewProps = {
   guests: Guest[];
 };
 
-export function GuestsView({ events, guests }: GuestsViewProps) {
+export default function GuestsView({ events, guests }: GuestsViewProps) {
   const numGuests = 5;
   const numEvents = 3;
   const toggleGuestForm = useToggleGuestForm();
