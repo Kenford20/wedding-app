@@ -48,12 +48,13 @@ export default function HomeContent({
 
     setPrefillEvent({
       eventName: event.name,
-      date: standardDate ?? '',
-      startTime: event.startTime ?? '',
-      endTime: event.endTime ?? '',
-      venue: event.venue ?? '',
-      attire: event.attire ?? '',
-      description: event.description ?? '',
+      date: standardDate ?? undefined,
+      startTime: event.startTime ?? undefined,
+      endTime: event.endTime ?? undefined,
+      venue: event.venue ?? undefined,
+      attire: event.attire ?? undefined,
+      description: event.description ?? undefined,
+      eventId: event.id,
     });
     toggleEventForm();
   };
@@ -99,7 +100,7 @@ export default function HomeContent({
       </div>
       <div className='px-10 py-5'>
         <h2 className='mb-3 text-sm'>Events</h2>
-        <div className='grid grid-cols-3 gap-5'>
+        <div className='grid auto-rows-[minmax(min-content,150px)] grid-cols-3 gap-5'>
           {events.map((event) => {
             return (
               <div key={event.id} className='relative border p-6'>

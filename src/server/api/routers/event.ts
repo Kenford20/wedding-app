@@ -10,12 +10,12 @@ export const eventRouter = createTRPCRouter({
     .input(
       z.object({
         eventName: z.string().nonempty({ message: 'Event name required' }),
-        date: z.string(),
-        startTime: z.string(),
-        endTime: z.string(),
-        venue: z.string(),
-        attire: z.string(),
-        description: z.string(),
+        date: z.string().optional(),
+        startTime: z.string().optional(),
+        endTime: z.string().optional(),
+        venue: z.string().optional(),
+        attire: z.string().optional(),
+        description: z.string().optional(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -35,7 +35,7 @@ export const eventRouter = createTRPCRouter({
         data: {
           name,
           userId,
-          date: new Date(date),
+          date: date ? new Date(date) : undefined,
           startTime,
           endTime,
           venue,
@@ -57,4 +57,36 @@ export const eventRouter = createTRPCRouter({
     console.log('eventz2', events);
     return events;
   }),
+
+  update: privateProcedure
+    .input(
+      z.object({
+        eventName: z.string().nonempty({ message: 'Event name required' }),
+        date: z.string().optional(),
+        startTime: z.string().optional(),
+        endTime: z.string().optional(),
+        venue: z.string().optional(),
+        attire: z.string().optional(),
+        description: z.string().optional(),
+        eventId: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const updatedEvent = await ctx.prisma.event.update({
+        where: {
+          id: input.eventId,
+        },
+        data: {
+          name: input.eventName,
+          date: input.date ? new Date(input.date) : undefined,
+          startTime: input.startTime,
+          endTime: input.endTime,
+          venue: input.venue,
+          attire: input.attire,
+          description: input.description,
+        },
+      });
+      console.log('ewe', updatedEvent);
+      return updatedEvent;
+    }),
 });

@@ -59,12 +59,13 @@ type WeddingData = {
 
 type EventFormData = {
   eventName: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  venue: string;
-  attire: string;
-  description: string;
+  date: string | undefined;
+  startTime: string | undefined;
+  endTime: string | undefined;
+  venue: string | undefined;
+  attire: string | undefined;
+  description: string | undefined;
+  eventId: string;
 };
 
 export {
