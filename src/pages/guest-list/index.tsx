@@ -33,14 +33,6 @@ export default function Dashboard() {
     setGuests(guestListData?.guests ?? []);
   }, [guestListData]);
 
-  useEffect(() => {
-    if (isGuestFormOpen || isEventFormOpen) {
-      document.body.classList.add('overflow-hidden');
-    } else {
-      document.body.classList.remove('overflow-hidden');
-    }
-  }, [isGuestFormOpen, isEventFormOpen]);
-
   if (isFetchingGuestListData) return <LoadingPage />;
   if (!guestListData || !events || !guests) return <OopsPage />;
 

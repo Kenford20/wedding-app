@@ -8,6 +8,7 @@ import { useToggleGuestForm } from '~/contexts/guest-form-context';
 
 import { type Dispatch, type SetStateAction } from 'react';
 import { type Event, type Guest } from '../../types/schema';
+import { useDisablePageScroll } from '../helpers';
 
 type AddGuestFormProps = {
   events: Event[];
@@ -48,9 +49,7 @@ export default function AddGuestForm({ events, setGuests }: AddGuestFormProps) {
   });
   const formRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    formRef?.current?.classList.add('overflow-scroll');
-  }, []);
+  useDisablePageScroll();
 
   const handleOnChange = (field: string, input: string) => {
     setGuestFormData((prev) => {
@@ -76,7 +75,7 @@ export default function AddGuestForm({ events, setGuests }: AddGuestFormProps) {
 
   return (
     <div
-      className='fixed top-0 flex h-screen w-screen justify-end bg-transparent/[0.5] pb-16'
+      className='fixed top-0 flex h-screen w-screen justify-end overflow-y-scroll bg-transparent/[0.5] pb-16'
       ref={formRef}
     >
       {isCreatingGuest && (

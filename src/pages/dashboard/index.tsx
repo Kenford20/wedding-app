@@ -30,7 +30,6 @@ export default function Dashboard() {
 
   const { data: dashboardData, isLoading: isFetchingDashboardData } =
     api.guestList.getByUserId.useQuery();
-  console.log(dashboardData);
 
   useEffect(() => {
     setEvents(dashboardData?.events ?? []);
