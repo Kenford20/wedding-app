@@ -53,10 +53,10 @@ export default function Dashboard() {
           <RegistrySetup setShowRegistrySetup={setShowRegistrySetup} />
         )}
         <div
-          className={`mt-14 grid grid-cols-[3.25fr_1fr] gap-7 ${sharedStyles.desktopPaddingSides}`}
+          className={`mt-14 grid grid-cols-[3.25fr_300px] gap-7 ${sharedStyles.desktopPaddingSides}`}
         >
           <div>
-            <div className='mb-5 flex justify-between'>
+            <div className='flex justify-between pb-8'>
               <h2 className='text-xl font-semibold'>Pages</h2>
               <DashboardControls />
             </div>

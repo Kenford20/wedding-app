@@ -10,7 +10,7 @@ export default function DashboardHeader({ websiteUrl }: DashboardHeaderProps) {
   return (
     <section className='border-b py-10'>
       <div
-        className={`flex justify-between ${sharedStyles.desktopPaddingSides}`}
+        className={`flex items-center justify-between ${sharedStyles.desktopPaddingSides}`}
       >
         <div className=''>
           <h1 className='text-3xl font-bold'>Your Website</h1>

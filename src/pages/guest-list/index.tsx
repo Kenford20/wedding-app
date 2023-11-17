@@ -48,7 +48,7 @@ export default function Dashboard() {
 
   return (
     <Layout>
-      <main className=''>
+      <main>
         {isGuestFormOpen && (
           <AddGuestForm events={events} setGuests={setGuests} />
         )}

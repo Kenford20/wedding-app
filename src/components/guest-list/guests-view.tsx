@@ -10,23 +10,21 @@ type GuestsViewProps = {
 };
 
 export default function GuestsView({ events, guests }: GuestsViewProps) {
-  const numGuests = 5;
-  const numEvents = 3;
   const toggleGuestForm = useToggleGuestForm();
   return (
     <section>
       <div>
         <div className={`py-8 ${sharedStyles.desktopPaddingSides}`}>
           <span className='text-sm'>
-            TOTAL HOUSEHOLDS: <span className='font-bold'>{numGuests}</span>
+            TOTAL HOUSEHOLDS: <span className='font-bold'>{guests.length}</span>
           </span>
           <span className={sharedStyles.verticalDivider}>|</span>
           <span className='text-sm'>
-            TOTAL GUESTS: <span className='font-bold'>{numGuests}</span>
+            TOTAL GUESTS: <span className='font-bold'>{guests.length}</span>
           </span>
           <span className={sharedStyles.verticalDivider}>|</span>
           <span className='text-sm'>
-            TOTAL EVENTS: <span className='font-bold'>{numEvents}</span>
+            TOTAL EVENTS: <span className='font-bold'>{events.length}</span>
           </span>
         </div>
       </div>
