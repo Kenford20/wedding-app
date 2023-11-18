@@ -45,7 +45,11 @@ export default function Dashboard() {
     <Layout>
       <main>
         {isEventFormOpen && (
-          <EventForm setEvents={setEvents} prefillFormData={prefillEvent} />
+          <EventForm
+            setEvents={setEvents}
+            prefillFormData={prefillEvent}
+            setPrefillEvent={setPrefillEvent}
+          />
         )}
         <DashboardHeader websiteUrl={dashboardData?.weddingData?.websiteUrl} />
         {showRegistrySetup && (

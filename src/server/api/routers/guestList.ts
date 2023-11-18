@@ -10,33 +10,25 @@ import { formatDateNumber } from '../utils';
 
 export const guestListRouter = createTRPCRouter({
   getByUserId: publicProcedure.query(async ({ ctx }) => {
-    if (!ctx.userId) return;
+    if (!ctx.userId) return null;
 
     const currentUser: User | null = await ctx.prisma.user.findFirst({
       where: {
         id: ctx.userId,
       },
     });
-
-    if (!currentUser) {
-      throw new TRPCError({
-        code: 'INTERNAL_SERVER_ERROR',
-        message: 'Failed to fetch wedding website data.',
-      });
-    }
+    if (!currentUser) return null;
 
     const guests = await ctx.prisma.guest.findMany({
       where: {
         userId: ctx.userId,
       },
     });
-
     const rsvps = await ctx.prisma.invitation.findMany({
       where: {
         userId: ctx.userId,
       },
     });
-
     const events = await ctx.prisma.event.findMany({
       where: {
         userId: ctx.userId,

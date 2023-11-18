@@ -34,6 +34,9 @@ export default function Dashboard() {
   }, [guestListData]);
 
   if (isFetchingGuestListData) return <LoadingPage />;
+  if (typeof window !== 'undefined' && guestListData === null) {
+    window.location.href = '/';
+  }
   if (!guestListData || !events || !guests) return <OopsPage />;
 
   console.log('guestListIndex data', guestListData);

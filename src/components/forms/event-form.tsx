@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { api } from '~/utils/api';
 import { LoadingSpinner } from '../loader';
 import { sharedStyles } from '../shared-styles';
@@ -13,6 +13,7 @@ import { useDisablePageScroll } from '../helpers';
 type EventFormProps = {
   setEvents: Dispatch<SetStateAction<Event[] | undefined>>;
   prefillFormData: EventFormData | undefined;
+  setPrefillEvent: Dispatch<SetStateAction<EventFormData | undefined>>;
 };
 
 const defaultFormData = {
@@ -29,9 +30,11 @@ const defaultFormData = {
 export default function EventForm({
   setEvents,
   prefillFormData,
+  setPrefillEvent,
 }: EventFormProps) {
   const isEditMode = !!prefillFormData;
   const toggleEventForm = useToggleEventForm();
+
   const { mutate: createEvent, isLoading: isCreatingEvent } =
     api.event.create.useMutation({
       onSuccess: (createdEvent) => {
@@ -91,6 +94,10 @@ export default function EventForm({
       createEvent(eventFormData);
     }
   };
+
+  useEffect(() => {
+    return setPrefillEvent(defaultFormData);
+  }, [setPrefillEvent]);
 
   return (
     <div
