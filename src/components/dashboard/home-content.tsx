@@ -154,7 +154,7 @@ export default function HomeContent({
                 size={25}
                 color={sharedStyles.primaryColorHex}
               />
-              <p className={`pl-3 text-${sharedStyles.primaryColor}`}>
+              <p className={`pl-2 text-${sharedStyles.primaryColor}`}>
                 Add Event
               </p>
             </div>

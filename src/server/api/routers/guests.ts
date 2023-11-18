@@ -15,6 +15,12 @@ export const guestRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
+      await new Promise((resolve) =>
+        setTimeout(() => {
+          resolve(null);
+        }, 5000)
+      );
+
       const userId = ctx.userId;
       const { firstName, lastName, eventIds } = input;
 

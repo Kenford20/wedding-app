@@ -71,6 +71,22 @@ export default function EventForm({
       },
     });
 
+  const { mutate: deleteEvent, isLoading: isDeletingEvent } =
+    api.event.delete.useMutation({
+      onSuccess: (deletedEvent) => {
+        console.log('del', deletedEvent);
+        toggleEventForm();
+        setEvents((prevEvents) =>
+          prevEvents?.filter((event) => event.id !== deletedEvent.id)
+        );
+      },
+      onError: (err) => {
+        const errorMessage = err.data?.zodError?.fieldErrors?.eventName;
+        if (errorMessage?.[0]) window.alert(errorMessage);
+        else window.alert('Failed to delete event! Please try again later.');
+      },
+    });
+
   const [eventFormData, setEventFormData] = useState(
     prefillFormData ?? defaultFormData
   );
@@ -98,6 +114,8 @@ export default function EventForm({
   useEffect(() => {
     return setPrefillEvent(defaultFormData);
   }, [setPrefillEvent]);
+
+  const isProcessing = isCreatingEvent || isUpdatingEvent || isDeletingEvent;
 
   return (
     <div
@@ -182,27 +200,41 @@ export default function EventForm({
         >
           <div className='flex gap-5'>
             <button
-              className={`w-1/2 ${sharedStyles.secondaryButton({
-                px: 'px-12',
-                py: 'py-2',
-              })}`}
+              disabled={isProcessing}
               onClick={() => toggleEventForm()}
+              className={`${sharedStyles.secondaryButton({
+                py: 'py-2',
+                isLoading: isProcessing,
+              })} w-1/2 ${
+                isProcessing
+                  ? 'text-pink-200'
+                  : `text-${sharedStyles.primaryColor}`
+              }`}
             >
               Cancel
             </button>
             <button
+              disabled={isProcessing}
               className={`w-1/2 ${sharedStyles.primaryButton({
-                px: 'px-12',
                 py: 'py-2',
+                isLoading: isProcessing,
               })}`}
               onClick={() => handleSaveEvent()}
             >
-              Save
+              {isProcessing ? 'Processing...' : 'Save & Close'}
             </button>
           </div>
           {isEditMode && (
             <button
-              className={`font-semibold hover:underline text-${sharedStyles.primaryColor}`}
+              disabled={isProcessing}
+              onClick={() => deleteEvent({ eventId: eventFormData.eventId })}
+              className={`font-semibold ${
+                isProcessing ? 'cursor-not-allowed' : 'hover:underline'
+              } ${
+                isProcessing
+                  ? 'text-pink-200'
+                  : `text-${sharedStyles.primaryColor}`
+              }`}
             >
               Remove Event
             </button>

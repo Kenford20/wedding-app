@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { api } from '~/utils/api';
 import { LoadingSpinner } from '../loader';
 import { sharedStyles } from '../shared-styles';
@@ -47,7 +47,6 @@ export default function AddGuestForm({ events, setGuests }: AddGuestFormProps) {
     email: '',
     notes: '',
   });
-  const formRef = useRef<HTMLInputElement>(null);
 
   useDisablePageScroll();
 
@@ -74,16 +73,8 @@ export default function AddGuestForm({ events, setGuests }: AddGuestFormProps) {
   };
 
   return (
-    <div
-      className='fixed top-0 flex h-screen w-screen justify-end overflow-y-scroll bg-transparent/[0.5] pb-16'
-      ref={formRef}
-    >
-      {isCreatingGuest && (
-        <div className='flex items-center justify-center'>
-          <LoadingSpinner />
-        </div>
-      )}
-      <div className='h-fit w-[500px] bg-white'>
+    <div className='fixed top-0 flex h-screen w-screen justify-end overflow-y-scroll bg-transparent/[0.5] pb-16'>
+      <div className='relative h-fit w-[500px] bg-white'>
         <div className='flex justify-between border-b p-5'>
           <h1 className='text-xl font-semibold'>Add Party</h1>
           <span className='cursor-pointer' onClick={() => toggleGuestForm()}>
@@ -211,28 +202,30 @@ export default function AddGuestForm({ events, setGuests }: AddGuestFormProps) {
           />
         </div>
         <div
-          className='fixed bottom-0 flex gap-3 border-t bg-white p-5'
+          className='fixed bottom-0 flex gap-3 border-t bg-white px-8 py-5'
           style={{ width: 'inherit' }}
         >
           <button
+            disabled={isCreatingGuest}
             onClick={() => toggleGuestForm()}
             className={`${sharedStyles.secondaryButton({
-              px: 'px-12',
               py: 'py-2',
+              isLoading: isCreatingGuest,
             })} w-1/2`}
           >
             Cancel
           </button>
           <button
-            className={`${sharedStyles.primaryButton({
-              px: 'px-12',
+            disabled={isCreatingGuest}
+            className={`w-1/2 ${sharedStyles.primaryButton({
               py: 'py-2',
-            })} w-1/2`}
+              isLoading: isCreatingGuest,
+            })}`}
             onClick={() =>
               mutate({ ...guestFormData, eventIds: selectedEvents })
             }
           >
-            Save & Close
+            {isCreatingGuest ? 'Processing...' : 'Save & Close'}
           </button>
         </div>
       </div>

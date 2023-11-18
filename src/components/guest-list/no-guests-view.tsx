@@ -15,13 +15,11 @@ export default function NoGuestsView() {
           add a unique guest to this event.
         </p>
         <div className='mt-5 flex gap-5'>
-          <button
-            className={sharedStyles.primaryButton({ px: 'px-12', py: 'py-2' })}
-          >
+          <button className={sharedStyles.primaryButton({ py: 'py-2' })}>
             Import Guests
           </button>
           <button
-            className={sharedStyles.primaryButton({ px: 'px-12', py: 'py-2' })}
+            className={sharedStyles.primaryButton({ py: 'py-2' })}
             onClick={() => toggleGuestForm()}
           >
             Add Guest

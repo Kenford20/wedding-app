@@ -86,7 +86,28 @@ export const eventRouter = createTRPCRouter({
           description: input.description,
         },
       });
-      console.log('ewe', updatedEvent);
       return updatedEvent;
+    }),
+
+  delete: privateProcedure
+    .input(
+      z.object({
+        eventId: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const deletedEvent = await ctx.prisma.event.delete({
+        where: {
+          id: input.eventId,
+        },
+      });
+
+      await ctx.prisma.invitation.deleteMany({
+        where: {
+          eventId: input.eventId,
+        },
+      });
+
+      return deletedEvent;
     }),
 });
