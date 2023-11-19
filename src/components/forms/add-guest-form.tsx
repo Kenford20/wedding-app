@@ -2,13 +2,35 @@
 
 import { useState } from 'react';
 import { api } from '~/utils/api';
-import { LoadingSpinner } from '../loader';
 import { sharedStyles } from '../shared-styles';
 import { useToggleGuestForm } from '~/contexts/guest-form-context';
+import { useDisablePageScroll } from '../helpers';
+import { GuestNameForm } from './guest-names';
 
 import { type Dispatch, type SetStateAction } from 'react';
-import { type Event, type Guest } from '../../types/schema';
-import { useDisablePageScroll } from '../helpers';
+import {
+  type GuestPartyFormData,
+  type Event,
+  type Guest,
+} from '../../types/schema';
+
+const defaultGuestPartyData: GuestPartyFormData = {
+  firstName: '',
+  lastName: '',
+  invites: [],
+};
+
+const defaultContactData = {
+  address1: undefined,
+  address2: undefined,
+  city: undefined,
+  state: undefined,
+  country: undefined,
+  zipCode: undefined,
+  phoneNumber: undefined,
+  email: undefined,
+  notes: undefined,
+};
 
 type AddGuestFormProps = {
   events: Event[];
@@ -18,10 +40,10 @@ type AddGuestFormProps = {
 export default function AddGuestForm({ events, setGuests }: AddGuestFormProps) {
   const toggleGuestForm = useToggleGuestForm();
   const { mutate, isLoading: isCreatingGuest } = api.guest.create.useMutation({
-    onSuccess: (createdGuest) => {
+    onSuccess: (createdGuests) => {
       toggleGuestForm();
       setGuests((prevGuests) =>
-        prevGuests ? [...prevGuests, createdGuest] : [createdGuest]
+        prevGuests ? [...prevGuests, ...createdGuests] : [...createdGuests]
       );
     },
     onError: (err) => {
@@ -33,25 +55,13 @@ export default function AddGuestForm({ events, setGuests }: AddGuestFormProps) {
     },
   });
 
-  const [selectedEvents, setSelectedEvents] = useState<string[]>([]);
-  const [guestFormData, setGuestFormData] = useState({
-    firstName: '',
-    lastName: '',
-    address1: '',
-    address2: '',
-    city: '',
-    state: '',
-    country: '',
-    zipCode: '',
-    phoneNumber: '',
-    email: '',
-    notes: '',
-  });
+  const [guestParty, setGuestParty] = useState([defaultGuestPartyData]);
+  const [contactData, setContactData] = useState(defaultContactData);
 
   useDisablePageScroll();
 
   const handleOnChange = (field: string, input: string) => {
-    setGuestFormData((prev) => {
+    setContactData((prev) => {
       return {
         ...prev,
         [field]: input,
@@ -59,17 +69,8 @@ export default function AddGuestForm({ events, setGuests }: AddGuestFormProps) {
     });
   };
 
-  const handleSelectEvent = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    event: Event
-  ) => {
-    if (e.target.checked) {
-      setSelectedEvents((prevEvents) => [...prevEvents, event.id]);
-    } else {
-      setSelectedEvents((prevEvents) =>
-        prevEvents.filter((ev) => ev !== event.id)
-      );
-    }
+  const handleAddGuestToParty = () => {
+    setGuestParty((prev) => [...prev, defaultGuestPartyData]);
   };
 
   return (
@@ -81,50 +82,23 @@ export default function AddGuestForm({ events, setGuests }: AddGuestFormProps) {
             X
           </span>
         </div>
-        <div className='p-5'>
-          <h2 className='mb-3 text-xl font-semibold'>Guest Name</h2>
-          <div className='flex justify-between gap-3'>
-            <input
-              className='w-1/2 border p-3'
-              placeholder='First Name*'
-              value={guestFormData.firstName}
-              onChange={(e) => handleOnChange('firstName', e.target.value)}
-            />
-            <input
-              className='w-1/2 border p-3'
-              placeholder='Last Name*'
-              value={guestFormData.lastName}
-              onChange={(e) => handleOnChange('lastName', e.target.value)}
-            />
-          </div>
-        </div>
-        <div className='p-5'>
-          <h3 className='mb-3 text-gray-400'>
-            Invite to the following events:
-          </h3>
-          <div className='grid grid-cols-2 gap-3'>
-            {events?.map((event) => {
-              return (
-                <div key={event.id}>
-                  <div className='flex items-center gap-3'>
-                    <input
-                      className='h-6 w-6 cursor-pointer border p-3'
-                      style={{ accentColor: sharedStyles.primaryColorHex }}
-                      type='checkbox'
-                      id={event.id}
-                      onChange={(e) => handleSelectEvent(e, event)}
-                    />
-                    <label className='cursor-pointer' htmlFor={event.id}>
-                      {event.name}
-                    </label>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        {guestParty.map((guest, i) => {
+          return (
+            <div key={i}>
+              <GuestNameForm
+                events={events}
+                guestIndex={i}
+                guestParty={guest}
+                setGuestParty={setGuestParty}
+              />
+            </div>
+          );
+        })}
         <div className='mt-3 text-center'>
-          <button className={`text-${sharedStyles.primaryColor}`}>
+          <button
+            onClick={() => handleAddGuestToParty()}
+            className={`text-${sharedStyles.primaryColor}`}
+          >
             + Add A Guest To This Party
           </button>
         </div>
@@ -134,24 +108,24 @@ export default function AddGuestForm({ events, setGuests }: AddGuestFormProps) {
             <input
               className='w-100 border p-3'
               placeholder='Street Address'
-              value={guestFormData.address1}
+              value={contactData.address1}
               onChange={(e) => handleOnChange('address1', e.target.value)}
             />
             <input
               className='w-100 border p-3'
               placeholder='Apt/Suite/Other'
-              value={guestFormData.address2}
+              value={contactData.address2}
               onChange={(e) => handleOnChange('address2', e.target.value)}
             />
             <div className='flex gap-3'>
               <input
                 className='w-1/2 border p-3'
                 placeholder='City'
-                value={guestFormData.city}
+                value={contactData.city}
                 onChange={(e) => handleOnChange('city', e.target.value)}
               />
               <select
-                value={guestFormData.state}
+                value={contactData.state}
                 onChange={(e) => handleOnChange('state', e.target.value)}
                 className='w-1/4 border p-3'
               >
@@ -163,13 +137,13 @@ export default function AddGuestForm({ events, setGuests }: AddGuestFormProps) {
               <input
                 className='w-1/4 border p-3'
                 placeholder='Zip Code'
-                value={guestFormData.zipCode}
+                value={contactData.zipCode}
                 onChange={(e) => handleOnChange('zipCode', e.target.value)}
               />
             </div>
             <select
               className='w-100 border p-3'
-              value={guestFormData.country}
+              value={contactData.country}
               onChange={(e) => handleOnChange('country', e.target.value)}
             >
               <option defaultValue='State'>Country</option>
@@ -181,13 +155,13 @@ export default function AddGuestForm({ events, setGuests }: AddGuestFormProps) {
               <input
                 className='w-1/2 border p-3'
                 placeholder='Phone'
-                value={guestFormData.phoneNumber}
+                value={contactData.phoneNumber}
                 onChange={(e) => handleOnChange('phoneNumber', e.target.value)}
               />
               <input
                 className='w-1/2 border p-3'
                 placeholder='Email'
-                value={guestFormData.email}
+                value={contactData.email}
                 onChange={(e) => handleOnChange('email', e.target.value)}
               />
             </div>
@@ -195,7 +169,7 @@ export default function AddGuestForm({ events, setGuests }: AddGuestFormProps) {
           <h2 className='my-4 text-xl font-semibold'>My Notes</h2>
           <textarea
             placeholder='Enter notes about your guests, like food allergies'
-            value={guestFormData.notes}
+            value={contactData.notes}
             onChange={(e) => handleOnChange('notes', e.target.value)}
             className='h-32 w-full border p-3'
             style={{ resize: 'none' }}
@@ -221,9 +195,7 @@ export default function AddGuestForm({ events, setGuests }: AddGuestFormProps) {
               py: 'py-2',
               isLoading: isCreatingGuest,
             })}`}
-            onClick={() =>
-              mutate({ ...guestFormData, eventIds: selectedEvents })
-            }
+            onClick={() => mutate({ guestParty, contactData })}
           >
             {isCreatingGuest ? 'Processing...' : 'Save & Close'}
           </button>

@@ -68,6 +68,12 @@ type EventFormData = {
   eventId: string;
 };
 
+type GuestPartyFormData = {
+  firstName: string;
+  lastName: string;
+  invites: string[];
+};
+
 export {
   type Event,
   type Rsvp,
@@ -75,4 +81,5 @@ export {
   type User,
   type WeddingData,
   type EventFormData,
+  type GuestPartyFormData,
 };

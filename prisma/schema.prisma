@@ -3,7 +3,7 @@
 
 datasource db {
     provider     = "mysql"
-    url          = env("DATABASE_URL")
+    url          = env("DATABASE_URL_DEVELOPMENT")
     relationMode = "prisma"
 }
 
@@ -30,10 +30,17 @@ model User {
     brideLastName  String
 }
 
+model Household {
+    id     String  @id @default(cuid())
+    userId String
+    guests Guest[]
+}
+
 model Guest {
     id          Int          @id @default(autoincrement())
     firstName   String
     lastName    String
+    householdId String
     address1    String?
     address2    String?
     city        String?
@@ -44,7 +51,10 @@ model Guest {
     email       String?
     notes       String?
     userId      String
+    household   Household    @relation(fields: [householdId], references: [id])
     invitations Invitation[]
+
+    @@index([householdId])
 }
 
 model Event {
@@ -57,7 +67,7 @@ model Event {
     attire      String?
     description String?
     userId      String
-    guests      Invitation[]
+    invitations Invitation[]
 }
 
 model Invitation {

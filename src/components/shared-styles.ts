@@ -9,9 +9,8 @@ type ButtonOptions = {
   isLoading?: boolean;
 };
 
-const primaryButton = (
-  options: ButtonOptions = { px: 'px-12', py: 'py-3', isLoading: false }
-) => {
+const primaryButton = (options: ButtonOptions) => {
+  options = { px: 'px-12', py: 'py-3', isLoading: false, ...options };
   const { px, py, isLoading } = options;
   const hover = isLoading ? '' : 'hover:bg-[#d700a0]';
   const bg = isLoading ? 'bg-pink-200' : 'bg-pink-400';
@@ -20,9 +19,8 @@ const primaryButton = (
   return `rounded-full font-semibold text-white ${px} ${py} ${hover} ${bg} ${cursor}`;
 };
 
-const secondaryButton = (
-  options: ButtonOptions = { px: 'px-12', py: 'py-3', isLoading: false }
-) => {
+const secondaryButton = (options: ButtonOptions) => {
+  options = { px: 'px-12', py: 'py-3', isLoading: false, ...options };
   const { px, py, isLoading } = options;
   const hover = isLoading ? '' : 'hover:bg-pink-100';
   const cursor = isLoading ? 'cursor-not-allowed' : '';
