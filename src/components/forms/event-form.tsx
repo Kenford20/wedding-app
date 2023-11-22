@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { api } from '~/utils/api';
-import { LoadingSpinner } from '../loader';
 import { sharedStyles } from '../shared-styles';
 import { useToggleEventForm } from '~/contexts/event-form-context';
 
@@ -112,7 +111,7 @@ export default function EventForm({
   };
 
   useEffect(() => {
-    return setPrefillEvent(defaultFormData);
+    return () => setPrefillEvent(undefined);
   }, [setPrefillEvent]);
 
   const isProcessing = isCreatingEvent || isUpdatingEvent || isDeletingEvent;
@@ -122,11 +121,6 @@ export default function EventForm({
       ref={formRef}
       className='fixed top-0 z-10 flex h-screen w-screen justify-end overflow-y-scroll bg-transparent/[0.5]'
     >
-      {isCreatingEvent && (
-        <div className='flex items-center justify-center'>
-          <LoadingSpinner />
-        </div>
-      )}
       <div className='h-full w-[500px] bg-white'>
         <div className='flex justify-between border-b p-5'>
           <h1 className='text-xl font-semibold'>
