@@ -10,7 +10,7 @@ export default function EventsTabs({ events }: EventsTabsProps) {
   const toggleEventForm = useToggleEventForm();
   return (
     <div className='border-b'>
-      <ul className={`flex gap-5 ${sharedStyles.desktopPaddingSides}`}>
+      <ul className={`flex gap-5 ${sharedStyles.desktopPaddingSidesGuestList}`}>
         <li className='cursor-pointer border-b-4 border-gray-600 border-transparent py-3 text-sm hover:border-gray-600'>
           All Events
         </li>

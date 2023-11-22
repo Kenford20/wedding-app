@@ -48,7 +48,11 @@ export default function Dashboard() {
           <AddGuestForm events={events} setGuests={setGuests} />
         )}
         {isEventFormOpen && (
-          <EventForm setEvents={setEvents} prefillFormData={prefillEvent} />
+          <EventForm
+            setEvents={setEvents}
+            prefillFormData={prefillEvent}
+            setPrefillEvent={setPrefillEvent}
+          />
         )}
         <GuestHeader />
         <EventsTabs events={events} />

@@ -1,4 +1,5 @@
 const desktopPaddingSides = 'px-48';
+const desktopPaddingSidesGuestList = 'px-20';
 const verticalDivider = 'px-3 text-neutral-300';
 const primaryColor = 'pink-400';
 const primaryColorHex = '#f472b6';
@@ -9,7 +10,7 @@ type ButtonOptions = {
   isLoading?: boolean;
 };
 
-const primaryButton = (options: ButtonOptions) => {
+const primaryButton = (options?: ButtonOptions) => {
   options = { px: 'px-12', py: 'py-3', isLoading: false, ...options };
   const { px, py, isLoading } = options;
   const hover = isLoading ? '' : 'hover:bg-[#d700a0]';
@@ -19,7 +20,7 @@ const primaryButton = (options: ButtonOptions) => {
   return `rounded-full font-semibold text-white ${px} ${py} ${hover} ${bg} ${cursor}`;
 };
 
-const secondaryButton = (options: ButtonOptions) => {
+const secondaryButton = (options?: ButtonOptions) => {
   options = { px: 'px-12', py: 'py-3', isLoading: false, ...options };
   const { px, py, isLoading } = options;
   const hover = isLoading ? '' : 'hover:bg-pink-100';
@@ -31,6 +32,7 @@ const secondaryButton = (options: ButtonOptions) => {
 
 export const sharedStyles = {
   desktopPaddingSides,
+  desktopPaddingSidesGuestList,
   verticalDivider,
   primaryColor,
   primaryColorHex,

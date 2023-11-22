@@ -14,7 +14,7 @@ export default function GuestsView({ events, guests }: GuestsViewProps) {
   return (
     <section>
       <div>
-        <div className={`py-8 ${sharedStyles.desktopPaddingSides}`}>
+        <div className={`py-8 ${sharedStyles.desktopPaddingSidesGuestList}`}>
           <span className='text-sm'>
             TOTAL HOUSEHOLDS: <span className='font-bold'>{guests.length}</span>
           </span>
@@ -29,7 +29,7 @@ export default function GuestsView({ events, guests }: GuestsViewProps) {
         </div>
       </div>
       <div
-        className={`mb-8 flex justify-between ${sharedStyles.desktopPaddingSides}`}
+        className={`mb-8 flex justify-between ${sharedStyles.desktopPaddingSidesGuestList}`}
       >
         <GuestSearchFilter />
         <div>

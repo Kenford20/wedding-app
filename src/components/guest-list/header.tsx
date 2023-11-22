@@ -3,7 +3,9 @@ import { sharedStyles } from '../shared-styles';
 export default function GuestHeader() {
   return (
     <section>
-      <div className={`pb-5 pt-10 ${sharedStyles.desktopPaddingSides}`}>
+      <div
+        className={`pb-5 pt-10 ${sharedStyles.desktopPaddingSidesGuestList}`}
+      >
         <div className='flex justify-between'>
           <h1 className='text-3xl font-bold'>Your Guest List</h1>
           <div>

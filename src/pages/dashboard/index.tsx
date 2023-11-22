@@ -18,7 +18,7 @@ import { type EventFormData, type Event } from '~/types/schema';
 
 export default function Dashboard() {
   const isEventFormOpen = useEventForm();
-  const [showRegistrySetup, setShowRegistrySetup] = useState(true);
+  const [showRegistrySetup, setShowRegistrySetup] = useState<boolean>(true);
   const [events, setEvents] = useState<Event[]>();
   const [prefillEvent, setPrefillEvent] = useState<EventFormData | undefined>();
 
