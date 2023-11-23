@@ -1,12 +1,7 @@
-import { TRPCError } from '@trpc/server';
-import { z } from 'zod';
-import {
-  createTRPCRouter,
-  privateProcedure,
-  publicProcedure,
-} from '~/server/api/trpc';
-import { type User } from '~/types/schema';
+import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { formatDateNumber } from '../utils';
+
+import { type User } from '~/types/schema';
 
 export const guestListRouter = createTRPCRouter({
   getByUserId: publicProcedure.query(async ({ ctx }) => {
@@ -19,16 +14,22 @@ export const guestListRouter = createTRPCRouter({
     });
     if (!currentUser) return null;
 
-    const guests = await ctx.prisma.guest.findMany({
+    const households = await ctx.prisma.household.findMany({
+      where: {
+        userId: ctx.userId,
+      },
+      select: {
+        guests: true,
+        id: true,
+      },
+    });
+
+    const invitations = await ctx.prisma.invitation.findMany({
       where: {
         userId: ctx.userId,
       },
     });
-    const rsvps = await ctx.prisma.invitation.findMany({
-      where: {
-        userId: ctx.userId,
-      },
-    });
+
     const events = await ctx.prisma.event.findMany({
       where: {
         userId: ctx.userId,
@@ -58,29 +59,47 @@ export const guestListRouter = createTRPCRouter({
       daysRemaining: 100,
     };
 
-    type Rsvp = {
+    type TInvitation = {
       eventId: string;
-      rsvp: string | null;
+      invitation: string | null;
     };
 
     const guestListData = {
       weddingData,
-      totalGuests: guests.length,
+      totalGuests: await ctx.prisma.guest.count({
+        where: {
+          userId: ctx.userId,
+        },
+      }),
       totalEvents: events.length,
-      guests: guests.map((guest) => {
+      households: households.map((household) => {
         return {
-          ...guest,
-          rsvps: rsvps.reduce((acc: Rsvp[], rsvp) => {
-            if (guest.id === rsvp.guestId) {
-              acc.push({
-                eventId: rsvp.eventId,
-                rsvp: rsvp.rsvp,
-              });
-            }
-            return acc;
-          }, []),
+          ...household,
+          guests: household.guests.map((guest) => {
+            return {
+              ...guest,
+              invitations: invitations.reduce(
+                (acc: TInvitation[], invitation) => {
+                  if (guest.id === invitation.guestId) {
+                    acc.push({
+                      eventId: invitation.eventId,
+                      invitation: invitation.rsvp,
+                    });
+                  }
+                  return acc;
+                },
+                []
+              ),
+            };
+          }),
         };
       }),
+      // invited: await ctx.prisma.invitation.count({
+      //   where: {
+      //     eventId: 'clp5iyeii0001skfr8wc7njt1',
+      //     rsvp: 'Invited',
+      //   },
+      // }),
       events: events.map((event) => {
         const guestResponses = {
           invited: 0,
@@ -89,20 +108,20 @@ export const guestListRouter = createTRPCRouter({
           noResponse: 0,
         };
 
-        rsvps.forEach((rsvp) => {
+        invitations.forEach((rsvp) => {
           if (event.id === rsvp.eventId) {
             switch (rsvp.rsvp) {
               case 'Invited':
-                guestResponses.invited = guestResponses.invited + 1;
+                guestResponses.invited += 1;
                 break;
               case 'Accepted':
-                guestResponses.accepted = guestResponses.accepted + 1;
+                guestResponses.accepted += 1;
                 break;
               case 'Declined':
-                guestResponses.declined = guestResponses.declined + 1;
+                guestResponses.declined += 1;
                 break;
               default:
-                guestResponses.noResponse = guestResponses.noResponse + 1;
+                guestResponses.noResponse += 1;
                 break;
             }
           }
@@ -118,3 +137,57 @@ export const guestListRouter = createTRPCRouter({
     return guestListData;
   }),
 });
+
+// const eventInvitations = invitations.filter(
+//   (rsvp) => rsvp.eventId === event.id
+// );
+// type THouseholdList = Record<string, Guest[]>;
+// const householdList: THouseholdList = {};
+
+// eventInvitations.map((invitation) =>
+//   guests.find((guest) => {
+//     if (guest.id === invitation.guestId) {
+//       if (householdList[guest.householdId]) {
+//         householdList[guest.householdId] = [
+//           ...(householdList[guest.householdId] ?? []),
+//           guest,
+//         ];
+//       } else {
+//         householdList[guest.householdId] = [guest];
+//       }
+//     }
+//     return guest.id === invitation.guestId;
+//   })
+// );
+
+// const guestList = await ctx.prisma.invitation
+//   .findMany({
+//     where: {
+//       eventId: event.id,
+//     },
+//     select: {
+//       guest: true,
+//     },
+//   })
+//   .then((invitationsForThisEvent) =>
+//     invitationsForThisEvent.map((res) => res.guest)
+//   )
+//   .then((guestsForThisEvent) => {
+//     type THouseholdGroups = Record<string, Guest[]>;
+//     const householdGroups: THouseholdGroups = {};
+//     guestsForThisEvent.forEach((guest) => {
+//       if (!guest) return [];
+//       if (householdGroups[guest.householdId]) {
+//         householdGroups[guest.householdId] = [
+//           ...(householdGroups[guest.householdId] ?? []),
+//           guest,
+//         ];
+//       } else {
+//         householdGroups[guest.householdId] = [guest];
+//       }
+//     });
+//     return householdGroups;
+//   });
+
+// console.log('eventz', event.name);
+// console.log('listz', householdList);

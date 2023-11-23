@@ -15,6 +15,11 @@ type Rsvp = {
   rsvp: string | null;
 };
 
+type Household = {
+  id: string;
+  guests: Guest[];
+};
+
 type Guest = {
   id: number;
   firstName: string;
@@ -29,6 +34,7 @@ type Guest = {
   email: string | null;
   notes: string | null;
   userId: string;
+  householdId: string;
   rsvps?: Rsvp[];
 };
 
@@ -77,6 +83,7 @@ type GuestPartyFormData = {
 export {
   type Event,
   type Rsvp,
+  type Household,
   type Guest,
   type User,
   type WeddingData,

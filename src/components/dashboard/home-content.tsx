@@ -14,13 +14,13 @@ import { type Dispatch, type SetStateAction } from 'react';
 import {
   type WeddingData,
   type Event,
-  type Guest,
+  type Household,
   type EventFormData,
 } from '~/types/schema';
 
 type DashboardData = {
   events: Event[];
-  guests: Guest[];
+  households: Household[];
   totalEvents: number;
   totalGuests: number;
   weddingData: WeddingData;

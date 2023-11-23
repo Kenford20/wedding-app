@@ -11,7 +11,7 @@ import { type Dispatch, type SetStateAction } from 'react';
 import {
   type GuestPartyFormData,
   type Event,
-  type Guest,
+  type Household,
 } from '../../types/schema';
 
 const defaultGuestPartyData: GuestPartyFormData = {
@@ -34,23 +34,27 @@ const defaultContactData = {
 
 type AddGuestFormProps = {
   events: Event[];
-  setGuests: Dispatch<SetStateAction<Guest[] | undefined>>;
+  setHouseholds: Dispatch<SetStateAction<Household[] | undefined>>;
 };
 
-export default function AddGuestForm({ events, setGuests }: AddGuestFormProps) {
+export default function AddGuestForm({
+  events,
+  setHouseholds,
+}: AddGuestFormProps) {
   const toggleGuestForm = useToggleGuestForm();
   const { mutate, isLoading: isCreatingGuest } = api.guest.create.useMutation({
-    onSuccess: (createdGuests) => {
+    onSuccess: (createdHousehold) => {
       toggleGuestForm();
-      setGuests((prevGuests) =>
-        prevGuests ? [...prevGuests, ...createdGuests] : [...createdGuests]
+      setHouseholds((prevHouseholds: Household[] | undefined) =>
+        prevHouseholds
+          ? [...prevHouseholds, createdHousehold]
+          : [createdHousehold]
       );
     },
     onError: (err) => {
-      const errorMessage =
-        err.data?.zodError?.fieldErrors?.firstName ??
-        err.data?.zodError?.fieldErrors?.lastName;
-      if (errorMessage?.[0]) window.alert('Full name required');
+      const errorMessage = err.data?.zodError?.fieldErrors?.guestParty;
+      if (errorMessage?.[0])
+        window.alert('Please fill in the full name for all guests!');
       else window.alert('Failed to create event! Please try again later.');
     },
   });

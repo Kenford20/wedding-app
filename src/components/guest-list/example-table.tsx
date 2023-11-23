@@ -1,3 +1,6 @@
+import { AiOutlineHome } from 'react-icons/ai';
+import { CiMail } from 'react-icons/ci';
+import { HiOutlinePhone } from 'react-icons/hi2';
 import { sharedStyles } from '../shared-styles';
 
 export default function ExampleTable() {
@@ -41,10 +44,10 @@ export default function ExampleTable() {
             ></input>
           </div>
           <h3>Example Guest</h3>
-          <div>
-            <i>HO</i>
-            <i>PH</i>
-            <i>MA</i>
+          <div className='flex gap-2'>
+            <AiOutlineHome size={22} />
+            <HiOutlinePhone size={22} />
+            <CiMail size={23} />
           </div>
           <div>
             <select

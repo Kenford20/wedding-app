@@ -1,6 +1,7 @@
 import { sharedStyles } from '../shared-styles';
 import { type GuestPartyFormData, type Event } from '~/types/schema';
 import { type Dispatch, type SetStateAction } from 'react';
+import { FiMinusCircle } from 'react-icons/fi';
 
 type guestNameFormProps = {
   events: Event[];
@@ -15,6 +16,10 @@ export const GuestNameForm = ({
   guestParty,
   setGuestParty,
 }: guestNameFormProps) => {
+  const handleRemoveGuest = () => {
+    setGuestParty((prev) => prev.filter((guest, i) => i !== guestIndex));
+  };
+
   const handleSelectEvent = (
     e: React.ChangeEvent<HTMLInputElement>,
     event: Event,
@@ -61,7 +66,7 @@ export const GuestNameForm = ({
     <div>
       <div className='p-5'>
         <h2 className='mb-3 text-xl font-semibold'>Guest Name</h2>
-        <div className='flex justify-between gap-3'>
+        <div className='flex items-center justify-between gap-3'>
           <input
             className='w-1/2 border p-3'
             placeholder='First Name*'
@@ -78,6 +83,11 @@ export const GuestNameForm = ({
               handleNameChange('lastName', e.target.value, guestIndex)
             }
           />
+          {guestIndex > 0 && (
+            <div className='cursor-pointer' onClick={() => handleRemoveGuest()}>
+              <FiMinusCircle size={28} color='gray' />
+            </div>
+          )}
         </div>
       </div>
       <div className='p-5'>

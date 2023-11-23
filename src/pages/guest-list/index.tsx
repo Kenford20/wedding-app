@@ -14,14 +14,14 @@ import NoGuestsView from '~/components/guest-list/no-guests-view';
 import GuestsView from '~/components/guest-list/guests-view';
 import OopsPage from '~/components/oops';
 
-import { type Guest, type Event, type EventFormData } from '~/types/schema';
+import { type Household, type Event, type EventFormData } from '~/types/schema';
 
 export default function Dashboard() {
   const isEventFormOpen = useEventForm();
   const isGuestFormOpen = useGuestForm();
   const [selectedEventTab, setSelectedEventTab] = useState('All Events'); // eventId
   const [events, setEvents] = useState<Event[]>();
-  const [guests, setGuests] = useState<Guest[]>();
+  const [households, setHouseholds] = useState<Household[]>();
   // TODO: setPrefillEvent passes into the selectedEventTab view thats currently active and will tie to the edit button
   const [prefillEvent, setPrefillEvent] = useState<EventFormData | undefined>();
 
@@ -30,22 +30,21 @@ export default function Dashboard() {
 
   useEffect(() => {
     setEvents(guestListData?.events ?? []);
-    setGuests(guestListData?.guests ?? []);
+    setHouseholds(guestListData?.households ?? []);
   }, [guestListData]);
 
   if (isFetchingGuestListData) return <LoadingPage />;
   if (typeof window !== 'undefined' && guestListData === null) {
     window.location.href = '/';
   }
-  if (!guestListData || !events || !guests) return <OopsPage />;
+  if (!guestListData || !events || !households) return <OopsPage />;
 
   console.log('guestListIndex data', guestListData);
-
   return (
     <Layout>
       <main>
         {isGuestFormOpen && (
-          <AddGuestForm events={events} setGuests={setGuests} />
+          <AddGuestForm events={events} setHouseholds={setHouseholds} />
         )}
         {isEventFormOpen && (
           <EventForm
@@ -56,8 +55,12 @@ export default function Dashboard() {
         )}
         <GuestHeader />
         <EventsTabs events={events} />
-        {guests.length > 0 ? (
-          <GuestsView events={events} guests={guests} />
+        {households.length > 0 ? (
+          <GuestsView
+            events={events}
+            households={households}
+            totalGuests={guestListData.totalGuests}
+          />
         ) : (
           <NoGuestsView />
         )}

@@ -105,7 +105,10 @@ export const guestRouter = createTRPCRouter({
         });
       });
 
-      return newGuests;
+      return {
+        id: household.id,
+        guests: newGuests,
+      };
     }),
 
   getAllByEventId: publicProcedure
