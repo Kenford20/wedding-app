@@ -17,13 +17,6 @@ type Rsvp = {
 
 type Household = {
   id: string;
-  guests: Guest[];
-};
-
-type Guest = {
-  id: number;
-  firstName: string;
-  lastName: string;
   address1: string | null;
   address2: string | null;
   city: string | null;
@@ -33,6 +26,14 @@ type Guest = {
   phone: string | null;
   email: string | null;
   notes: string | null;
+  guests: Guest[];
+};
+
+type Guest = {
+  id: number;
+  firstName: string;
+  lastName: string;
+  isPrimaryContact: boolean;
   userId: string;
   householdId: string;
   rsvps?: Rsvp[];

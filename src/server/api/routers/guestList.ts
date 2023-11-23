@@ -21,6 +21,15 @@ export const guestListRouter = createTRPCRouter({
       select: {
         guests: true,
         id: true,
+        address1: true,
+        address2: true,
+        city: true,
+        state: true,
+        zipCode: true,
+        country: true,
+        phone: true,
+        email: true,
+        notes: true,
       },
     });
 

@@ -12,13 +12,34 @@ generator client {
 }
 
 model Website {
-    id        String   @id @default(cuid())
+    id        String   @id @default(uuid())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     userId    String
     url       String
     subUrl    String
 }
+
+// model StoryItem {
+//     id             Int          @id @default(autoincrement())
+//     photoUrl       String
+//     title          String
+//     text           String
+//     homePageItemId Int
+//     homePageItem   HomePageItem @relation(fields: [homePageItemId], references: [id])
+
+//     @@index([homePageItemId])
+// }
+
+// model HomePageItem {
+//     id        Int         @id @default(autoincrement())
+//     websiteId String
+//     title     String
+//     textBlock String
+//     photoUrl  String
+//     gifUrl    String
+//     story     StoryItem[]
+// }
 
 model User {
     id             String @id
@@ -31,34 +52,39 @@ model User {
 }
 
 model Household {
-    id     String  @id @default(cuid())
-    userId String
-    guests Guest[]
+    id        String   @id @default(uuid())
+    userId    String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    address1  String?
+    address2  String?
+    city      String?
+    state     String?
+    zipCode   String?
+    country   String?
+    phone     String?
+    email     String?
+    notes     String?
+    guests    Guest[]
 }
 
 model Guest {
-    id          Int          @id @default(autoincrement())
-    firstName   String
-    lastName    String
-    householdId String
-    address1    String?
-    address2    String?
-    city        String?
-    state       String?
-    zipCode     String?
-    country     String?
-    phone       String?
-    email       String?
-    notes       String?
-    userId      String
-    household   Household    @relation(fields: [householdId], references: [id])
-    invitations Invitation[]
+    id               Int          @id @default(autoincrement())
+    firstName        String
+    lastName         String
+    householdId      String
+    userId           String
+    isPrimaryContact Boolean
+    createdAt        DateTime     @default(now())
+    updatedAt        DateTime     @updatedAt
+    household        Household    @relation(fields: [householdId], references: [id])
+    invitations      Invitation[]
 
     @@index([householdId])
 }
 
 model Event {
-    id          String       @id @default(cuid())
+    id          String       @id @default(uuid())
     name        String
     date        DateTime?    @db.Date
     startTime   String?
@@ -67,8 +93,26 @@ model Event {
     attire      String?
     description String?
     userId      String
+    createdAt   DateTime     @default(now())
+    updatedAt   DateTime     @updatedAt
     invitations Invitation[]
+    // subEvents   SubEvent[]
 }
+
+// model SubEvent {
+//     id          String    @id @default(uuid())
+//     name        String
+//     date        DateTime? @db.Date
+//     startTime   String?
+//     endTime     String?
+//     venue       String?
+//     attire      String?
+//     description String?
+//     eventId     String
+//     event       Event     @relation(fields: [eventId], references: [id])
+
+//     @@index([eventId])
+// }
 
 model Invitation {
     guest     Guest?   @relation(fields: [guestId], references: [id])

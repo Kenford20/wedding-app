@@ -43,7 +43,18 @@ export const guestRouter = createTRPCRouter({
       const userId = ctx.userId;
 
       const household = await ctx.prisma.household.create({
-        data: { userId },
+        data: {
+          userId,
+          address1: input?.contactData?.address1,
+          address2: input?.contactData?.address2,
+          city: input?.contactData?.city,
+          state: input?.contactData?.state,
+          country: input?.contactData?.country,
+          zipCode: input?.contactData?.zipCode,
+          phone: input?.contactData?.phoneNumber,
+          email: input?.contactData?.email,
+          notes: input?.contactData?.notes,
+        },
       });
 
       if (!household) {
@@ -57,29 +68,13 @@ export const guestRouter = createTRPCRouter({
       const newGuests = await Promise.all(
         input.guestParty.map(async (guest, i) => {
           return await ctx.prisma.guest.create({
-            data:
-              i === 0
-                ? {
-                    firstName: guest.firstName,
-                    lastName: guest.lastName,
-                    userId,
-                    householdId: household.id,
-                    address1: input?.contactData?.address1,
-                    address2: input?.contactData?.address2,
-                    city: input?.contactData?.city,
-                    state: input?.contactData?.state,
-                    country: input?.contactData?.country,
-                    zipCode: input?.contactData?.zipCode,
-                    phone: input?.contactData?.phoneNumber,
-                    email: input?.contactData?.email,
-                    notes: input?.contactData?.notes,
-                  }
-                : {
-                    firstName: guest.firstName,
-                    lastName: guest.lastName,
-                    userId,
-                    householdId: household.id,
-                  },
+            data: {
+              firstName: guest.firstName,
+              lastName: guest.lastName,
+              userId,
+              householdId: household.id,
+              isPrimaryContact: i === 0,
+            },
           });
         })
       );
@@ -106,7 +101,7 @@ export const guestRouter = createTRPCRouter({
       });
 
       return {
-        id: household.id,
+        ...household,
         guests: newGuests,
       };
     }),
