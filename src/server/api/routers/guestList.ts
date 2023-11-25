@@ -19,7 +19,11 @@ export const guestListRouter = createTRPCRouter({
         userId: ctx.userId,
       },
       select: {
-        guests: true,
+        guests: {
+          orderBy: {
+            createdAt: 'asc',
+          },
+        },
         id: true,
         address1: true,
         address2: true,
@@ -30,6 +34,9 @@ export const guestListRouter = createTRPCRouter({
         phone: true,
         email: true,
         notes: true,
+      },
+      orderBy: {
+        createdAt: 'asc',
       },
     });
 
