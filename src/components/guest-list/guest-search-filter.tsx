@@ -16,7 +16,7 @@ export default function GuestSearchFilter({}: GuestSearchFilterProps) {
       </div>
       <div className='pl-7'>
         <select
-          className='h-11 w-36 border-2 px-2 py-2'
+          className='h-11 w-36 border px-2 py-2'
           name='guestsFilter'
           id='guestsFilter'
         >

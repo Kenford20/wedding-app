@@ -83,7 +83,7 @@ export default function AddGuestForm({
   };
 
   return (
-    <div className='fixed top-0 flex h-screen w-screen justify-end overflow-y-scroll bg-transparent/[0.5] pb-16'>
+    <div className='fixed top-0 z-50 flex h-screen w-screen justify-end overflow-y-scroll bg-transparent/[0.5] pb-16'>
       <div className='relative h-fit w-[525px] bg-white'>
         <div className='flex justify-between border-b p-5'>
           <h1 className='text-xl font-semibold'>Add Party</h1>

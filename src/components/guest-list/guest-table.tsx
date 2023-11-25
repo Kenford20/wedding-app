@@ -2,65 +2,84 @@ import { AiOutlineHome } from 'react-icons/ai';
 import { CiMail } from 'react-icons/ci';
 import { FaSort } from 'react-icons/fa';
 import { HiOutlinePhone } from 'react-icons/hi2';
-import { type Household, type Event, type Guest } from '~/types/schema';
+import { useToggleGuestForm } from '~/contexts/guest-form-context';
+import { type Household, type Event } from '~/types/schema';
 import { sharedStyles } from '../shared-styles';
 
 type TableRowProps = {
-  guest: Guest;
+  household: Household;
   events: Event[];
-  partySize: number;
-  notes: string;
-  foobar: boolean;
 };
 
-const TableRow = ({
-  guest,
-  events,
-  partySize,
-  notes,
-  foobar,
-}: TableRowProps) => {
-  if (!guest) return null;
+const TableRow = ({ household, events }: TableRowProps) => {
+  const toggleGuestForm = useToggleGuestForm();
   return (
     <div
-      key={guest.id}
-      className={`guest-table grid min-w-fit items-center gap-12 pl-8`}
+      key={household.id}
+      className='guest-table grid min-w-fit cursor-pointer items-center gap-12 border-b py-5 pl-8'
       style={{
         gridTemplateColumns: `40px 240px 100px 125px repeat(${events.length}, 175px) 175px`,
       }}
+      // TODO: use state to initialize guest form with household data like in event form
+      onClick={() => toggleGuestForm()}
     >
-      <div>
-        <input
-          className='h-6 w-6 cursor-pointer border-gray-100'
-          style={{ accentColor: sharedStyles.primaryColorHex }}
-          type='checkbox'
-          id={`check-guest-${guest.id}`}
-        />
+      <div className='flex flex-col gap-1'>
+        {household.guests.map((guest) => {
+          return (
+            <div key={guest.id}>
+              <input
+                className='h-6 w-6 cursor-pointer'
+                style={{
+                  accentColor: sharedStyles.primaryColorHex,
+                }}
+                type='checkbox'
+                id={`check-guest-${guest.id}`}
+              />
+            </div>
+          );
+        })}
       </div>
-      <h3>{`${guest.firstName} ${guest.lastName}`}</h3>
-      {foobar ? <span className='absolue'>{partySize}</span> : <div></div>}
-      {foobar ? (
-        <div className='flex gap-2'>
-          <AiOutlineHome size={22} />
-          <HiOutlinePhone size={22} />
-          <CiMail size={23} />
-        </div>
-      ) : (
-        <div></div>
-      )}
+
+      <div className='flex flex-col gap-2'>
+        {household.guests.map((guest) => {
+          return (
+            <span key={guest.id}>{`${guest.firstName} ${guest.lastName}`}</span>
+          );
+        })}
+      </div>
+
+      <p>{household.guests.length}</p>
+
+      <div className='flex gap-2'>
+        <AiOutlineHome size={22} />
+        <HiOutlinePhone size={22} />
+        <CiMail size={23} />
+      </div>
+
       {events?.map((event) => {
         return (
-          <div key={event.id}>
-            <select name='guestRSVP' id={`guest-rsvp-${guest.id}`}>
-              <option value='Not Invited'>Not Invited</option>
-              <option value='Invited'>Invited</option>
-              <option value='Attending'>Attending</option>
-              <option value='Declined'>Declined</option>
-            </select>
+          <div key={event.id} className='flex flex-col gap-2'>
+            {household.guests.map((guest) => {
+              return (
+                <div key={guest.id} className='flex items-center'>
+                  <select
+                    name='guestRSVP'
+                    id={`guest-rsvp-${guest.id}`}
+                    className='pr-3 font-light tracking-tight'
+                  >
+                    <option value='Not Invited'>Not Invited</option>
+                    <option value='Invited'>Invited</option>
+                    <option value='Attending'>Attending</option>
+                    <option value='Declined'>Declined</option>
+                  </select>
+                </div>
+              );
+            })}
           </div>
         );
       })}
-      <div>{foobar && notes}</div>
+
+      <p>{household.notes ?? '-'}</p>
     </div>
   );
 };
@@ -75,7 +94,7 @@ export default function GuestTable({ events, households }: GuestTableProps) {
     <div className={sharedStyles.desktopPaddingSidesGuestList}>
       <div className='box-border max-h-[80vh] overflow-auto'>
         <div
-          className='guest-table grid min-w-fit items-center gap-12 border-b py-6 pl-8 font-light italic'
+          className='guest-table grid min-w-fit items-center gap-12 border-b py-6 pl-8 font-light italic text-gray-600'
           style={{
             gridTemplateColumns: `40px 240px 100px 125px repeat(${events.length}, 175px) 175px`,
           }}
@@ -104,25 +123,13 @@ export default function GuestTable({ events, households }: GuestTableProps) {
         </div>
 
         <div className='text-md min-w-fit border-l border-r'>
-          {households?.map((household) => {
-            return (
-              // TODO: refactor table layout for households with multiple guests
-              <div key={household.id} className='border-b py-5'>
-                {household.guests.map((guest, i) => {
-                  return (
-                    <TableRow
-                      key={guest.id}
-                      guest={guest}
-                      events={events}
-                      partySize={household.guests.length}
-                      notes={household.notes ?? '-'}
-                      foobar={i === 0}
-                    />
-                  );
-                })}
-              </div>
-            );
-          })}
+          {households?.map((household) => (
+            <TableRow
+              key={household.id}
+              household={household}
+              events={events}
+            />
+          ))}
         </div>
       </div>
     </div>
