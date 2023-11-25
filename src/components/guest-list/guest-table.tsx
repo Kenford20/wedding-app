@@ -34,6 +34,7 @@ const TableRow = ({ household, events }: TableRowProps) => {
                 }}
                 type='checkbox'
                 id={`check-guest-${guest.id}`}
+                onClick={(e) => e.stopPropagation()}
               />
             </div>
           );
@@ -66,6 +67,7 @@ const TableRow = ({ household, events }: TableRowProps) => {
                     name='guestRSVP'
                     id={`guest-rsvp-${guest.id}`}
                     className='pr-3 font-light tracking-tight'
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <option value='Not Invited'>Not Invited</option>
                     <option value='Invited'>Invited</option>
