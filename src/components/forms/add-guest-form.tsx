@@ -6,6 +6,7 @@ import { sharedStyles } from '../shared-styles';
 import { useToggleGuestForm } from '~/contexts/guest-form-context';
 import { useDisablePageScroll } from '../helpers';
 import { GuestNameForm } from './guest-names';
+import { IoMdClose } from 'react-icons/io';
 
 import { type Dispatch, type SetStateAction } from 'react';
 import {
@@ -44,7 +45,8 @@ export default function AddGuestForm({
   const toggleGuestForm = useToggleGuestForm();
   const { mutate, isLoading: isCreatingGuest } = api.guest.create.useMutation({
     onSuccess: (createdHousehold) => {
-      toggleGuestForm();
+      closeForm && toggleGuestForm();
+      setGuestParty([defaultGuestPartyData]);
       setHouseholds((prevHouseholds: Household[] | undefined) =>
         prevHouseholds
           ? [...prevHouseholds, createdHousehold]
@@ -59,8 +61,11 @@ export default function AddGuestForm({
     },
   });
 
-  const [guestParty, setGuestParty] = useState([defaultGuestPartyData]);
+  const [guestParty, setGuestParty] = useState<GuestPartyFormData[]>([
+    defaultGuestPartyData,
+  ]);
   const [contactData, setContactData] = useState(defaultContactData);
+  const [closeForm, setCloseForm] = useState<boolean>(false);
 
   useDisablePageScroll();
 
@@ -79,11 +84,11 @@ export default function AddGuestForm({
 
   return (
     <div className='fixed top-0 flex h-screen w-screen justify-end overflow-y-scroll bg-transparent/[0.5] pb-16'>
-      <div className='relative h-fit w-[500px] bg-white'>
+      <div className='relative h-fit w-[525px] bg-white'>
         <div className='flex justify-between border-b p-5'>
           <h1 className='text-xl font-semibold'>Add Party</h1>
           <span className='cursor-pointer' onClick={() => toggleGuestForm()}>
-            X
+            <IoMdClose size={25} />
           </span>
         </div>
         {guestParty.map((guest, i) => {
@@ -180,28 +185,49 @@ export default function AddGuestForm({
           />
         </div>
         <div
-          className='fixed bottom-0 flex gap-3 border-t bg-white px-8 py-5'
+          className='fixed bottom-0 flex flex-col gap-3 border-t bg-white px-3 py-5'
           style={{ width: 'inherit' }}
         >
+          <div className='flex gap-3 text-sm'>
+            <button
+              disabled={isCreatingGuest}
+              onClick={() => {
+                setCloseForm(true);
+                mutate({ guestParty, contactData });
+              }}
+              className={`w-1/2 ${sharedStyles.secondaryButton({
+                py: 'py-2',
+                isLoading: isCreatingGuest,
+              })}`}
+            >
+              {isCreatingGuest ? 'Processing...' : 'Save & Close'}
+            </button>
+            <button
+              disabled={isCreatingGuest}
+              className={`w-1/2 ${sharedStyles.primaryButton({
+                px: 'px-2',
+                py: 'py-2',
+                isLoading: isCreatingGuest,
+              })}`}
+              onClick={() => {
+                setCloseForm(false);
+                mutate({ guestParty, contactData });
+              }}
+            >
+              {isCreatingGuest ? 'Processing...' : 'Save & Add Another Guest'}
+            </button>
+          </div>
           <button
-            disabled={isCreatingGuest}
             onClick={() => toggleGuestForm()}
-            className={`${sharedStyles.secondaryButton({
-              py: 'py-2',
-              isLoading: isCreatingGuest,
-            })} w-1/2`}
+            className={`text-sm font-semibold ${
+              isCreatingGuest ? 'cursor-not-allowed' : 'hover:underline'
+            } ${
+              isCreatingGuest
+                ? 'text-pink-200'
+                : `text-${sharedStyles.primaryColor}`
+            }`}
           >
             Cancel
-          </button>
-          <button
-            disabled={isCreatingGuest}
-            className={`w-1/2 ${sharedStyles.primaryButton({
-              py: 'py-2',
-              isLoading: isCreatingGuest,
-            })}`}
-            onClick={() => mutate({ guestParty, contactData })}
-          >
-            {isCreatingGuest ? 'Processing...' : 'Save & Close'}
           </button>
         </div>
       </div>

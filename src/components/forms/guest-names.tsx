@@ -103,6 +103,7 @@ export const GuestNameForm = ({
                     type='checkbox'
                     id={`guest${guestIndex}: ${event.id}`}
                     onChange={(e) => handleSelectEvent(e, event, guestIndex)}
+                    checked={guestParty.invites?.includes(event.id)}
                   />
                   <label
                     className='cursor-pointer'

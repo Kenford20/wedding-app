@@ -26,8 +26,9 @@ const secondaryButton = (options?: ButtonOptions) => {
   const hover = isLoading ? '' : 'hover:bg-pink-100';
   const cursor = isLoading ? 'cursor-not-allowed' : '';
   const border = isLoading ? 'border-pink-200' : 'border-pink-400';
+  const text = isLoading ? 'text-pink-200' : 'text-pink-400';
 
-  return `rounded-full border font-semibold text-pink-400 ${px} ${py} ${hover} ${cursor} ${border}`;
+  return `rounded-full border font-semibold ${px} ${py} ${hover} ${cursor} ${border} ${text}`;
 };
 
 export const sharedStyles = {

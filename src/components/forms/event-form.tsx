@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { api } from '~/utils/api';
 import { sharedStyles } from '../shared-styles';
 import { useToggleEventForm } from '~/contexts/event-form-context';
+import { IoMdClose } from 'react-icons/io';
 
 import { type Dispatch, type SetStateAction } from 'react';
 import { type EventFormData, type Event } from '../../types/schema';
@@ -127,7 +128,7 @@ export default function EventForm({
             {isEditMode ? 'Edit Event' : 'Add Event'}
           </h1>
           <span className='cursor-pointer' onClick={() => toggleEventForm()}>
-            X
+            <IoMdClose size={25} />
           </span>
         </div>
         <div className='p-5'>
