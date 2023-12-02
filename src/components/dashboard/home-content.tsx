@@ -146,7 +146,10 @@ export default function HomeContent({
             );
           })}
           <div
-            onClick={() => toggleEventForm()}
+            onClick={() => {
+              setPrefillEvent(undefined);
+              toggleEventForm();
+            }}
             className='flex cursor-pointer items-center justify-center border transition-colors duration-300 ease-in-out hover:bg-gray-100'
           >
             <div className='flex'>

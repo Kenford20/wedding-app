@@ -13,7 +13,6 @@ import { useDisablePageScroll } from '../helpers';
 type EventFormProps = {
   setEvents: Dispatch<SetStateAction<Event[] | undefined>>;
   prefillFormData: EventFormData | undefined;
-  setPrefillEvent: Dispatch<SetStateAction<EventFormData | undefined>>;
 };
 
 const defaultFormData = {
@@ -30,7 +29,6 @@ const defaultFormData = {
 export default function EventForm({
   setEvents,
   prefillFormData,
-  setPrefillEvent,
 }: EventFormProps) {
   const isEditMode = !!prefillFormData;
   const toggleEventForm = useToggleEventForm();
@@ -111,16 +109,12 @@ export default function EventForm({
     }
   };
 
-  useEffect(() => {
-    return () => setPrefillEvent(undefined);
-  }, [setPrefillEvent]);
-
   const isProcessing = isCreatingEvent || isUpdatingEvent || isDeletingEvent;
 
   return (
     <div
       ref={formRef}
-      className='fixed top-0 z-10 flex h-screen w-screen justify-end overflow-y-scroll bg-transparent/[0.5]'
+      className='fixed top-0 z-10 flex h-screen w-screen justify-end overflow-y-auto bg-transparent/[0.5]'
     >
       <div className='h-full w-[500px] bg-white'>
         <div className='flex justify-between border-b p-5'>
