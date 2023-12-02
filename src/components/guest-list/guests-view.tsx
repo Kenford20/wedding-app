@@ -4,8 +4,12 @@ import { sharedStyles } from '../shared-styles';
 import GuestSearchFilter from './guest-search-filter';
 import GuestTable from './guest-table';
 
-import { type Household, type Event } from '~/types/schema';
 import { type Dispatch, type SetStateAction } from 'react';
+import {
+  type Household,
+  type Event,
+  type HouseholdFormData,
+} from '~/types/schema';
 
 const foo = (households: Household[], events: Event[], totalGuests: number) => {
   return (
@@ -66,7 +70,7 @@ type GuestsViewProps = {
   events: Event[];
   households: Household[];
   totalGuests: number;
-  setPrefillHousehold: Dispatch<SetStateAction<Household | undefined>>;
+  setPrefillHousehold: Dispatch<SetStateAction<HouseholdFormData | undefined>>;
 };
 
 export default function GuestsView({
@@ -89,7 +93,10 @@ export default function GuestsView({
           </button>
           <button
             className={`ml-5 ${sharedStyles.primaryButton()}`}
-            onClick={() => toggleGuestForm()}
+            onClick={() => {
+              setPrefillHousehold(undefined);
+              toggleGuestForm();
+            }}
           >
             Add Guest
           </button>

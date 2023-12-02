@@ -6,7 +6,7 @@ import { useGuestForm } from '~/contexts/guest-form-context';
 import { guestListData } from '~/components/db-mocks';
 
 import Layout from '../layout';
-import AddGuestForm from '~/components/forms/add-guest-form';
+import GuestForm from '~/components/forms/guest-form';
 import EventForm from '~/components/forms/event-form';
 import GuestHeader from '~/components/guest-list/header';
 import EventsTabs from '~/components/guest-list/events-tabs';
@@ -14,7 +14,12 @@ import NoGuestsView from '~/components/guest-list/no-guests-view';
 import GuestsView from '~/components/guest-list/guests-view';
 import OopsPage from '~/components/oops';
 
-import { type Household, type Event, type EventFormData } from '~/types/schema';
+import {
+  type Household,
+  type Event,
+  type EventFormData,
+  type HouseholdFormData,
+} from '~/types/schema';
 
 export default function Dashboard() {
   const isEventFormOpen = useEventForm();
@@ -26,7 +31,7 @@ export default function Dashboard() {
   // TODO: setPrefillEvent passes into the selectedEventTab view thats currently active and will tie to the edit button
   const [prefillEvent, setPrefillEvent] = useState<EventFormData | undefined>();
   const [prefillHousehold, setPrefillHousehold] = useState<
-    Household | undefined
+    HouseholdFormData | undefined
   >();
 
   const { data: guestListData, isLoading: isFetchingGuestListData } =
@@ -48,10 +53,10 @@ export default function Dashboard() {
     <Layout>
       <main>
         {isGuestFormOpen && (
-          <AddGuestForm
+          <GuestForm
             events={events}
             setHouseholds={setHouseholds}
-            prefillHousehold={prefillHousehold}
+            prefillFormData={prefillHousehold}
           />
         )}
         {isEventFormOpen && (

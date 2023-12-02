@@ -41,15 +41,15 @@ const defaultHouseholdFormData: HouseholdFormData = {
 type AddGuestFormProps = {
   events: Event[];
   setHouseholds: Dispatch<SetStateAction<Household[] | undefined>>;
-  prefillHousehold: Household | undefined;
+  prefillFormData: HouseholdFormData | undefined;
 };
 
 export default function AddGuestForm({
   events,
   setHouseholds,
-  prefillHousehold,
+  prefillFormData,
 }: AddGuestFormProps) {
-  console.log('prefillHousehold', prefillHousehold);
+  console.log('prefillFormData', prefillFormData);
   const toggleGuestForm = useToggleGuestForm();
   const { mutate, isLoading: isCreatingGuest } = api.guest.create.useMutation({
     onSuccess: (createdHousehold) => {
@@ -70,7 +70,7 @@ export default function AddGuestForm({
   });
 
   const [householdFormData, setHouseholdFormData] = useState<HouseholdFormData>(
-    defaultHouseholdFormData
+    prefillFormData ?? defaultHouseholdFormData
   );
   const [contactData, setContactData] = useState(defaultContactData);
   const [closeForm, setCloseForm] = useState<boolean>(false);

@@ -12,7 +12,7 @@ type Event = {
 
 type Invitation = {
   eventId: string;
-  invitation: string | null;
+  rsvp: string | null;
 };
 
 type Household = {

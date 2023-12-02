@@ -1,7 +1,7 @@
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 import { formatDateNumber } from '../utils';
 
-import { type User } from '~/types/schema';
+import { type Invitation, type User } from '~/types/schema';
 
 export const guestListRouter = createTRPCRouter({
   getByUserId: publicProcedure.query(async ({ ctx }) => {
@@ -75,11 +75,6 @@ export const guestListRouter = createTRPCRouter({
       daysRemaining: 100,
     };
 
-    type TInvitation = {
-      eventId: string;
-      invitation: string | null;
-    };
-
     const guestListData = {
       weddingData,
       totalGuests: await ctx.prisma.guest.count({
@@ -95,11 +90,11 @@ export const guestListRouter = createTRPCRouter({
             return {
               ...guest,
               invitations: invitations.reduce(
-                (acc: TInvitation[], invitation) => {
+                (acc: Invitation[], invitation) => {
                   if (guest.id === invitation.guestId) {
                     acc.push({
                       eventId: invitation.eventId,
-                      invitation: invitation.rsvp,
+                      rsvp: invitation.rsvp,
                     });
                   }
                   return acc;

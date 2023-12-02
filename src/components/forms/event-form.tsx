@@ -85,7 +85,7 @@ export default function EventForm({
       },
     });
 
-  const [eventFormData, setEventFormData] = useState(
+  const [eventFormData, setEventFormData] = useState<EventFormData>(
     prefillFormData ?? defaultFormData
   );
   const formRef = useRef<HTMLInputElement>(null);
