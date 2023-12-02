@@ -5,6 +5,7 @@ import GuestSearchFilter from './guest-search-filter';
 import GuestTable from './guest-table';
 
 import { type Household, type Event } from '~/types/schema';
+import { type Dispatch, type SetStateAction } from 'react';
 
 const foo = (households: Household[], events: Event[], totalGuests: number) => {
   return (
@@ -65,12 +66,14 @@ type GuestsViewProps = {
   events: Event[];
   households: Household[];
   totalGuests: number;
+  setPrefillHousehold: Dispatch<SetStateAction<Household | undefined>>;
 };
 
 export default function GuestsView({
   events,
   households,
   totalGuests,
+  setPrefillHousehold,
 }: GuestsViewProps) {
   const toggleGuestForm = useToggleGuestForm();
   return (
@@ -92,7 +95,11 @@ export default function GuestsView({
           </button>
         </div>
       </div>
-      <GuestTable events={events} households={households} />
+      <GuestTable
+        events={events}
+        households={households}
+        setPrefillHousehold={setPrefillHousehold}
+      />
     </section>
   );
 }

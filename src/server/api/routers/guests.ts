@@ -17,19 +17,19 @@ export const guestRouter = createTRPCRouter({
             invites: z.array(z.string()),
           })
         ),
-        contactData: z
-          .object({
-            address1: z.string().nullish(),
-            address2: z.string().nullish(),
-            city: z.string().nullish(),
-            state: z.string().nullish(),
-            country: z.string().nullish(),
-            zipCode: z.string().nullish(),
-            phoneNumber: z.string().nullish(),
-            email: z.string().email({ message: 'Not a valid email' }).nullish(),
-            notes: z.string().nullish(),
-          })
+        address1: z.string().nullish().optional(),
+        address2: z.string().nullish().optional(),
+        city: z.string().nullish().optional(),
+        state: z.string().nullish().optional(),
+        country: z.string().nullish().optional(),
+        zipCode: z.string().nullish().optional(),
+        phoneNumber: z.string().nullish().optional(),
+        email: z
+          .string()
+          .email({ message: 'Not a valid email' })
+          .nullish()
           .optional(),
+        notes: z.string().nullish().optional(),
       })
     )
     .mutation(async ({ input, ctx }) => {
@@ -45,15 +45,15 @@ export const guestRouter = createTRPCRouter({
       const household = await ctx.prisma.household.create({
         data: {
           userId,
-          address1: input?.contactData?.address1,
-          address2: input?.contactData?.address2,
-          city: input?.contactData?.city,
-          state: input?.contactData?.state,
-          country: input?.contactData?.country,
-          zipCode: input?.contactData?.zipCode,
-          phone: input?.contactData?.phoneNumber,
-          email: input?.contactData?.email,
-          notes: input?.contactData?.notes,
+          address1: input?.address1,
+          address2: input?.address2,
+          city: input?.city,
+          state: input?.state,
+          country: input?.country,
+          zipCode: input?.zipCode,
+          phone: input?.phoneNumber,
+          email: input?.email,
+          notes: input?.notes,
         },
       });
 
@@ -105,6 +105,10 @@ export const guestRouter = createTRPCRouter({
         guests: newGuests,
       };
     }),
+
+  // delete: publicProcedure
+  //   .input(z.object({ guestId: z.string() }))
+  //   .query(async ({ ctx, input }) => {}),
 
   getAllByEventId: publicProcedure
     .input(z.object({ eventId: z.string() }))

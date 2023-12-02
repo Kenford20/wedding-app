@@ -10,16 +10,10 @@ import { IoMdClose } from 'react-icons/io';
 
 import { type Dispatch, type SetStateAction } from 'react';
 import {
-  type GuestPartyFormData,
   type Event,
   type Household,
+  type HouseholdFormData,
 } from '../../types/schema';
-
-const defaultGuestPartyData: GuestPartyFormData = {
-  firstName: '',
-  lastName: '',
-  invites: [],
-};
 
 const defaultContactData = {
   address1: undefined,
@@ -33,20 +27,34 @@ const defaultContactData = {
   notes: undefined,
 };
 
+const defaultHouseholdFormData: HouseholdFormData = {
+  ...defaultContactData,
+  guestParty: [
+    {
+      firstName: '',
+      lastName: '',
+      invites: [],
+    },
+  ],
+};
+
 type AddGuestFormProps = {
   events: Event[];
   setHouseholds: Dispatch<SetStateAction<Household[] | undefined>>;
+  prefillHousehold: Household | undefined;
 };
 
 export default function AddGuestForm({
   events,
   setHouseholds,
+  prefillHousehold,
 }: AddGuestFormProps) {
+  console.log('prefillHousehold', prefillHousehold);
   const toggleGuestForm = useToggleGuestForm();
   const { mutate, isLoading: isCreatingGuest } = api.guest.create.useMutation({
     onSuccess: (createdHousehold) => {
       closeForm && toggleGuestForm();
-      setGuestParty([defaultGuestPartyData]);
+      setHouseholdFormData(defaultHouseholdFormData);
       setHouseholds((prevHouseholds: Household[] | undefined) =>
         prevHouseholds
           ? [...prevHouseholds, createdHousehold]
@@ -61,9 +69,9 @@ export default function AddGuestForm({
     },
   });
 
-  const [guestParty, setGuestParty] = useState<GuestPartyFormData[]>([
-    defaultGuestPartyData,
-  ]);
+  const [householdFormData, setHouseholdFormData] = useState<HouseholdFormData>(
+    defaultHouseholdFormData
+  );
   const [contactData, setContactData] = useState(defaultContactData);
   const [closeForm, setCloseForm] = useState<boolean>(false);
 
@@ -79,7 +87,19 @@ export default function AddGuestForm({
   };
 
   const handleAddGuestToParty = () => {
-    setGuestParty((prev) => [...prev, defaultGuestPartyData]);
+    setHouseholdFormData((prev) => {
+      return {
+        ...prev,
+        guestParty: [
+          ...prev.guestParty,
+          {
+            firstName: '',
+            lastName: '',
+            invites: [],
+          },
+        ],
+      };
+    });
   };
 
   return (
@@ -91,14 +111,14 @@ export default function AddGuestForm({
             <IoMdClose size={25} />
           </span>
         </div>
-        {guestParty.map((guest, i) => {
+        {householdFormData?.guestParty.map((guest, i) => {
           return (
             <div key={i}>
               <GuestNameForm
                 events={events}
                 guestIndex={i}
-                guestParty={guest}
-                setGuestParty={setGuestParty}
+                guest={guest}
+                setHouseholdFormData={setHouseholdFormData}
               />
             </div>
           );
@@ -193,7 +213,7 @@ export default function AddGuestForm({
               disabled={isCreatingGuest}
               onClick={() => {
                 setCloseForm(true);
-                mutate({ guestParty, contactData });
+                mutate(householdFormData);
               }}
               className={`w-1/2 ${sharedStyles.secondaryButton({
                 py: 'py-2',
@@ -211,7 +231,7 @@ export default function AddGuestForm({
               })}`}
               onClick={() => {
                 setCloseForm(false);
-                mutate({ guestParty, contactData });
+                mutate(householdFormData);
               }}
             >
               {isCreatingGuest ? 'Processing...' : 'Save & Add Another Guest'}

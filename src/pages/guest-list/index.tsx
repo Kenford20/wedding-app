@@ -19,11 +19,15 @@ import { type Household, type Event, type EventFormData } from '~/types/schema';
 export default function Dashboard() {
   const isEventFormOpen = useEventForm();
   const isGuestFormOpen = useGuestForm();
-  const [selectedEventTab, setSelectedEventTab] = useState('All Events'); // eventId
+
+  const [selectedEventTab, setSelectedEventTab] = useState('All Events'); // eventId - move state into query
   const [events, setEvents] = useState<Event[]>();
   const [households, setHouseholds] = useState<Household[]>();
   // TODO: setPrefillEvent passes into the selectedEventTab view thats currently active and will tie to the edit button
   const [prefillEvent, setPrefillEvent] = useState<EventFormData | undefined>();
+  const [prefillHousehold, setPrefillHousehold] = useState<
+    Household | undefined
+  >();
 
   const { data: guestListData, isLoading: isFetchingGuestListData } =
     api.guestList.getByUserId.useQuery();
@@ -44,14 +48,14 @@ export default function Dashboard() {
     <Layout>
       <main>
         {isGuestFormOpen && (
-          <AddGuestForm events={events} setHouseholds={setHouseholds} />
+          <AddGuestForm
+            events={events}
+            setHouseholds={setHouseholds}
+            prefillHousehold={prefillHousehold}
+          />
         )}
         {isEventFormOpen && (
-          <EventForm
-            setEvents={setEvents}
-            prefillFormData={prefillEvent}
-            setPrefillEvent={setPrefillEvent}
-          />
+          <EventForm setEvents={setEvents} prefillFormData={prefillEvent} />
         )}
         <GuestHeader />
         <EventsTabs events={events} />
@@ -59,7 +63,11 @@ export default function Dashboard() {
           <GuestsView
             events={events}
             households={households}
-            totalGuests={guestListData.totalGuests}
+            totalGuests={households.reduce(
+              (acc, household) => acc + household.guests.length,
+              0
+            )}
+            setPrefillHousehold={setPrefillHousehold}
           />
         ) : (
           <NoGuestsView />

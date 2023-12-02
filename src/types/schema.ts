@@ -10,9 +10,9 @@ type Event = {
   userId: string;
 };
 
-type Rsvp = {
+type Invitation = {
   eventId: string;
-  rsvp: string | null;
+  invitation: string | null;
 };
 
 type Household = {
@@ -36,7 +36,7 @@ type Guest = {
   isPrimaryContact: boolean;
   userId: string;
   householdId: string;
-  rsvps?: Rsvp[];
+  invitations?: Invitation[];
 };
 
 type User = {
@@ -75,19 +75,33 @@ type EventFormData = {
   eventId: string;
 };
 
-type GuestPartyFormData = {
+type GuestFormData = {
   firstName: string;
   lastName: string;
   invites: string[];
 };
 
+type HouseholdFormData = {
+  address1?: string;
+  address2?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  zipCode?: string;
+  phone?: string;
+  email?: string;
+  notes?: string;
+  guestParty: GuestFormData[];
+};
+
 export {
   type Event,
-  type Rsvp,
+  type Invitation,
   type Household,
   type Guest,
   type User,
   type WeddingData,
   type EventFormData,
-  type GuestPartyFormData,
+  type GuestFormData,
+  type HouseholdFormData,
 };

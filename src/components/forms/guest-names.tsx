@@ -1,23 +1,31 @@
 import { sharedStyles } from '../shared-styles';
-import { type GuestPartyFormData, type Event } from '~/types/schema';
-import { type Dispatch, type SetStateAction } from 'react';
 import { FiMinusCircle } from 'react-icons/fi';
+
+import { type Dispatch, type SetStateAction } from 'react';
+import {
+  type GuestFormData,
+  type Event,
+  type HouseholdFormData,
+} from '~/types/schema';
 
 type guestNameFormProps = {
   events: Event[];
   guestIndex: number;
-  guestParty: GuestPartyFormData;
-  setGuestParty: Dispatch<SetStateAction<GuestPartyFormData[]>>;
+  guest: GuestFormData;
+  setHouseholdFormData: Dispatch<SetStateAction<HouseholdFormData>>;
 };
 
 export const GuestNameForm = ({
   events,
   guestIndex,
-  guestParty,
-  setGuestParty,
+  guest,
+  setHouseholdFormData,
 }: guestNameFormProps) => {
   const handleRemoveGuest = () => {
-    setGuestParty((prev) => prev.filter((guest, i) => i !== guestIndex));
+    setHouseholdFormData((prev) => ({
+      ...prev,
+      guestParty: prev.guestParty.filter((guest, i) => i !== guestIndex),
+    }));
   };
 
   const handleSelectEvent = (
@@ -26,39 +34,48 @@ export const GuestNameForm = ({
     index: number
   ) => {
     if (e.target.checked) {
-      setGuestParty((prev) => {
-        const updatedParty = prev.slice();
+      setHouseholdFormData((prev) => {
+        const updatedParty = prev.guestParty.slice();
         const oldInvites: string[] | undefined = updatedParty[index]?.invites;
         updatedParty[index] = {
           ...updatedParty[index]!,
           invites: [...oldInvites!, event.id],
         };
 
-        return updatedParty;
+        return {
+          ...prev,
+          guestParty: updatedParty,
+        };
       });
     } else {
-      setGuestParty((prev) => {
-        const updatedParty = prev.slice();
+      setHouseholdFormData((prev) => {
+        const updatedParty = prev.guestParty.slice();
         updatedParty[index] = {
           ...updatedParty[index]!,
           invites:
             updatedParty[index]?.invites!.filter((ev) => ev !== event.id) ?? [],
         };
 
-        return updatedParty;
+        return {
+          ...prev,
+          guestParty: updatedParty,
+        };
       });
     }
   };
 
   const handleNameChange = (field: string, input: string, index: number) => {
-    setGuestParty((prev) => {
-      const updatedParty = prev.slice();
+    setHouseholdFormData((prev) => {
+      const updatedParty = prev.guestParty.slice();
       updatedParty[index] = {
         ...updatedParty[index]!,
         [field]: input,
       };
 
-      return updatedParty;
+      return {
+        ...prev,
+        guestParty: updatedParty,
+      };
     });
   };
 
@@ -70,7 +87,7 @@ export const GuestNameForm = ({
           <input
             className='w-1/2 border p-3'
             placeholder='First Name*'
-            value={guestParty.firstName}
+            value={guest.firstName}
             onChange={(e) =>
               handleNameChange('firstName', e.target.value, guestIndex)
             }
@@ -78,7 +95,7 @@ export const GuestNameForm = ({
           <input
             className='w-1/2 border p-3'
             placeholder='Last Name*'
-            value={guestParty.lastName}
+            value={guest.lastName}
             onChange={(e) =>
               handleNameChange('lastName', e.target.value, guestIndex)
             }
@@ -103,7 +120,7 @@ export const GuestNameForm = ({
                     type='checkbox'
                     id={`guest${guestIndex}: ${event.id}`}
                     onChange={(e) => handleSelectEvent(e, event, guestIndex)}
-                    checked={guestParty.invites?.includes(event.id)}
+                    checked={guest.invites?.includes(event.id)}
                   />
                   <label
                     className='cursor-pointer'
