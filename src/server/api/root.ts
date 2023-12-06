@@ -3,6 +3,7 @@ import { createTRPCRouter } from '~/server/api/trpc';
 import { eventRouter } from './routers/event';
 import { guestListRouter } from './routers/guestList';
 import { guestRouter } from './routers/guests';
+import { householdRouter } from './routers/household';
 import { invitationsRouter } from './routers/invitations';
 import { userRouter } from './routers/user';
 
@@ -18,6 +19,7 @@ export const appRouter = createTRPCRouter({
   invitation: invitationsRouter,
   guestList: guestListRouter,
   user: userRouter,
+  household: householdRouter,
 });
 
 // export type definition of API
