@@ -191,11 +191,11 @@ export const householdRouter = createTRPCRouter({
         input.guestParty.map(async (guest) => {
           const updatedInvitations: Invitation[] = await Promise.all(
             Object.entries(guest.invites).map(
-              async ([eventId, rsvp]: string[]) => {
+              async ([inviteEventId, rsvp]: string[]) => {
                 return await ctx.prisma.invitation.update({
                   where: {
                     invitationId: {
-                      eventId: eventId!,
+                      eventId: inviteEventId!,
                       guestId: guest.guestId!,
                     },
                   },
