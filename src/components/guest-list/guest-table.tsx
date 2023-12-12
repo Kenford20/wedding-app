@@ -10,6 +10,7 @@ import {
   type Household,
   type Event,
   type HouseholdFormData,
+  type FormInvites,
 } from '~/types/schema';
 
 type GuestTableProps = {
@@ -84,8 +85,8 @@ const TableRow = ({
   const toggleGuestForm = useToggleGuestForm();
 
   const handleEditHousehold = () => {
-    console.log('clciked', household);
     setPrefillHousehold({
+      householdId: household.id,
       address1: household.address1 ?? undefined,
       address2: household.address2 ?? undefined,
       city: household.city ?? undefined,
@@ -95,12 +96,18 @@ const TableRow = ({
       phone: household.phone ?? undefined,
       email: household.email ?? undefined,
       notes: household.notes ?? undefined,
-      guestParty: household.guests.map((guest) => ({
-        firstName: guest.firstName,
-        lastName: guest.lastName,
-        invites:
-          guest?.invitations?.map((invitation) => invitation.eventId) ?? [],
-      })),
+      guestParty: household.guests.map((guest) => {
+        const invitations: FormInvites = {};
+        guest?.invitations?.forEach((inv) => {
+          invitations[inv.eventId] = inv.rsvp!;
+        });
+        return {
+          guestId: guest.id,
+          firstName: guest.firstName,
+          lastName: guest.lastName,
+          invites: invitations,
+        };
+      }),
     });
     toggleGuestForm();
   };

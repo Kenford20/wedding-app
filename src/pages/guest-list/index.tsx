@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { api } from '~/utils/api';
 import { LoadingPage } from '~/components/loader';
 import { useEventForm } from '~/contexts/event-form-context';
@@ -33,6 +33,15 @@ export default function Dashboard() {
   const [prefillHousehold, setPrefillHousehold] = useState<
     HouseholdFormData | undefined
   >();
+  const totalGuests =
+    useMemo(
+      () =>
+        households?.reduce(
+          (acc, household) => acc + household.guests.length,
+          0
+        ),
+      [households]
+    ) ?? 0;
 
   const { data: guestListData, isLoading: isFetchingGuestListData } =
     api.guestList.getByUserId.useQuery();
@@ -68,10 +77,7 @@ export default function Dashboard() {
           <GuestsView
             events={events}
             households={households}
-            totalGuests={households.reduce(
-              (acc, household) => acc + household.guests.length,
-              0
-            )}
+            totalGuests={totalGuests}
             setPrefillHousehold={setPrefillHousehold}
           />
         ) : (

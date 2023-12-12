@@ -10,6 +10,7 @@ import { IoMdClose } from 'react-icons/io';
 
 import { type Dispatch, type SetStateAction } from 'react';
 import {
+  type FormInvites,
   type Event,
   type Household,
   type HouseholdFormData,
@@ -27,15 +28,20 @@ const defaultContactData = {
   notes: undefined,
 };
 
-const defaultHouseholdFormData: HouseholdFormData = {
-  ...defaultContactData,
-  guestParty: [
-    {
-      firstName: '',
-      lastName: '',
-      invites: [],
-    },
-  ],
+const defaultHouseholdFormData = (events: Event[]) => {
+  const invites: FormInvites = {};
+  events.forEach((event: Event) => (invites[event.id] = 'Not Invited'));
+  return {
+    ...defaultContactData,
+    householdId: '',
+    guestParty: [
+      {
+        firstName: '',
+        lastName: '',
+        invites,
+      },
+    ],
+  };
 };
 
 type AddGuestFormProps = {
@@ -49,33 +55,26 @@ export default function AddGuestForm({
   setHouseholds,
   prefillFormData,
 }: AddGuestFormProps) {
-  console.log('prefillFormData', prefillFormData);
+  const isEditMode = !!prefillFormData;
   const toggleGuestForm = useToggleGuestForm();
-  const { mutate, isLoading: isCreatingGuest } = api.guest.create.useMutation({
-    onSuccess: (createdHousehold) => {
-      closeForm && toggleGuestForm();
-      setHouseholdFormData(defaultHouseholdFormData);
-      setHouseholds((prevHouseholds: Household[] | undefined) =>
-        prevHouseholds
-          ? [...prevHouseholds, createdHousehold]
-          : [createdHousehold]
-      );
-    },
-    onError: (err) => {
-      const errorMessage = err.data?.zodError?.fieldErrors?.guestParty;
-      if (errorMessage?.[0])
-        window.alert('Please fill in the full name for all guests!');
-      else window.alert('Failed to create event! Please try again later.');
-    },
-  });
 
   const [householdFormData, setHouseholdFormData] = useState<HouseholdFormData>(
-    prefillFormData ?? defaultHouseholdFormData
+    prefillFormData ?? defaultHouseholdFormData(events)
   );
   const [contactData, setContactData] = useState(defaultContactData);
-  const [closeForm, setCloseForm] = useState<boolean>(false);
 
   useDisablePageScroll();
+
+  const getTitle = () => {
+    if (!isEditMode || !prefillFormData) return 'Add Party';
+    const primaryContact = prefillFormData.guestParty[0];
+    const primaryContactName =
+      primaryContact?.firstName + ' ' + primaryContact?.lastName;
+    const numGuests = prefillFormData.guestParty.length;
+    return numGuests > 1
+      ? `${primaryContactName} + ${numGuests - 1}`
+      : primaryContactName;
+  };
 
   const handleOnChange = (field: string, input: string) => {
     setContactData((prev) => {
@@ -87,6 +86,8 @@ export default function AddGuestForm({
   };
 
   const handleAddGuestToParty = () => {
+    const invites: FormInvites = {};
+    events.forEach((event: Event) => (invites[event.id] = 'Not Invited'));
     setHouseholdFormData((prev) => {
       return {
         ...prev,
@@ -95,7 +96,7 @@ export default function AddGuestForm({
           {
             firstName: '',
             lastName: '',
-            invites: [],
+            invites,
           },
         ],
       };
@@ -106,7 +107,7 @@ export default function AddGuestForm({
     <div className='fixed top-0 z-50 flex h-screen w-screen justify-end overflow-y-scroll bg-transparent/[0.5] pb-16'>
       <div className='relative h-fit w-[525px] bg-white'>
         <div className='flex justify-between border-b p-5'>
-          <h1 className='text-xl font-semibold'>Add Party</h1>
+          <h1 className='text-xl font-semibold'>{getTitle()}</h1>
           <span className='cursor-pointer' onClick={() => toggleGuestForm()}>
             <IoMdClose size={25} />
           </span>
@@ -204,53 +205,228 @@ export default function AddGuestForm({
             style={{ resize: 'none' }}
           />
         </div>
-        <div
-          className='fixed bottom-0 flex flex-col gap-3 border-t bg-white px-3 py-5'
-          style={{ width: 'inherit' }}
-        >
-          <div className='flex gap-3 text-sm'>
-            <button
-              disabled={isCreatingGuest}
-              onClick={() => {
-                setCloseForm(true);
-                mutate(householdFormData);
-              }}
-              className={`w-1/2 ${sharedStyles.secondaryButton({
-                py: 'py-2',
-                isLoading: isCreatingGuest,
-              })}`}
-            >
-              {isCreatingGuest ? 'Processing...' : 'Save & Close'}
-            </button>
-            <button
-              disabled={isCreatingGuest}
-              className={`w-1/2 ${sharedStyles.primaryButton({
-                px: 'px-2',
-                py: 'py-2',
-                isLoading: isCreatingGuest,
-              })}`}
-              onClick={() => {
-                setCloseForm(false);
-                mutate(householdFormData);
-              }}
-            >
-              {isCreatingGuest ? 'Processing...' : 'Save & Add Another Guest'}
-            </button>
-          </div>
-          <button
-            onClick={() => toggleGuestForm()}
-            className={`text-sm font-semibold ${
-              isCreatingGuest ? 'cursor-not-allowed' : 'hover:underline'
-            } ${
-              isCreatingGuest
-                ? 'text-pink-200'
-                : `text-${sharedStyles.primaryColor}`
-            }`}
-          >
-            Cancel
-          </button>
-        </div>
+        {isEditMode ? (
+          <EditFormButtons
+            events={events}
+            householdFormData={householdFormData}
+            setHouseholds={setHouseholds}
+            setHouseholdFormData={setHouseholdFormData}
+          />
+        ) : (
+          <AddFormButtons
+            events={events}
+            householdFormData={householdFormData}
+            setHouseholds={setHouseholds}
+            setHouseholdFormData={setHouseholdFormData}
+          />
+        )}
       </div>
     </div>
   );
 }
+
+type AddFormButtonsProps = {
+  events: Event[];
+  householdFormData: HouseholdFormData;
+  setHouseholds: Dispatch<SetStateAction<Household[] | undefined>>;
+  setHouseholdFormData: Dispatch<SetStateAction<HouseholdFormData>>;
+};
+
+const AddFormButtons = ({
+  events,
+  householdFormData,
+  setHouseholds,
+  setHouseholdFormData,
+}: AddFormButtonsProps) => {
+  const toggleGuestForm = useToggleGuestForm();
+  const [closeForm, setCloseForm] = useState<boolean>(false);
+
+  const { mutate: createGuests, isLoading: isCreatingGuests } =
+    api.household.create.useMutation({
+      onSuccess: (createdHousehold) => {
+        console.log('newz', createdHousehold);
+        closeForm && toggleGuestForm();
+        setHouseholdFormData(defaultHouseholdFormData(events));
+        setHouseholds((prevHouseholds: Household[] | undefined) =>
+          prevHouseholds
+            ? [...prevHouseholds, createdHousehold]
+            : [createdHousehold]
+        );
+      },
+      onError: (err) => {
+        const errorMessage = err.data?.zodError?.fieldErrors?.guestParty;
+        if (errorMessage?.[0])
+          window.alert('Please fill in the full name for all guests!');
+        else window.alert('Failed to create guests! Please try again later.');
+      },
+    });
+
+  const handleCreateGuests = () => {
+    createGuests({
+      ...householdFormData,
+      guestParty: householdFormData.guestParty.map((guest) => {
+        const inv: string[] = [];
+        Object.entries(guest.invites).forEach(([eventId, rsvp]) => {
+          if (rsvp === 'Invited') inv.push(eventId);
+        });
+        return {
+          ...guest,
+          invites: inv,
+        };
+      }),
+    });
+  };
+
+  return (
+    <div
+      className='fixed bottom-0 flex flex-col gap-3 border-t bg-white px-3 py-5'
+      style={{ width: 'inherit' }}
+    >
+      <div className='flex gap-3 text-sm'>
+        <button
+          disabled={isCreatingGuests}
+          onClick={() => {
+            setCloseForm(true);
+            handleCreateGuests();
+          }}
+          className={`w-1/2 ${sharedStyles.secondaryButton({
+            py: 'py-2',
+            isLoading: isCreatingGuests,
+          })}`}
+        >
+          {isCreatingGuests ? 'Processing...' : 'Save & Close'}
+        </button>
+        <button
+          disabled={isCreatingGuests}
+          className={`w-1/2 ${sharedStyles.primaryButton({
+            px: 'px-2',
+            py: 'py-2',
+            isLoading: isCreatingGuests,
+          })}`}
+          onClick={() => {
+            setCloseForm(false);
+            handleCreateGuests();
+          }}
+        >
+          {isCreatingGuests ? 'Processing...' : 'Save & Add Another Guest'}
+        </button>
+      </div>
+      <button
+        onClick={() => toggleGuestForm()}
+        className={`text-sm font-semibold ${
+          isCreatingGuests ? 'cursor-not-allowed' : 'hover:underline'
+        } ${
+          isCreatingGuests
+            ? 'text-pink-200'
+            : `text-${sharedStyles.primaryColor}`
+        }`}
+      >
+        Cancel
+      </button>
+    </div>
+  );
+};
+
+type EditFormButtonsProps = {
+  events: Event[];
+  householdFormData: HouseholdFormData;
+  setHouseholds: Dispatch<SetStateAction<Household[] | undefined>>;
+  setHouseholdFormData: Dispatch<SetStateAction<HouseholdFormData>>;
+};
+
+const EditFormButtons = ({
+  events,
+  householdFormData,
+  setHouseholds,
+  setHouseholdFormData,
+}: EditFormButtonsProps) => {
+  const toggleGuestForm = useToggleGuestForm();
+
+  // const { mutate: deleteHousehold, isLoading: isDeletingHousehold } =
+  //   api.household.delete.useMutation({
+  //     onSuccess: (createdHousehold) => {
+  //       toggleGuestForm();
+  //       setHouseholdFormData(defaultHouseholdFormData(events));
+  //       setHouseholds((prevHouseholds: Household[] | undefined) =>
+  //         prevHouseholds
+  //           ? [...prevHouseholds, createdHousehold]
+  //           : [createdHousehold]
+  //       );
+  //     },
+  //     onError: (err) => {
+  //       const errorMessage = err.data?.zodError?.fieldErrors?.guestParty;
+  //       if (errorMessage?.[0])
+  //         window.alert('Please fill in the full name for all guests!');
+  //       else window.alert('Failed to delete party! Please try again later.');
+  //     },
+  //   });
+
+  // TODO: create/delete guest in db when user adds/remove a guest while updating a household
+  const { mutate: updateHousehold, isLoading: isUpdatingHousehold } =
+    api.household.update.useMutation({
+      onSuccess: (updatedHousehold) => {
+        toggleGuestForm();
+        setHouseholdFormData(defaultHouseholdFormData(events));
+        setHouseholds((prevHouseholds: Household[] | undefined) => {
+          if (!prevHouseholds) return [updatedHousehold];
+          const updatedHouseholds = prevHouseholds.slice();
+          const oldHousehold = prevHouseholds
+            .map((household) => household.id)
+            .indexOf(updatedHousehold.id);
+          updatedHouseholds.splice(oldHousehold, 1, updatedHousehold);
+          return updatedHouseholds;
+        });
+      },
+      onError: (err) => {
+        const errorMessage = err.data?.zodError?.fieldErrors?.guestParty;
+        if (errorMessage?.[0])
+          window.alert('Please fill in the full name for all guests!');
+        else window.alert('Failed to update party! Please try again later.');
+      },
+    });
+
+  return (
+    <div
+      className='fixed bottom-0 flex flex-col gap-3 border-t bg-white px-3 py-5'
+      style={{ width: 'inherit' }}
+    >
+      <div className='flex gap-3 text-sm'>
+        <button
+          disabled={isUpdatingHousehold}
+          onClick={() => toggleGuestForm()}
+          className={`w-1/2 ${sharedStyles.secondaryButton({
+            py: 'py-2',
+            isLoading: isUpdatingHousehold,
+          })}`}
+        >
+          Cancel
+        </button>
+        <button
+          disabled={isUpdatingHousehold}
+          className={`w-1/2 ${sharedStyles.primaryButton({
+            px: 'px-2',
+            py: 'py-2',
+            isLoading: isUpdatingHousehold,
+          })}`}
+          onClick={() => updateHousehold(householdFormData)}
+        >
+          {isUpdatingHousehold ? 'Processing...' : 'Save'}
+        </button>
+      </div>
+      <button
+        onClick={() => {
+          // deleteHousehold();
+        }}
+        className={`text-sm font-bold ${
+          isUpdatingHousehold ? 'cursor-not-allowed' : 'hover:underline'
+        } ${
+          isUpdatingHousehold
+            ? 'text-pink-200'
+            : `text-${sharedStyles.primaryColor}`
+        }`}
+      >
+        {isUpdatingHousehold ? 'Processing...' : 'Delete Party'}
+      </button>
+    </div>
+  );
+};

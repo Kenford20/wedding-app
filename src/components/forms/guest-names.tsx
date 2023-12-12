@@ -33,35 +33,22 @@ export const GuestNameForm = ({
     event: Event,
     index: number
   ) => {
-    if (e.target.checked) {
-      setHouseholdFormData((prev) => {
-        const updatedParty = prev.guestParty.slice();
-        const oldInvites: string[] | undefined = updatedParty[index]?.invites;
-        updatedParty[index] = {
-          ...updatedParty[index]!,
-          invites: [...oldInvites!, event.id],
-        };
+    setHouseholdFormData((prev) => {
+      const updatedParty = prev.guestParty.slice();
+      const oldInvites = updatedParty[index]?.invites;
+      updatedParty[index] = {
+        ...updatedParty[index]!,
+        invites: {
+          ...oldInvites,
+          [event.id]: e.target.checked ? 'Invited' : 'Not Invited',
+        },
+      };
 
-        return {
-          ...prev,
-          guestParty: updatedParty,
-        };
-      });
-    } else {
-      setHouseholdFormData((prev) => {
-        const updatedParty = prev.guestParty.slice();
-        updatedParty[index] = {
-          ...updatedParty[index]!,
-          invites:
-            updatedParty[index]?.invites!.filter((ev) => ev !== event.id) ?? [],
-        };
-
-        return {
-          ...prev,
-          guestParty: updatedParty,
-        };
-      });
-    }
+      return {
+        ...prev,
+        guestParty: updatedParty,
+      };
+    });
   };
 
   const handleNameChange = (field: string, input: string, index: number) => {
@@ -120,7 +107,7 @@ export const GuestNameForm = ({
                     type='checkbox'
                     id={`guest${guestIndex}: ${event.id}`}
                     onChange={(e) => handleSelectEvent(e, event, guestIndex)}
-                    checked={guest.invites?.includes(event.id)}
+                    checked={guest.invites[event.id] === 'Invited'}
                   />
                   <label
                     className='cursor-pointer'

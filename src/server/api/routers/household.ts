@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { TRPCError } from '@trpc/server';
-import { unknown, z } from 'zod';
+import { z } from 'zod';
 import {
   createTRPCRouter,
   privateProcedure,
   publicProcedure,
 } from '~/server/api/trpc';
-import { Invitation } from '~/types/schema';
+import { type Invitation } from '~/types/schema';
 
 export const householdRouter = createTRPCRouter({
   create: privateProcedure
@@ -183,12 +182,13 @@ export const householdRouter = createTRPCRouter({
       if (!updatedHousehold) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to create household',
+          message: 'Failed to update household',
         });
       }
 
       const updatedGuestParty = await Promise.all(
         input.guestParty.map(async (guest) => {
+          console.log('input invitez: ', guest.invites);
           const updatedInvitations: Invitation[] = await Promise.all(
             Object.entries(guest.invites).map(
               async ([inviteEventId, rsvp]: string[]) => {
@@ -207,7 +207,7 @@ export const householdRouter = createTRPCRouter({
             )
           );
 
-          console.log('updatedinvitatonz', updatedInvitations);
+          // console.log('updatedinvitatonz', updatedInvitations);
 
           const updatedGuests = await ctx.prisma.guest.update({
             where: {
@@ -218,6 +218,8 @@ export const householdRouter = createTRPCRouter({
               lastName: guest.lastName,
             },
           });
+
+          console.log('guestz', updatedGuests);
 
           return {
             ...updatedGuests,
@@ -231,13 +233,13 @@ export const householdRouter = createTRPCRouter({
       if (!updatedGuestParty) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to create guests',
+          message: 'Failed to update guests',
         });
       }
 
       return {
         ...updatedHousehold,
-        guestParty: updatedGuestParty,
+        guests: updatedGuestParty,
       };
     }),
 

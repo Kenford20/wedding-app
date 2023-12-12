@@ -1,10 +1,5 @@
-import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import {
-  createTRPCRouter,
-  privateProcedure,
-  publicProcedure,
-} from '~/server/api/trpc';
+import { createTRPCRouter, publicProcedure } from '~/server/api/trpc';
 
 export const guestRouter = createTRPCRouter({
   // delete: publicProcedure
