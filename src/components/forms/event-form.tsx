@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { api } from '~/utils/api';
 import { sharedStyles } from '../shared-styles';
 import { useToggleEventForm } from '~/contexts/event-form-context';

@@ -261,22 +261,6 @@ const AddFormButtons = ({
       },
     });
 
-  const handleCreateGuests = () => {
-    createGuests({
-      ...householdFormData,
-      guestParty: householdFormData.guestParty.map((guest) => {
-        const inv: string[] = [];
-        Object.entries(guest.invites).forEach(([eventId, rsvp]) => {
-          if (rsvp === 'Invited') inv.push(eventId);
-        });
-        return {
-          ...guest,
-          invites: inv,
-        };
-      }),
-    });
-  };
-
   return (
     <div
       className='fixed bottom-0 flex flex-col gap-3 border-t bg-white px-3 py-5'
@@ -287,7 +271,7 @@ const AddFormButtons = ({
           disabled={isCreatingGuests}
           onClick={() => {
             setCloseForm(true);
-            handleCreateGuests();
+            createGuests(householdFormData);
           }}
           className={`w-1/2 ${sharedStyles.secondaryButton({
             py: 'py-2',
@@ -305,7 +289,7 @@ const AddFormButtons = ({
           })}`}
           onClick={() => {
             setCloseForm(false);
-            handleCreateGuests();
+            createGuests(householdFormData);
           }}
         >
           {isCreatingGuests ? 'Processing...' : 'Save & Add Another Guest'}

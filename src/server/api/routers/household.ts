@@ -15,7 +15,7 @@ export const householdRouter = createTRPCRouter({
           z.object({
             firstName: z.string().nonempty({ message: 'First name required' }),
             lastName: z.string().nonempty({ message: 'Last name required' }),
-            invites: z.array(z.string()),
+            invites: z.record(z.string(), z.string()),
           })
         ),
         address1: z.string().nullish().optional(),
@@ -73,11 +73,13 @@ export const householdRouter = createTRPCRouter({
               isPrimaryContact: i === 0,
               invitations: {
                 createMany: {
-                  data: guest.invites.map((eventId) => ({
-                    eventId,
-                    rsvp: 'Invited',
-                    userId,
-                  })),
+                  data: Object.entries(guest.invites).map(
+                    ([eventId, rsvp]) => ({
+                      eventId,
+                      rsvp,
+                      userId,
+                    })
+                  ),
                 },
               },
             },
@@ -167,31 +169,24 @@ export const householdRouter = createTRPCRouter({
           id: input.householdId,
         },
         data: {
-          address1: input?.address1,
-          address2: input?.address2,
-          city: input?.city,
-          state: input?.state,
-          country: input?.country,
-          zipCode: input?.zipCode,
-          phone: input?.phoneNumber,
-          email: input?.email,
-          notes: input?.notes,
+          address1: input.address1 ?? undefined,
+          address2: input.address2 ?? undefined,
+          city: input.city ?? undefined,
+          state: input.state ?? undefined,
+          country: input.country ?? undefined,
+          zipCode: input.zipCode ?? undefined,
+          phone: input.phoneNumber ?? undefined,
+          email: input.email ?? undefined,
+          notes: input.notes ?? undefined,
         },
       });
-
-      if (!updatedHousehold) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to update household',
-        });
-      }
 
       const updatedGuestParty = await Promise.all(
         input.guestParty.map(async (guest) => {
           console.log('input invitez: ', guest.invites);
           const updatedInvitations: Invitation[] = await Promise.all(
             Object.entries(guest.invites).map(
-              async ([inviteEventId, rsvp]: string[]) => {
+              async ([inviteEventId, inputRsvp]: string[]) => {
                 return await ctx.prisma.invitation.update({
                   where: {
                     invitationId: {
@@ -200,12 +195,15 @@ export const householdRouter = createTRPCRouter({
                     },
                   },
                   data: {
-                    rsvp: rsvp,
+                    rsvp: inputRsvp ?? undefined,
                   },
                 });
               }
             )
           );
+
+          if (updatedInvitations.length !== Object.keys(guest.invites).length)
+            return Promise.reject();
 
           // console.log('updatedinvitatonz', updatedInvitations);
 
@@ -214,8 +212,8 @@ export const householdRouter = createTRPCRouter({
               id: guest.guestId,
             },
             data: {
-              firstName: guest.firstName,
-              lastName: guest.lastName,
+              firstName: guest.firstName ?? undefined,
+              lastName: guest.lastName ?? undefined,
             },
           });
 
@@ -223,14 +221,14 @@ export const householdRouter = createTRPCRouter({
 
           return {
             ...updatedGuests,
-            invites: updatedInvitations,
+            invitations: updatedInvitations,
           };
         })
       );
 
       console.log('updated guests', updatedGuestParty);
 
-      if (!updatedGuestParty) {
+      if (!updatedHousehold || !updatedGuestParty) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to update guests',

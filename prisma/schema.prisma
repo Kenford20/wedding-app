@@ -65,6 +65,8 @@ model Household {
     phone     String?
     email     String?
     notes     String?
+    gift      String?
+    thankyou  Boolean
     guests    Guest[]
 }
 
@@ -124,7 +126,7 @@ model Invitation {
     rsvp      String?
     userId    String
 
-    @@id([guestId, eventId])
+    @@id(name: "invitationId", [guestId, eventId])
     @@index([guestId])
     @@index([eventId])
 }
