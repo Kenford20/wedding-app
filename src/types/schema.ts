@@ -75,13 +75,19 @@ type EventFormData = {
   eventId: string;
 };
 
+type EventId = string;
+type RSVP = string;
+type FormInvites = Record<EventId, RSVP>;
+
 type GuestFormData = {
+  guestId?: number;
   firstName: string;
   lastName: string;
-  invites: string[];
+  invites: FormInvites;
 };
 
 type HouseholdFormData = {
+  householdId: string;
   address1?: string;
   address2?: string;
   city?: string;
@@ -104,4 +110,5 @@ export {
   type EventFormData,
   type GuestFormData,
   type HouseholdFormData,
+  type FormInvites,
 };
