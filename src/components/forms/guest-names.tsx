@@ -101,16 +101,18 @@ export const GuestNameForm = ({
             return (
               <div key={event.id}>
                 <div className='flex items-center gap-3'>
-                  <input
-                    className='h-6 w-6 cursor-pointer border p-3'
-                    style={{ accentColor: sharedStyles.primaryColorHex }}
-                    type='checkbox'
-                    id={`guest${guestIndex}: ${event.id}`}
-                    onChange={(e) => handleSelectEvent(e, event, guestIndex)}
-                    checked={guest.invites[event.id] === 'Invited'}
-                  />
+                  <div className='flex items-center'>
+                    <input
+                      className='h-6 w-6 cursor-pointer border p-3'
+                      style={{ accentColor: sharedStyles.primaryColorHex }}
+                      type='checkbox'
+                      id={`guest${guestIndex}: ${event.id}`}
+                      onChange={(e) => handleSelectEvent(e, event, guestIndex)}
+                      checked={guest.invites[event.id] === 'Invited'}
+                    />
+                  </div>
                   <label
-                    className='cursor-pointer'
+                    className={`cursor-pointer ${sharedStyles.ellipsisOverflow}`}
                     htmlFor={`guest${guestIndex}: ${event.id}`}
                   >
                     {event.name}

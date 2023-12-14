@@ -3,7 +3,6 @@ import { api } from '~/utils/api';
 import { LoadingPage } from '~/components/loader';
 import { useEventForm } from '~/contexts/event-form-context';
 import { useGuestForm } from '~/contexts/guest-form-context';
-import { guestListData } from '~/components/db-mocks';
 
 import Layout from '../layout';
 import GuestForm from '~/components/forms/guest-form';

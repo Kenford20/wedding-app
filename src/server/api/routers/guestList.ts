@@ -34,6 +34,7 @@ export const guestListRouter = createTRPCRouter({
         phone: true,
         email: true,
         notes: true,
+        gift: true,
       },
       orderBy: {
         createdAt: 'asc',
@@ -49,6 +50,9 @@ export const guestListRouter = createTRPCRouter({
     const events = await ctx.prisma.event.findMany({
       where: {
         userId: ctx.userId,
+      },
+      orderBy: {
+        createdAt: 'asc',
       },
     });
 

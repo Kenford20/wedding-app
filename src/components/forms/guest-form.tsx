@@ -81,7 +81,6 @@ export default function AddGuestForm({
   const [householdFormData, setHouseholdFormData] = useState<HouseholdFormData>(
     prefillFormData ?? defaultHouseholdFormData(events)
   );
-  const [contactData, setContactData] = useState(defaultContactData);
 
   useDisablePageScroll();
 
@@ -97,12 +96,13 @@ export default function AddGuestForm({
   };
 
   const handleOnChange = (field: string, input: string) => {
-    setContactData((prev) => {
+    setHouseholdFormData((prev) => {
       return {
         ...prev,
         [field]: input,
       };
     });
+    console.log(householdFormData);
   };
 
   const handleAddGuestToParty = () => {
@@ -138,7 +138,7 @@ export default function AddGuestForm({
         />
       )}
       <div
-        className={`relative h-fit w-[${sharedStyles.eventGuestFormWidth}] bg-white`}
+        className={`relative h-fit ${sharedStyles.eventGuestFormWidth} bg-white`}
       >
         <div className='flex justify-between border-b p-5'>
           <h1 className='text-xl font-semibold'>{getTitle()}</h1>
@@ -172,24 +172,24 @@ export default function AddGuestForm({
             <input
               className='w-100 border p-3'
               placeholder='Street Address'
-              value={contactData.address1}
+              value={householdFormData.address1}
               onChange={(e) => handleOnChange('address1', e.target.value)}
             />
             <input
               className='w-100 border p-3'
               placeholder='Apt/Suite/Other'
-              value={contactData.address2}
+              value={householdFormData.address2}
               onChange={(e) => handleOnChange('address2', e.target.value)}
             />
             <div className='flex gap-3'>
               <input
                 className='w-1/2 border p-3'
                 placeholder='City'
-                value={contactData.city}
+                value={householdFormData.city}
                 onChange={(e) => handleOnChange('city', e.target.value)}
               />
               <select
-                value={contactData.state}
+                value={householdFormData.state}
                 onChange={(e) => handleOnChange('state', e.target.value)}
                 className='w-1/4 border p-3'
               >
@@ -201,13 +201,13 @@ export default function AddGuestForm({
               <input
                 className='w-1/4 border p-3'
                 placeholder='Zip Code'
-                value={contactData.zipCode}
+                value={householdFormData.zipCode}
                 onChange={(e) => handleOnChange('zipCode', e.target.value)}
               />
             </div>
             <select
               className='w-100 border p-3'
-              value={contactData.country}
+              value={householdFormData.country}
               onChange={(e) => handleOnChange('country', e.target.value)}
             >
               <option defaultValue='State'>Country</option>
@@ -217,15 +217,17 @@ export default function AddGuestForm({
             </select>
             <div className='flex gap-3'>
               <input
+                type='tel'
                 className='w-1/2 border p-3'
                 placeholder='Phone'
-                value={contactData.phoneNumber}
-                onChange={(e) => handleOnChange('phoneNumber', e.target.value)}
+                value={householdFormData.phone}
+                onChange={(e) => handleOnChange('phone', e.target.value)}
               />
               <input
+                type='email'
                 className='w-1/2 border p-3'
                 placeholder='Email'
-                value={contactData.email}
+                value={householdFormData.email}
                 onChange={(e) => handleOnChange('email', e.target.value)}
               />
             </div>
@@ -233,7 +235,7 @@ export default function AddGuestForm({
           <h2 className='my-4 text-xl font-semibold'>My Notes</h2>
           <textarea
             placeholder='Enter notes about your guests, like food allergies'
-            value={contactData.notes}
+            value={householdFormData.notes}
             onChange={(e) => handleOnChange('notes', e.target.value)}
             className='h-32 w-full border p-3'
             style={{ resize: 'none' }}

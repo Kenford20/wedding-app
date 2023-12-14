@@ -26,6 +26,7 @@ type Household = {
   phone: string | null;
   email: string | null;
   notes: string | null;
+  gift: string | null;
   guests: Guest[];
 };
 
@@ -97,6 +98,7 @@ type HouseholdFormData = {
   phone?: string;
   email?: string;
   notes?: string;
+  gift?: string;
   guestParty: GuestFormData[];
 };
 

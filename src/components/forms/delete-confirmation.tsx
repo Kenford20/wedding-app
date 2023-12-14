@@ -15,7 +15,7 @@ export default function DeleteConfirmation({
 }: DeleteConfirmationProps) {
   return (
     <div
-      className={`absolute z-10 flex h-full w-[${sharedStyles.eventGuestFormWidth}] items-center justify-center bg-white`}
+      className={`absolute z-10 flex h-full ${sharedStyles.eventGuestFormWidth} items-center justify-center bg-white`}
     >
       <div className='flex flex-col justify-center gap-3 px-7 text-center'>
         <h1 className='text-xl font-semibold'>Are you sure?</h1>

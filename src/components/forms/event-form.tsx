@@ -128,9 +128,7 @@ export default function EventForm({
           yesHandler={() => deleteEvent({ eventId: eventFormData.eventId })}
         />
       )}
-      <div
-        className={`h-full w-[${sharedStyles.eventGuestFormWidth}] bg-white`}
-      >
+      <div className={`h-full ${sharedStyles.eventGuestFormWidth} bg-white`}>
         <div className='flex justify-between border-b p-5'>
           <h1 className='text-xl font-semibold'>
             {isEditMode ? 'Edit Event' : 'Add Event'}
