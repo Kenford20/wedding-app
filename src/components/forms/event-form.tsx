@@ -5,10 +5,11 @@ import { api } from '~/utils/api';
 import { sharedStyles } from '../shared-styles';
 import { useToggleEventForm } from '~/contexts/event-form-context';
 import { IoMdClose } from 'react-icons/io';
+import { useDisablePageScroll } from '../helpers';
+import DeleteConfirmation from './delete-confirmation';
 
 import { type Dispatch, type SetStateAction } from 'react';
 import { type EventFormData, type Event } from '../../types/schema';
-import { useDisablePageScroll } from '../helpers';
 
 type EventFormProps = {
   setEvents: Dispatch<SetStateAction<Event[] | undefined>>;
@@ -72,7 +73,6 @@ export default function EventForm({
   const { mutate: deleteEvent, isLoading: isDeletingEvent } =
     api.event.delete.useMutation({
       onSuccess: (deletedEvent) => {
-        console.log('del', deletedEvent);
         toggleEventForm();
         setEvents((prevEvents) =>
           prevEvents?.filter((event) => event.id !== deletedEvent.id)
@@ -85,6 +85,8 @@ export default function EventForm({
       },
     });
 
+  const [showDeleteConfirmation, setShowDeleteConfirmation] =
+    useState<boolean>(false);
   const [eventFormData, setEventFormData] = useState<EventFormData>(
     prefillFormData ?? defaultFormData
   );
@@ -116,6 +118,13 @@ export default function EventForm({
       ref={formRef}
       className='fixed top-0 z-10 flex h-screen w-screen justify-end overflow-y-auto bg-transparent/[0.5]'
     >
+      {showDeleteConfirmation && (
+        <DeleteConfirmation
+          isProcessing={isProcessing}
+          noHandler={() => setShowDeleteConfirmation(false)}
+          yesHandler={() => deleteEvent({ eventId: eventFormData.eventId })}
+        />
+      )}
       <div className='h-full w-[500px] bg-white'>
         <div className='flex justify-between border-b p-5'>
           <h1 className='text-xl font-semibold'>
@@ -216,7 +225,7 @@ export default function EventForm({
           {isEditMode && (
             <button
               disabled={isProcessing}
-              onClick={() => deleteEvent({ eventId: eventFormData.eventId })}
+              onClick={() => setShowDeleteConfirmation(true)}
               className={`font-semibold ${
                 isProcessing ? 'cursor-not-allowed' : 'hover:underline'
               } ${

@@ -96,15 +96,15 @@ export const eventRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const deletedEvent = await ctx.prisma.event.delete({
-        where: {
-          id: input.eventId,
-        },
-      });
-
       await ctx.prisma.invitation.deleteMany({
         where: {
           eventId: input.eventId,
+        },
+      });
+
+      const deletedEvent = await ctx.prisma.event.delete({
+        where: {
+          id: input.eventId,
         },
       });
 
