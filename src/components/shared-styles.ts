@@ -3,6 +3,7 @@ const desktopPaddingSidesGuestList = 'px-20';
 const verticalDivider = 'px-3 text-neutral-300';
 const primaryColor = 'pink-400';
 const primaryColorHex = '#f472b6';
+const eventGuestFormWidth = '525px';
 
 type ButtonOptions = {
   px?: string;
@@ -37,6 +38,7 @@ export const sharedStyles = {
   verticalDivider,
   primaryColor,
   primaryColorHex,
+  eventGuestFormWidth,
   primaryButton,
   secondaryButton,
 };

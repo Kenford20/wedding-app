@@ -7,6 +7,7 @@ import { useToggleGuestForm } from '~/contexts/guest-form-context';
 import { useDisablePageScroll } from '../helpers';
 import { GuestNameForm } from './guest-names';
 import { IoMdClose } from 'react-icons/io';
+import DeleteConfirmation from './delete-confirmation';
 
 import { type Dispatch, type SetStateAction } from 'react';
 import {
@@ -58,6 +59,25 @@ export default function AddGuestForm({
   const isEditMode = !!prefillFormData;
   const toggleGuestForm = useToggleGuestForm();
 
+  const { mutate: deleteHousehold, isLoading: isDeletingHousehold } =
+    api.household.delete.useMutation({
+      onSuccess: (deletedHouseholdId) => {
+        toggleGuestForm();
+        setHouseholds((prevHouseholds) =>
+          prevHouseholds?.filter(
+            (household) => household.id !== deletedHouseholdId
+          )
+        );
+      },
+      onError: (err) => {
+        const errorMessage = err.data?.zodError?.fieldErrors?.eventName;
+        if (errorMessage?.[0]) window.alert(errorMessage);
+        else window.alert('Failed to delete event! Please try again later.');
+      },
+    });
+
+  const [showDeleteConfirmation, setShowDeleteConfirmation] =
+    useState<boolean>(false);
   const [householdFormData, setHouseholdFormData] = useState<HouseholdFormData>(
     prefillFormData ?? defaultHouseholdFormData(events)
   );
@@ -105,7 +125,21 @@ export default function AddGuestForm({
 
   return (
     <div className='fixed top-0 z-50 flex h-screen w-screen justify-end overflow-y-scroll bg-transparent/[0.5] pb-16'>
-      <div className='relative h-fit w-[525px] bg-white'>
+      {showDeleteConfirmation && (
+        <DeleteConfirmation
+          isProcessing={isDeletingHousehold}
+          disclaimerText={
+            'Please confirm whether you would like to delete this party along with all its guests.'
+          }
+          noHandler={() => setShowDeleteConfirmation(false)}
+          yesHandler={() =>
+            deleteHousehold({ householdId: householdFormData.householdId })
+          }
+        />
+      )}
+      <div
+        className={`relative h-fit w-[${sharedStyles.eventGuestFormWidth}] bg-white`}
+      >
         <div className='flex justify-between border-b p-5'>
           <h1 className='text-xl font-semibold'>{getTitle()}</h1>
           <span className='cursor-pointer' onClick={() => toggleGuestForm()}>
@@ -211,6 +245,7 @@ export default function AddGuestForm({
             householdFormData={householdFormData}
             setHouseholds={setHouseholds}
             setHouseholdFormData={setHouseholdFormData}
+            setShowDeleteConfirmation={setShowDeleteConfirmation}
           />
         ) : (
           <AddFormButtons
@@ -316,6 +351,7 @@ type EditFormButtonsProps = {
   householdFormData: HouseholdFormData;
   setHouseholds: Dispatch<SetStateAction<Household[] | undefined>>;
   setHouseholdFormData: Dispatch<SetStateAction<HouseholdFormData>>;
+  setShowDeleteConfirmation: Dispatch<SetStateAction<boolean>>;
 };
 
 const EditFormButtons = ({
@@ -323,27 +359,9 @@ const EditFormButtons = ({
   householdFormData,
   setHouseholds,
   setHouseholdFormData,
+  setShowDeleteConfirmation,
 }: EditFormButtonsProps) => {
   const toggleGuestForm = useToggleGuestForm();
-
-  // const { mutate: deleteHousehold, isLoading: isDeletingHousehold } =
-  //   api.household.delete.useMutation({
-  //     onSuccess: (createdHousehold) => {
-  //       toggleGuestForm();
-  //       setHouseholdFormData(defaultHouseholdFormData(events));
-  //       setHouseholds((prevHouseholds: Household[] | undefined) =>
-  //         prevHouseholds
-  //           ? [...prevHouseholds, createdHousehold]
-  //           : [createdHousehold]
-  //       );
-  //     },
-  //     onError: (err) => {
-  //       const errorMessage = err.data?.zodError?.fieldErrors?.guestParty;
-  //       if (errorMessage?.[0])
-  //         window.alert('Please fill in the full name for all guests!');
-  //       else window.alert('Failed to delete party! Please try again later.');
-  //     },
-  //   });
 
   // TODO: create/delete guest in db when user adds/remove a guest while updating a household
   const { mutate: updateHousehold, isLoading: isUpdatingHousehold } =
@@ -398,9 +416,7 @@ const EditFormButtons = ({
         </button>
       </div>
       <button
-        onClick={() => {
-          // deleteHousehold();
-        }}
+        onClick={() => setShowDeleteConfirmation(true)}
         className={`text-sm font-bold ${
           isUpdatingHousehold ? 'cursor-not-allowed' : 'hover:underline'
         } ${

@@ -242,8 +242,14 @@ export const householdRouter = createTRPCRouter({
     }),
 
   delete: privateProcedure
-    .input(z.object({ guestId: z.string() }))
-    .query(async ({ ctx, input }) => {
-      return await new Promise(() => 'foo');
+    .input(z.object({ householdId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const deletedHousehold = await ctx.prisma.household.delete({
+        where: {
+          id: input.householdId,
+        },
+      });
+
+      return deletedHousehold.id;
     }),
 });
