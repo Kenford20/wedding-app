@@ -72,10 +72,10 @@ export default function EventForm({
 
   const { mutate: deleteEvent, isLoading: isDeletingEvent } =
     api.event.delete.useMutation({
-      onSuccess: (deletedEvent) => {
+      onSuccess: (deletedEventId) => {
         toggleEventForm();
         setEvents((prevEvents) =>
-          prevEvents?.filter((event) => event.id !== deletedEvent.id)
+          prevEvents?.filter((event) => event.id !== deletedEventId)
         );
       },
       onError: (err) => {
@@ -121,6 +121,9 @@ export default function EventForm({
       {showDeleteConfirmation && (
         <DeleteConfirmation
           isProcessing={isProcessing}
+          disclaimerText={
+            'Deleting this event will remove it from your website, and also erase any guest lists, RSVPs, and meals associated with it.'
+          }
           noHandler={() => setShowDeleteConfirmation(false)}
           yesHandler={() => deleteEvent({ eventId: eventFormData.eventId })}
         />

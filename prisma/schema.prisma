@@ -67,7 +67,7 @@ model Household {
     notes     String?
     gift      String?
     thankyou  Boolean
-    guests    Guest[]
+    guests    Guest[]  @relation(name: "Household_Guests")
 }
 
 model Guest {
@@ -79,8 +79,8 @@ model Guest {
     isPrimaryContact Boolean
     createdAt        DateTime     @default(now())
     updatedAt        DateTime     @updatedAt
-    household        Household    @relation(fields: [householdId], references: [id])
-    invitations      Invitation[]
+    household        Household    @relation(name: "Household_Guests", fields: [householdId], references: [id], onDelete: Cascade)
+    invitations      Invitation[] @relation(name: "Guest_Invitation")
 
     @@index([householdId])
 }
@@ -97,7 +97,7 @@ model Event {
     userId      String
     createdAt   DateTime     @default(now())
     updatedAt   DateTime     @updatedAt
-    invitations Invitation[]
+    invitations Invitation[] @relation(name: "Event_Invitation")
     // subEvents   SubEvent[]
 }
 
@@ -117,9 +117,9 @@ model Event {
 // }
 
 model Invitation {
-    guest     Guest?   @relation(fields: [guestId], references: [id])
+    guest     Guest?   @relation(name: "Guest_Invitation", fields: [guestId], references: [id], onDelete: Cascade)
     guestId   Int
-    event     Event?   @relation(fields: [eventId], references: [id])
+    event     Event?   @relation(name: "Event_Invitation", fields: [eventId], references: [id], onDelete: Cascade)
     eventId   String
     invitedAt DateTime @default(now())
     updatedAt DateTime @updatedAt
