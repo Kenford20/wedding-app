@@ -1,11 +1,7 @@
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import {
-  createTRPCRouter,
-  privateProcedure,
-  publicProcedure,
-} from '~/server/api/trpc';
-import { type Invitation } from '~/types/schema';
+import { createTRPCRouter, privateProcedure } from '~/server/api/trpc';
+import { type Household, type Invitation } from '~/types/schema';
 
 export const householdRouter = createTRPCRouter({
   create: privateProcedure
@@ -114,13 +110,13 @@ export const householdRouter = createTRPCRouter({
       //   });
       // });
 
-      const householdData = {
+      const householdData: Household = {
         ...household,
         guests: await Promise.all(
           newGuests.map(async (guest) => {
             return {
               ...guest,
-              invititations: await ctx.prisma.invitation.findMany({
+              invitations: await ctx.prisma.invitation.findMany({
                 where: {
                   guestId: guest.id,
                 },
@@ -178,7 +174,29 @@ export const householdRouter = createTRPCRouter({
           phone: input.phoneNumber ?? undefined,
           email: input.email ?? undefined,
           notes: input.notes ?? undefined,
+          // guests: {
+          //   connect: {
+          //     invitations: {
+          //       every:
+          //     },
+          //   },
+          //   updateMany: {
+          //     where: {
+          //       householdId: input.householdId,
+          //     },
+          //     data: input.guestParty.map(guest => {
+          //       return {
+          //         firstName: guest.firstName,
+          //         lastName: guest.lastName,
+          //       }
+          //     }),
+
+          //   },
+          // },
         },
+        // include: {
+        //   guests: true,
+        // }
       });
 
       const updatedGuestParty = await Promise.all(
