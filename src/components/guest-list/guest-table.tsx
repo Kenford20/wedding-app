@@ -28,7 +28,7 @@ export default function GuestTable({
     <div className={sharedStyles.desktopPaddingSidesGuestList}>
       <div className='box-border max-h-[80vh] overflow-auto'>
         <div
-          className='guest-table grid min-w-fit items-center gap-12 border-b py-6 pl-8 font-light italic text-gray-600'
+          className='guest-table grid min-w-fit items-center gap-12 border-b px-8 py-6 font-light italic text-gray-600'
           style={{
             gridTemplateColumns: `40px 240px 100px 125px repeat(${events.length}, 175px) 175px`,
           }}
@@ -53,6 +53,7 @@ export default function GuestTable({
           {events?.map((event) => {
             return <h5 key={event.id}>{event.name} RSVP</h5>;
           })}
+          {/* <h5>Gift</h5> */}
           <h5>My Notes</h5>
         </div>
 
@@ -83,6 +84,7 @@ const TableRow = ({
   setPrefillHousehold,
 }: TableRowProps) => {
   const toggleGuestForm = useToggleGuestForm();
+  if (household.guests.length < 1) return null;
 
   const handleEditHousehold = () => {
     setPrefillHousehold({
@@ -115,11 +117,10 @@ const TableRow = ({
   return (
     <div
       key={household.id}
-      className='guest-table grid min-w-fit cursor-pointer items-center gap-12 border-b py-5 pl-8'
+      className='guest-table grid min-w-fit cursor-pointer items-center gap-12 border-b px-8 py-5'
       style={{
         gridTemplateColumns: `40px 240px 100px 125px repeat(${events.length}, 175px) 175px`,
       }}
-      // TODO: use state to initialize guest form with household data like in event form
       onClick={() => handleEditHousehold()}
     >
       <div className='flex flex-col gap-1'>
@@ -143,7 +144,10 @@ const TableRow = ({
       <div className='flex flex-col gap-2'>
         {household.guests.map((guest) => {
           return (
-            <span key={guest.id}>{`${guest.firstName} ${guest.lastName}`}</span>
+            <span
+              className={sharedStyles.ellipsisOverflow}
+              key={guest.id}
+            >{`${guest.firstName} ${guest.lastName}`}</span>
           );
         })}
       </div>
@@ -160,10 +164,14 @@ const TableRow = ({
         return (
           <div key={event.id} className='flex flex-col gap-2'>
             {household.guests.map((guest) => {
+              const rsvp = guest.invitations?.find(
+                (inv) => inv.eventId === event.id
+              )?.rsvp;
               return (
                 <div key={guest.id} className='flex items-center'>
                   <select
                     name='guestRSVP'
+                    value={rsvp ?? 'Not Invited'}
                     id={`guest-rsvp-${guest.id}`}
                     className='pr-3 font-light tracking-tight'
                     onClick={(e) => e.stopPropagation()}
@@ -179,8 +187,10 @@ const TableRow = ({
           </div>
         );
       })}
-
-      <p>{household.notes ?? '-'}</p>
+      {/* These are for single event view/tab */}
+      {/* <p>Thank You Checkbox</p> */}
+      {/* <p>{household.gift ?? '-'}</p> */}
+      <p className={sharedStyles.ellipsisOverflow}>{household.notes ?? '-'}</p>
     </div>
   );
 };

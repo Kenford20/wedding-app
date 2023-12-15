@@ -100,7 +100,7 @@ export const GuestNameForm = ({
           {events?.map((event: Event) => {
             return (
               <div key={event.id}>
-                <div className='flex items-center gap-3'>
+                <div className='flex items-center gap-3 pr-2'>
                   <div className='flex items-center'>
                     <input
                       className='h-6 w-6 cursor-pointer border p-3'
