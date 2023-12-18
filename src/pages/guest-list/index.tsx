@@ -80,7 +80,7 @@ export default function Dashboard() {
             setPrefillHousehold={setPrefillHousehold}
           />
         ) : (
-          <NoGuestsView />
+          <NoGuestsView setPrefillHousehold={setPrefillHousehold} />
         )}
       </main>
     </Layout>

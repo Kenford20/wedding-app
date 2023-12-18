@@ -2,7 +2,16 @@ import { useToggleGuestForm } from '~/contexts/guest-form-context';
 import { sharedStyles } from '../shared-styles';
 import ExampleTable from './example-table';
 
-export default function NoGuestsView() {
+import { type Dispatch, type SetStateAction } from 'react';
+import { type HouseholdFormData } from '~/types/schema';
+
+type NoGuestsViewProps = {
+  setPrefillHousehold: Dispatch<SetStateAction<HouseholdFormData | undefined>>;
+};
+
+export default function NoGuestsView({
+  setPrefillHousehold,
+}: NoGuestsViewProps) {
   const toggleGuestForm = useToggleGuestForm();
   return (
     <section className={sharedStyles.desktopPaddingSidesGuestList}>
@@ -20,7 +29,10 @@ export default function NoGuestsView() {
           </button>
           <button
             className={sharedStyles.primaryButton({ py: 'py-2' })}
-            onClick={() => toggleGuestForm()}
+            onClick={() => {
+              setPrefillHousehold(undefined);
+              toggleGuestForm();
+            }}
           >
             Add Guest
           </button>
