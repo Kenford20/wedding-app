@@ -155,10 +155,12 @@ export const householdRouter = createTRPCRouter({
           .nullish()
           .optional(),
         notes: z.string().nullish().optional(),
+        deletedGuests: z.array(z.number()).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       console.log('inputz', input);
+      const userId = ctx.userId;
 
       const updatedHousehold = await ctx.prisma.household.update({
         where: {
@@ -199,9 +201,46 @@ export const householdRouter = createTRPCRouter({
         // }
       });
 
+      await ctx.prisma.guest.deleteMany({
+        where: {
+          id: {
+            in: input.deletedGuests,
+          },
+        },
+      });
+
       const updatedGuestParty = await Promise.all(
         input.guestParty.map(async (guest) => {
           console.log('input invitez: ', guest.invites);
+
+          const updatedGuest = await ctx.prisma.guest.upsert({
+            where: {
+              id: guest.guestId ?? -1, // prisma throws error if trying to upsert with undefined id - use unreachable integer as id to bring execution to the create block
+            },
+            update: {
+              firstName: guest.firstName ?? undefined,
+              lastName: guest.lastName ?? undefined,
+            },
+            create: {
+              firstName: guest.firstName,
+              lastName: guest.lastName,
+              userId,
+              householdId: input.householdId,
+              isPrimaryContact: false,
+              invitations: {
+                createMany: {
+                  data: Object.entries(guest.invites).map(
+                    ([eventId, rsvp]) => ({
+                      eventId,
+                      rsvp,
+                      userId,
+                    })
+                  ),
+                },
+              },
+            },
+          });
+
           const updatedInvitations: Invitation[] = await Promise.all(
             Object.entries(guest.invites).map(
               async ([inviteEventId, inputRsvp]: string[]) => {
@@ -209,7 +248,7 @@ export const householdRouter = createTRPCRouter({
                   where: {
                     invitationId: {
                       eventId: inviteEventId!,
-                      guestId: guest.guestId!,
+                      guestId: guest.guestId ?? updatedGuest.id, // if guest is added to existing party, use that id here upserted from above
                     },
                   },
                   data: {
@@ -225,20 +264,10 @@ export const householdRouter = createTRPCRouter({
 
           // console.log('updatedinvitatonz', updatedInvitations);
 
-          const updatedGuests = await ctx.prisma.guest.update({
-            where: {
-              id: guest.guestId,
-            },
-            data: {
-              firstName: guest.firstName ?? undefined,
-              lastName: guest.lastName ?? undefined,
-            },
-          });
-
-          console.log('guestz', updatedGuests);
+          console.log('guestz', updatedGuest);
 
           return {
-            ...updatedGuests,
+            ...updatedGuest,
             invitations: updatedInvitations,
           };
         })

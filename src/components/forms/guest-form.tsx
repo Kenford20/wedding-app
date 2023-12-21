@@ -81,6 +81,7 @@ export default function AddGuestForm({
   const [householdFormData, setHouseholdFormData] = useState<HouseholdFormData>(
     prefillFormData ?? defaultHouseholdFormData(events)
   );
+  const [deletedGuests, setDeletedGuests] = useState<number[]>([]);
 
   useDisablePageScroll();
 
@@ -148,14 +149,14 @@ export default function AddGuestForm({
         </div>
         {householdFormData?.guestParty.map((guest, i) => {
           return (
-            <div key={i}>
-              <GuestNameForm
-                events={events}
-                guestIndex={i}
-                guest={guest}
-                setHouseholdFormData={setHouseholdFormData}
-              />
-            </div>
+            <GuestNameForm
+              key={i}
+              events={events}
+              guestIndex={i}
+              guest={guest}
+              setHouseholdFormData={setHouseholdFormData}
+              setDeletedGuests={setDeletedGuests}
+            />
           );
         })}
         <div className='mt-3 text-center'>
@@ -245,6 +246,7 @@ export default function AddGuestForm({
           <EditFormButtons
             events={events}
             householdFormData={householdFormData}
+            deletedGuests={deletedGuests}
             setHouseholds={setHouseholds}
             setHouseholdFormData={setHouseholdFormData}
             setShowDeleteConfirmation={setShowDeleteConfirmation}
@@ -351,6 +353,7 @@ const AddFormButtons = ({
 type EditFormButtonsProps = {
   events: Event[];
   householdFormData: HouseholdFormData;
+  deletedGuests: number[];
   setHouseholds: Dispatch<SetStateAction<Household[] | undefined>>;
   setHouseholdFormData: Dispatch<SetStateAction<HouseholdFormData>>;
   setShowDeleteConfirmation: Dispatch<SetStateAction<boolean>>;
@@ -359,6 +362,7 @@ type EditFormButtonsProps = {
 const EditFormButtons = ({
   events,
   householdFormData,
+  deletedGuests,
   setHouseholds,
   setHouseholdFormData,
   setShowDeleteConfirmation,
@@ -412,7 +416,9 @@ const EditFormButtons = ({
             py: 'py-2',
             isLoading: isUpdatingHousehold,
           })}`}
-          onClick={() => updateHousehold(householdFormData)}
+          onClick={() =>
+            updateHousehold({ ...householdFormData, deletedGuests })
+          }
         >
           {isUpdatingHousehold ? 'Processing...' : 'Save'}
         </button>

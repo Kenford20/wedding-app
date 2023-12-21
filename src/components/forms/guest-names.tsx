@@ -8,11 +8,12 @@ import {
   type HouseholdFormData,
 } from '~/types/schema';
 
-type guestNameFormProps = {
+type GuestNameFormProps = {
   events: Event[];
   guestIndex: number;
   guest: GuestFormData;
   setHouseholdFormData: Dispatch<SetStateAction<HouseholdFormData>>;
+  setDeletedGuests: Dispatch<SetStateAction<number[]>>;
 };
 
 export const GuestNameForm = ({
@@ -20,8 +21,10 @@ export const GuestNameForm = ({
   guestIndex,
   guest,
   setHouseholdFormData,
-}: guestNameFormProps) => {
+  setDeletedGuests,
+}: GuestNameFormProps) => {
   const handleRemoveGuest = () => {
+    setDeletedGuests((prev) => [...prev, guest.guestId ?? -1]); // for editMode, guestId will be defined - otherwise we're in add mode so dont need to delete from db
     setHouseholdFormData((prev) => ({
       ...prev,
       guestParty: prev.guestParty.filter((guest, i) => i !== guestIndex),
