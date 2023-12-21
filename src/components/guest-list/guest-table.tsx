@@ -4,13 +4,16 @@ import { FaSort } from 'react-icons/fa';
 import { HiOutlinePhone } from 'react-icons/hi2';
 import { useToggleGuestForm } from '~/contexts/guest-form-context';
 import { sharedStyles } from '../shared-styles';
+import { api } from '~/utils/api';
+import { LoadingSpinner } from '../loader';
 
-import { type Dispatch, type SetStateAction } from 'react';
+import { useState, type Dispatch, type SetStateAction } from 'react';
 import {
   type Household,
   type Event,
   type HouseholdFormData,
   type FormInvites,
+  type Guest,
 } from '~/types/schema';
 
 type GuestTableProps = {
@@ -162,26 +165,18 @@ const TableRow = ({
 
       {events?.map((event) => {
         return (
-          <div key={event.id} className='flex flex-col gap-2'>
+          <div key={event.id} className='flex flex-col gap-3'>
             {household.guests.map((guest) => {
               const rsvp = guest.invitations?.find(
                 (inv) => inv.eventId === event.id
               )?.rsvp;
               return (
-                <div key={guest.id} className='flex items-center'>
-                  <select
-                    name='guestRSVP'
-                    value={rsvp ?? 'Not Invited'}
-                    id={`guest-rsvp-${guest.id}`}
-                    className='pr-3 font-light tracking-tight'
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <option value='Not Invited'>Not Invited</option>
-                    <option value='Invited'>Invited</option>
-                    <option value='Attending'>Attending</option>
-                    <option value='Declined'>Declined</option>
-                  </select>
-                </div>
+                <InvitationDropdown
+                  key={guest.id}
+                  guest={guest}
+                  event={event}
+                  rsvp={rsvp ?? 'Not Invited'}
+                />
               );
             })}
           </div>
@@ -191,6 +186,80 @@ const TableRow = ({
       {/* <p>Thank You Checkbox</p> */}
       {/* <p>{household.gift ?? '-'}</p> */}
       <p className={sharedStyles.ellipsisOverflow}>{household.notes ?? '-'}</p>
+    </div>
+  );
+};
+
+type InvitationDropdownProps = {
+  guest: Guest;
+  event: Event;
+  rsvp: string;
+};
+
+const InvitationDropdown = ({
+  guest,
+  event,
+  rsvp,
+}: InvitationDropdownProps) => {
+  const [rsvpValue, setRsvpValue] = useState(rsvp);
+
+  const { mutate: updateInvitation, isLoading: isUpdatingInvitation } =
+    api.invitation.update.useMutation({
+      onSuccess: (updatedInvitation) => {
+        setRsvpValue(updatedInvitation.rsvp ?? 'Not Invited');
+      },
+      onError: () => {
+        window.alert('Failed to update invitation! Please try again later.');
+      },
+    });
+
+  const getRSVPcolor = (rsvp: string | null | undefined) => {
+    switch (rsvp) {
+      case 'Not Invited':
+        return 'bg-gray-500';
+      case 'Invited':
+        return 'bg-gray-300';
+      case 'Attending':
+        return 'bg-green-400';
+      case 'Declined':
+        return 'bg-red-400';
+      default:
+        return 'bg-gray-400';
+    }
+  };
+
+  return (
+    <div key={guest.id} className='flex items-center'>
+      <span
+        className={`mr-2 inline-block h-1.5 w-1.5 rounded-full ${getRSVPcolor(
+          rsvpValue
+        )}`}
+      ></span>
+      {isUpdatingInvitation ? (
+        <div className='m-auto w-[65%]'>
+          <LoadingSpinner />
+        </div>
+      ) : (
+        <select
+          name='guestRSVP'
+          value={rsvpValue}
+          id={`guest-rsvp-${guest.id}`}
+          className='pr-3 font-light tracking-tight'
+          onClick={(e) => e.stopPropagation()}
+          onChange={(e) => {
+            updateInvitation({
+              guestId: guest.id,
+              eventId: event.id,
+              rsvp: e.target.value,
+            });
+          }}
+        >
+          <option value='Not Invited'>Not Invited</option>
+          <option value='Invited'>Invited</option>
+          <option value='Attending'>Attending</option>
+          <option value='Declined'>Declined</option>
+        </select>
+      )}
     </div>
   );
 };

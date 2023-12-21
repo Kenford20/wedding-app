@@ -31,27 +31,28 @@ export const invitationsRouter = createTRPCRouter({
       return newInvitation;
     }),
 
-  // update: privateProcedure
-  //   .input(
-  //     z.object({
-  //       guestId: z.number(),
-  //       eventId: z.string(),
-  //       rsvp: z.string(),
-  //     })
-  //   )
-  //   .mutation(async ({ input, ctx }) => {
-  //     const { guestId, eventId, rsvp } = input;
-
-  //     await ctx.prisma.invitation.update({
-  //       where: {
-  //         guestId,
-  //         eventId,
-  //       },
-  //       data: {
-  //         rsvp,
-  //       },
-  //     });
-  //   }),
+  update: privateProcedure
+    .input(
+      z.object({
+        guestId: z.number(),
+        eventId: z.string(),
+        rsvp: z.string(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const updatedInvitation = await ctx.prisma.invitation.update({
+        where: {
+          invitationId: {
+            guestId: input.guestId,
+            eventId: input.eventId,
+          },
+        },
+        data: {
+          rsvp: input.rsvp,
+        },
+      });
+      return updatedInvitation;
+    }),
 
   getAllByUserId: publicProcedure.query(async ({ ctx }) => {
     if (!ctx.userId) return;

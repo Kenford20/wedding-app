@@ -369,7 +369,6 @@ const EditFormButtons = ({
 }: EditFormButtonsProps) => {
   const toggleGuestForm = useToggleGuestForm();
 
-  // TODO: create/delete guest in db when user adds/remove a guest while updating a household
   const { mutate: updateHousehold, isLoading: isUpdatingHousehold } =
     api.household.update.useMutation({
       onSuccess: (updatedHousehold) => {
