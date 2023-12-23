@@ -34,7 +34,7 @@ export default function RsvpContent() {
             </div>
           </div>
         </div>
-        <Link href='/guest-list'>Manage Guest List</Link>
+        <Link href='/guest-list?event=all'>Manage Guest List</Link>
       </div>
       <div>
         <h3>General Questions</h3>

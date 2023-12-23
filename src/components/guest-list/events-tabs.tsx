@@ -1,26 +1,47 @@
+import Link from 'next/link';
 import { sharedStyles } from '../shared-styles';
-import { type Event } from '../../types/schema';
 import { useToggleEventForm } from '~/contexts/event-form-context';
+
+import { type Event } from '../../types/schema';
 
 type EventsTabsProps = {
   events: Event[];
+  selectedEventTab: string;
 };
 
-export default function EventsTabs({ events }: EventsTabsProps) {
+export default function EventsTabs({
+  events,
+  selectedEventTab,
+}: EventsTabsProps) {
   const toggleEventForm = useToggleEventForm();
+
   return (
     <div className='border-b'>
       <ul className={`flex gap-5 ${sharedStyles.desktopPaddingSidesGuestList}`}>
-        <li className='cursor-pointer border-b-4 border-gray-600 border-transparent py-3 text-sm hover:border-gray-600'>
-          All Events
+        <li
+          className={`cursor-pointer border-b-4 py-3 text-sm hover:border-gray-600 ${
+            selectedEventTab === 'all'
+              ? 'border-gray-600'
+              : 'border-transparent'
+          }`}
+        >
+          <Link href='/guest-list?event=all' scroll={false}>
+            All Events
+          </Link>
         </li>
         {events?.map((event) => {
           return (
             <li
-              className='cursor-pointer border-b-4 border-transparent py-3 text-sm hover:border-gray-600'
+              className={`cursor-pointer border-b-4 py-3 text-sm hover:border-gray-600 ${
+                selectedEventTab === event.id
+                  ? 'border-gray-600'
+                  : 'border-transparent'
+              }`}
               key={event.id}
             >
-              {event.name}
+              <Link href={`/guest-list?event=${event.id}`} scroll={false}>
+                {event.name}
+              </Link>
             </li>
           );
         })}

@@ -3,6 +3,7 @@ import { api } from '~/utils/api';
 import { LoadingPage } from '~/components/loader';
 import { useEventForm } from '~/contexts/event-form-context';
 import { useGuestForm } from '~/contexts/guest-form-context';
+import { useSearchParams } from 'next/navigation';
 
 import Layout from '../layout';
 import GuestForm from '~/components/forms/guest-form';
@@ -23,8 +24,9 @@ import {
 export default function Dashboard() {
   const isEventFormOpen = useEventForm();
   const isGuestFormOpen = useGuestForm();
+  const searchParams = useSearchParams();
+  const selectedEventTab = searchParams.get('event') ?? 'all';
 
-  const [selectedEventTab, setSelectedEventTab] = useState('All Events'); // eventId - move state into query
   const [events, setEvents] = useState<Event[]>();
   const [households, setHouseholds] = useState<Household[]>();
   // TODO: setPrefillEvent passes into the selectedEventTab view thats currently active and will tie to the edit button
@@ -32,15 +34,6 @@ export default function Dashboard() {
   const [prefillHousehold, setPrefillHousehold] = useState<
     HouseholdFormData | undefined
   >();
-  const totalGuests =
-    useMemo(
-      () =>
-        households?.reduce(
-          (acc, household) => acc + household.guests.length,
-          0
-        ),
-      [households]
-    ) ?? 0;
 
   const { data: guestListData, isLoading: isFetchingGuestListData } =
     api.guestList.getByUserId.useQuery();
@@ -50,13 +43,41 @@ export default function Dashboard() {
     setHouseholds(guestListData?.households ?? []);
   }, [guestListData]);
 
+  const filteredHouseholdsByEvent = useMemo(
+    () =>
+      households?.map((household) => {
+        return {
+          ...household,
+          guests: household.guests.filter((guest) => {
+            if (!guest.invitations) return false;
+            const matchingInvitation = guest.invitations.find(
+              (guest) => guest.eventId === selectedEventTab
+            );
+            return matchingInvitation?.rsvp !== 'Not Invited';
+          }),
+        };
+      }),
+    [selectedEventTab, households]
+  );
+
+  const totalGuests =
+    useMemo(
+      () =>
+        filteredHouseholdsByEvent?.reduce(
+          (acc, household) => acc + household.guests.length,
+          0
+        ),
+      [filteredHouseholdsByEvent]
+    ) ?? 0;
+
   if (isFetchingGuestListData) return <LoadingPage />;
   if (typeof window !== 'undefined' && guestListData === null) {
     window.location.href = '/';
   }
   if (!guestListData || !events || !households) return <OopsPage />;
 
-  console.log('guestListIndex data', guestListData);
+  // console.log('guestListIndex data', guestListData);
+  console.log('filtered householdz', filteredHouseholdsByEvent);
   return (
     <Layout>
       <main>
@@ -71,11 +92,11 @@ export default function Dashboard() {
           <EventForm setEvents={setEvents} prefillFormData={prefillEvent} />
         )}
         <GuestHeader />
-        <EventsTabs events={events} />
+        <EventsTabs events={events} selectedEventTab={selectedEventTab} />
         {households.length > 0 ? (
           <GuestsView
             events={events}
-            households={households}
+            households={filteredHouseholdsByEvent ?? []}
             totalGuests={totalGuests}
             setPrefillHousehold={setPrefillHousehold}
           />
