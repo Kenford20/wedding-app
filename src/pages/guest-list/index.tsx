@@ -45,18 +45,21 @@ export default function Dashboard() {
 
   const filteredHouseholdsByEvent = useMemo(
     () =>
-      households?.map((household) => {
-        return {
-          ...household,
-          guests: household.guests.filter((guest) => {
-            if (!guest.invitations) return false;
-            const matchingInvitation = guest.invitations.find(
-              (guest) => guest.eventId === selectedEventTab
-            );
-            return matchingInvitation?.rsvp !== 'Not Invited';
-          }),
-        };
-      }),
+      selectedEventTab === 'all'
+        ? households ?? []
+        : households?.map((household) => {
+            return {
+              ...household,
+              guests: household.guests.filter((guest) => {
+                if (!guest.invitations) return false;
+                const matchingInvitation = guest.invitations.find(
+                  (guest) => guest.eventId === selectedEventTab
+                );
+                if (matchingInvitation === undefined) return false;
+                return matchingInvitation?.rsvp !== 'Not Invited';
+              }),
+            };
+          }) ?? [],
     [selectedEventTab, households]
   );
 
@@ -93,10 +96,10 @@ export default function Dashboard() {
         )}
         <GuestHeader />
         <EventsTabs events={events} selectedEventTab={selectedEventTab} />
-        {households.length > 0 ? (
+        {totalGuests > 0 ? (
           <GuestsView
             events={events}
-            households={filteredHouseholdsByEvent ?? []}
+            households={filteredHouseholdsByEvent}
             totalGuests={totalGuests}
             setPrefillHousehold={setPrefillHousehold}
           />
