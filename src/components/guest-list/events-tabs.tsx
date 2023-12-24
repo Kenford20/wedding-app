@@ -6,12 +6,12 @@ import { type Event } from '../../types/schema';
 
 type EventsTabsProps = {
   events: Event[];
-  selectedEventTab: string;
+  selectedEventId: string;
 };
 
 export default function EventsTabs({
   events,
-  selectedEventTab,
+  selectedEventId,
 }: EventsTabsProps) {
   const toggleEventForm = useToggleEventForm();
 
@@ -20,12 +20,10 @@ export default function EventsTabs({
       <ul className={`flex gap-5 ${sharedStyles.desktopPaddingSidesGuestList}`}>
         <li
           className={`cursor-pointer border-b-4 py-3 text-sm hover:border-gray-600 ${
-            selectedEventTab === 'all'
-              ? 'border-gray-600'
-              : 'border-transparent'
+            selectedEventId === 'all' ? 'border-gray-600' : 'border-transparent'
           }`}
         >
-          <Link href='/guest-list?event=all' scroll={false}>
+          <Link href='?event=all' scroll={false}>
             All Events
           </Link>
         </li>
@@ -33,13 +31,13 @@ export default function EventsTabs({
           return (
             <li
               className={`cursor-pointer border-b-4 py-3 text-sm hover:border-gray-600 ${
-                selectedEventTab === event.id
+                selectedEventId === event.id
                   ? 'border-gray-600'
                   : 'border-transparent'
               }`}
               key={event.id}
             >
-              <Link href={`/guest-list?event=${event.id}`} scroll={false}>
+              <Link href={`?event=${event.id}`} scroll={false}>
                 {event.name}
               </Link>
             </li>

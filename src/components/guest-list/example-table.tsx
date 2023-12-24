@@ -55,9 +55,9 @@ export default function ExampleTable() {
               className='italic'
               id={`guest-rsvp-example`}
             >
-              <option value='invited'>Not Invited</option>
-              <option value='invited'>Invited</option>
-              <option value='attending'>Attending</option>
+              <option value='Not Invited'>Not Invited</option>
+              <option value='Invited'>Invited</option>
+              <option value='Attending'>Attending</option>
               <option value='Declined'>Declined</option>
             </select>
           </div>

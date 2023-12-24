@@ -118,7 +118,7 @@ export const guestListRouter = createTRPCRouter({
       events: events.map((event) => {
         const guestResponses = {
           invited: 0,
-          accepted: 0,
+          attending: 0,
           declined: 0,
           noResponse: 0,
         };
@@ -129,8 +129,8 @@ export const guestListRouter = createTRPCRouter({
               case 'Invited':
                 guestResponses.invited += 1;
                 break;
-              case 'Accepted':
-                guestResponses.accepted += 1;
+              case 'Attending':
+                guestResponses.attending += 1;
                 break;
               case 'Declined':
                 guestResponses.declined += 1;

@@ -25,11 +25,11 @@ export default function Dashboard() {
   const isEventFormOpen = useEventForm();
   const isGuestFormOpen = useGuestForm();
   const searchParams = useSearchParams();
-  const selectedEventTab = searchParams.get('event') ?? 'all';
+  const selectedEventId = searchParams.get('event') ?? 'all';
 
   const [events, setEvents] = useState<Event[]>();
   const [households, setHouseholds] = useState<Household[]>();
-  // TODO: setPrefillEvent passes into the selectedEventTab view thats currently active and will tie to the edit button
+  // TODO: setPrefillEvent passes into the selectedEventId view thats currently active and will tie to the edit button
   const [prefillEvent, setPrefillEvent] = useState<EventFormData | undefined>();
   const [prefillHousehold, setPrefillHousehold] = useState<
     HouseholdFormData | undefined
@@ -45,7 +45,7 @@ export default function Dashboard() {
 
   const filteredHouseholdsByEvent = useMemo(
     () =>
-      selectedEventTab === 'all'
+      selectedEventId === 'all'
         ? households ?? []
         : households?.map((household) => {
             return {
@@ -53,14 +53,14 @@ export default function Dashboard() {
               guests: household.guests.filter((guest) => {
                 if (!guest.invitations) return false;
                 const matchingInvitation = guest.invitations.find(
-                  (guest) => guest.eventId === selectedEventTab
+                  (guest) => guest.eventId === selectedEventId
                 );
                 if (matchingInvitation === undefined) return false;
                 return matchingInvitation?.rsvp !== 'Not Invited';
               }),
             };
           }) ?? [],
-    [selectedEventTab, households]
+    [selectedEventId, households]
   );
 
   const totalGuests =
@@ -79,8 +79,8 @@ export default function Dashboard() {
   }
   if (!guestListData || !events || !households) return <OopsPage />;
 
-  // console.log('guestListIndex data', guestListData);
-  console.log('filtered householdz', filteredHouseholdsByEvent);
+  console.log('guestListIndex data', guestListData);
+  // console.log('filtered householdz', filteredHouseholdsByEvent);
   return (
     <Layout>
       <main>
@@ -95,13 +95,15 @@ export default function Dashboard() {
           <EventForm setEvents={setEvents} prefillFormData={prefillEvent} />
         )}
         <GuestHeader />
-        <EventsTabs events={events} selectedEventTab={selectedEventTab} />
+        <EventsTabs events={events} selectedEventId={selectedEventId} />
         {totalGuests > 0 ? (
           <GuestsView
             events={events}
             households={filteredHouseholdsByEvent}
             totalGuests={totalGuests}
+            selectedEventId={selectedEventId}
             setPrefillHousehold={setPrefillHousehold}
+            setPrefillEvent={setPrefillEvent}
           />
         ) : (
           <NoGuestsView setPrefillHousehold={setPrefillHousehold} />

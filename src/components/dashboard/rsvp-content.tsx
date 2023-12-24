@@ -21,8 +21,8 @@ export default function RsvpContent() {
           </div>
           <div>
             <div>
-              <span>Accepted</span>
-              <span>numGuestsAccepted</span>
+              <span>Attending</span>
+              <span>numGuestsAttending</span>
             </div>
             <div>
               <span>Declined</span>

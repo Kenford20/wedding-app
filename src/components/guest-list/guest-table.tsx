@@ -19,21 +19,29 @@ import {
 type GuestTableProps = {
   events: Event[];
   households: Household[];
+  selectedEventId: string;
   setPrefillHousehold: Dispatch<SetStateAction<HouseholdFormData | undefined>>;
 };
 
 export default function GuestTable({
   events,
   households,
+  selectedEventId,
   setPrefillHousehold,
 }: GuestTableProps) {
+  const gridColumns =
+    selectedEventId === 'all'
+      ? `40px 240px 100px 125px repeat(${events.length}, 175px) 175px`
+      : '40px 240px 100px 125px 175px 175px 150px 100px';
+
+  const selectedEvent = events.find((event) => event.id === selectedEventId);
   return (
     <div className={sharedStyles.desktopPaddingSidesGuestList}>
       <div className='box-border max-h-[80vh] overflow-auto'>
         <div
           className='guest-table grid min-w-fit items-center gap-12 border-b px-8 py-6 font-light italic text-gray-600'
           style={{
-            gridTemplateColumns: `40px 240px 100px 125px repeat(${events.length}, 175px) 175px`,
+            gridTemplateColumns: gridColumns,
           }}
         >
           <div>
@@ -53,39 +61,56 @@ export default function GuestTable({
             <FaSort size={14} />
           </div>
           <h5>Contact</h5>
-          {events?.map((event) => {
-            return <h5 key={event.id}>{event.name} RSVP</h5>;
-          })}
-          {/* <h5>Gift</h5> */}
+          {selectedEventId === 'all' ? (
+            events?.map((event) => {
+              return <h5 key={event.id}>{event.name} RSVP</h5>;
+            })
+          ) : (
+            <h5>{selectedEvent?.name} RSVP</h5>
+          )}
+
           <h5>My Notes</h5>
+
+          {selectedEventId !== 'all' && <h5>Gift</h5>}
+
+          {selectedEventId !== 'all' && <h5>Thank You</h5>}
         </div>
 
         <div className='text-md min-w-fit border-l border-r'>
-          {households?.map((household) => (
-            <TableRow
-              key={household.id}
-              household={household}
-              events={events}
-              setPrefillHousehold={setPrefillHousehold}
-            />
-          ))}
+          {households?.map((household) =>
+            selectedEventId === 'all' ? (
+              <DefaultTableRow
+                key={household.id}
+                household={household}
+                events={events}
+                setPrefillHousehold={setPrefillHousehold}
+              />
+            ) : (
+              <SingleEventTableRow
+                key={household.id}
+                household={household}
+                selectedEvent={selectedEvent}
+                setPrefillHousehold={setPrefillHousehold}
+              />
+            )
+          )}
         </div>
       </div>
     </div>
   );
 }
 
-type TableRowProps = {
+type DefaultTableRowProps = {
   household: Household;
   events: Event[];
   setPrefillHousehold: Dispatch<SetStateAction<HouseholdFormData | undefined>>;
 };
 
-const TableRow = ({
+const DefaultTableRow = ({
   household,
   events,
   setPrefillHousehold,
-}: TableRowProps) => {
+}: DefaultTableRowProps) => {
   const toggleGuestForm = useToggleGuestForm();
   if (household.guests.length < 1) return null;
 
@@ -182,10 +207,131 @@ const TableRow = ({
           </div>
         );
       })}
-      {/* These are for single event view/tab */}
-      {/* <p>Thank You Checkbox</p> */}
-      {/* <p>{household.gift ?? '-'}</p> */}
       <p className={sharedStyles.ellipsisOverflow}>{household.notes ?? '-'}</p>
+    </div>
+  );
+};
+
+type SingleEventTableRowProps = {
+  household: Household;
+  selectedEvent: Event | undefined;
+  setPrefillHousehold: Dispatch<SetStateAction<HouseholdFormData | undefined>>;
+};
+
+const SingleEventTableRow = ({
+  household,
+  selectedEvent,
+  setPrefillHousehold,
+}: SingleEventTableRowProps) => {
+  const toggleGuestForm = useToggleGuestForm();
+  if (selectedEvent === undefined || household.guests.length < 1) return null;
+
+  const handleEditHousehold = () => {
+    setPrefillHousehold({
+      householdId: household.id,
+      address1: household.address1 ?? undefined,
+      address2: household.address2 ?? undefined,
+      city: household.city ?? undefined,
+      state: household.state ?? undefined,
+      country: household.country ?? undefined,
+      zipCode: household.zipCode ?? undefined,
+      phone: household.phone ?? undefined,
+      email: household.email ?? undefined,
+      notes: household.notes ?? undefined,
+      guestParty: household.guests.map((guest) => {
+        const invitations: FormInvites = {};
+        guest?.invitations?.forEach((inv) => {
+          invitations[inv.eventId] = inv.rsvp!;
+        });
+        return {
+          guestId: guest.id,
+          firstName: guest.firstName,
+          lastName: guest.lastName,
+          invites: invitations,
+        };
+      }),
+    });
+    toggleGuestForm();
+  };
+
+  return (
+    <div
+      key={household.id}
+      className='guest-table grid min-w-fit cursor-pointer items-center gap-12 border-b px-8 py-5'
+      style={{
+        gridTemplateColumns: '40px 240px 100px 125px 175px 175px 150px 100px',
+      }}
+      onClick={() => handleEditHousehold()}
+    >
+      <div className='flex flex-col gap-1'>
+        {household.guests.map((guest) => {
+          return (
+            <div key={guest.id}>
+              <input
+                className='h-6 w-6 cursor-pointer'
+                style={{
+                  accentColor: sharedStyles.primaryColorHex,
+                }}
+                type='checkbox'
+                id={`check-guest-${guest.id}`}
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+          );
+        })}
+      </div>
+
+      <div className='flex flex-col gap-2'>
+        {household.guests.map((guest) => {
+          return (
+            <span
+              className={sharedStyles.ellipsisOverflow}
+              key={guest.id}
+            >{`${guest.firstName} ${guest.lastName}`}</span>
+          );
+        })}
+      </div>
+
+      <p>{household.guests.length}</p>
+
+      <div className='flex gap-2'>
+        <AiOutlineHome size={22} />
+        <HiOutlinePhone size={22} />
+        <CiMail size={23} />
+      </div>
+
+      <div key={selectedEvent.id} className='flex flex-col gap-3'>
+        {household.guests.map((guest) => {
+          const rsvp = guest.invitations?.find(
+            (inv) => inv.eventId === selectedEvent.id
+          )?.rsvp;
+          return (
+            <InvitationDropdown
+              key={guest.id}
+              guest={guest}
+              event={selectedEvent}
+              rsvp={rsvp ?? 'Not Invited'}
+            />
+          );
+        })}
+      </div>
+
+      <p className={sharedStyles.ellipsisOverflow}>{household.notes ?? '-'}</p>
+
+      <p>{household.gift ?? '-'}</p>
+
+      <div>
+        <input
+          className='h-6 w-6 cursor-pointer'
+          style={{
+            accentColor: sharedStyles.primaryColorHex,
+          }}
+          type='checkbox'
+          id={`thank-you-${selectedEvent.id}`}
+          onClick={(e) => e.stopPropagation()}
+          // checked={household.thankyou}
+        />
+      </div>
     </div>
   );
 };
