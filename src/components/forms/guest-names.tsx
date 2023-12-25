@@ -72,7 +72,7 @@ export const GuestNameForm = ({
   return (
     <div>
       <div className='p-5'>
-        <h2 className='mb-3 text-xl font-semibold'>Guest Name</h2>
+        <h2 className='mb-3 text-2xl font-bold'>Guest Name</h2>
         <div className='flex items-center justify-between gap-3'>
           <input
             className='w-1/2 border p-3'

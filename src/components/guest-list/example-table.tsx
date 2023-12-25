@@ -1,7 +1,6 @@
 import { AiOutlineHome } from 'react-icons/ai';
 import { CiMail } from 'react-icons/ci';
 import { HiOutlinePhone } from 'react-icons/hi2';
-import { sharedStyles } from '../shared-styles';
 
 export default function ExampleTable() {
   return (

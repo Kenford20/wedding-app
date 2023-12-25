@@ -34,7 +34,7 @@ export const guestListRouter = createTRPCRouter({
         phone: true,
         email: true,
         notes: true,
-        gift: true,
+        gifts: true,
       },
       orderBy: {
         createdAt: 'asc',

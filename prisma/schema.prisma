@@ -65,9 +65,21 @@ model Household {
     phone     String?
     email     String?
     notes     String?
-    gift      String?
-    thankyou  Boolean
+    gifts     Gift[]   @relation(name: "Household_Gifts")
     guests    Guest[]  @relation(name: "Household_Guests")
+}
+
+model Gift {
+    householdId String
+    household   Household @relation(name: "Household_Gifts", fields: [householdId], references: [id], onDelete: Cascade)
+    eventId     String
+    event       Event     @relation(name: "Event_Gifts", fields: [eventId], references: [id], onDelete: Cascade)
+    description String?
+    thankyou    Boolean   @default(false)
+
+    @@id(name: "GiftId", [householdId, eventId])
+    @@index([householdId])
+    @@index([eventId])
 }
 
 model Guest {
@@ -98,7 +110,8 @@ model Event {
     createdAt   DateTime     @default(now())
     updatedAt   DateTime     @updatedAt
     invitations Invitation[] @relation(name: "Event_Invitation")
-    // subEvents   SubEvent[]
+    gifts       Gift[]       @relation(name: "Event_Gifts")
+    // subEvents   SubEvent[]   @relation(name: "Event_SubEvent")
 }
 
 // model SubEvent {
@@ -111,7 +124,7 @@ model Event {
 //     attire      String?
 //     description String?
 //     eventId     String
-//     event       Event     @relation(fields: [eventId], references: [id])
+//     event       Event     @relation(name: "Event_SubEvent", fields: [eventId], references: [id], onDelete: Cascade)
 
 //     @@index([eventId])
 // }

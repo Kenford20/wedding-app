@@ -15,6 +15,7 @@ import {
   type Event,
   type Household,
   type HouseholdFormData,
+  type Gift,
 } from '../../types/schema';
 
 const defaultContactData = {
@@ -31,7 +32,15 @@ const defaultContactData = {
 
 const defaultHouseholdFormData = (events: Event[]) => {
   const invites: FormInvites = {};
-  events.forEach((event: Event) => (invites[event.id] = 'Not Invited'));
+  const gifts: Gift[] = [];
+  events.forEach((event: Event) => {
+    invites[event.id] = 'Not Invited';
+    gifts.push({
+      eventId: event.id,
+      thankyou: false,
+      description: undefined,
+    });
+  });
   return {
     ...defaultContactData,
     householdId: '',
@@ -42,20 +51,21 @@ const defaultHouseholdFormData = (events: Event[]) => {
         invites,
       },
     ],
+    gifts,
   };
 };
 
-type AddGuestFormProps = {
+type GuestFormProps = {
   events: Event[];
   setHouseholds: Dispatch<SetStateAction<Household[] | undefined>>;
   prefillFormData: HouseholdFormData | undefined;
 };
 
-export default function AddGuestForm({
+export default function GuestForm({
   events,
   setHouseholds,
   prefillFormData,
-}: AddGuestFormProps) {
+}: GuestFormProps) {
   const isEditMode = !!prefillFormData;
   const toggleGuestForm = useToggleGuestForm();
 
@@ -125,7 +135,7 @@ export default function AddGuestForm({
   };
 
   return (
-    <div className='fixed top-0 z-50 flex h-screen w-screen justify-end overflow-y-scroll bg-transparent/[0.5] pb-16'>
+    <div className='fixed top-0 z-50 flex h-screen w-screen justify-end overflow-y-scroll bg-transparent/[0.5] pb-24'>
       {showDeleteConfirmation && (
         <DeleteConfirmation
           isProcessing={isDeletingHousehold}
@@ -142,7 +152,7 @@ export default function AddGuestForm({
         className={`relative h-fit ${sharedStyles.eventGuestFormWidth} bg-white`}
       >
         <div className='flex justify-between border-b p-5'>
-          <h1 className='text-xl font-semibold'>{getTitle()}</h1>
+          <h1 className='text-2xl font-bold'>{getTitle()}</h1>
           <span className='cursor-pointer' onClick={() => toggleGuestForm()}>
             <IoMdClose size={25} />
           </span>
@@ -168,7 +178,7 @@ export default function AddGuestForm({
           </button>
         </div>
         <div className='p-5'>
-          <h2 className='mb-3 text-xl font-semibold'>Contact Information</h2>
+          <h2 className='mb-3 text-2xl font-bold'>Contact Information</h2>
           <div className='grid grid-cols-1 grid-rows-[repeat(5,50px)] gap-3'>
             <input
               className='w-100 border p-3'
@@ -233,7 +243,7 @@ export default function AddGuestForm({
               />
             </div>
           </div>
-          <h2 className='my-4 text-xl font-semibold'>My Notes</h2>
+          <h2 className='my-4 text-2xl font-bold'>My Notes</h2>
           <textarea
             placeholder='Enter notes about your guests, like food allergies'
             value={householdFormData.notes}
@@ -241,6 +251,13 @@ export default function AddGuestForm({
             className='h-32 w-full border p-3'
             style={{ resize: 'none' }}
           />
+          {isEditMode && (
+            <GiftSection
+              events={events}
+              setHouseholdFormData={setHouseholdFormData}
+              householdFormData={householdFormData}
+            />
+          )}
         </div>
         {isEditMode ? (
           <EditFormButtons
@@ -263,6 +280,80 @@ export default function AddGuestForm({
     </div>
   );
 }
+
+type GiftSectionProps = {
+  events: Event[];
+  setHouseholdFormData: Dispatch<SetStateAction<HouseholdFormData>>;
+  householdFormData: HouseholdFormData;
+};
+
+const GiftSection = ({
+  householdFormData,
+  setHouseholdFormData,
+  events,
+}: GiftSectionProps) => {
+  const handleOnChange = (
+    key: string,
+    value: boolean | string,
+    updatedEvent: string
+  ) => {
+    setHouseholdFormData((prev) => {
+      return {
+        ...prev,
+        gifts: prev.gifts?.map((gift) => {
+          if (gift.eventId === updatedEvent) {
+            return {
+              ...gift,
+              [key]: value,
+            };
+          }
+          return gift;
+        }),
+      };
+    });
+  };
+  return (
+    <>
+      <h2 className='my-4 text-2xl font-bold'>Gifts</h2>
+      {householdFormData.gifts?.map((gift) => {
+        const event = events.find((event) => event.id === gift.eventId);
+        return (
+          <div key={gift.eventId} className='mb-6'>
+            <h3 className='mb-3 text-lg font-semibold'>{event?.name}</h3>
+            <div className='flex flex-col gap-3'>
+              <div className='flex items-center gap-3'>
+                <input
+                  className='h-6 w-6 cursor-pointer border p-3'
+                  style={{ accentColor: sharedStyles.primaryColorHex }}
+                  type='checkbox'
+                  id={`thank-you-event: ${gift.eventId}`}
+                  onChange={(e) =>
+                    handleOnChange('thankyou', e.target.checked, gift.eventId)
+                  }
+                  checked={gift.thankyou}
+                />
+                <label
+                  className={`cursor-pointer ${sharedStyles.ellipsisOverflow}`}
+                  htmlFor={`thank-you-event: ${gift.eventId}`}
+                >
+                  Thank You Sent
+                </label>
+              </div>
+              <input
+                placeholder='Gift Received'
+                className='w-[100%] border p-3'
+                value={gift.description ?? ''}
+                onChange={(e) =>
+                  handleOnChange('description', e.target.value, gift.eventId)
+                }
+              />
+            </div>
+          </div>
+        );
+      })}
+    </>
+  );
+};
 
 type AddFormButtonsProps = {
   events: Event[];

@@ -26,8 +26,15 @@ type Household = {
   phone: string | null;
   email: string | null;
   notes: string | null;
-  gift: string | null;
+  gifts: Gift[];
   guests: Guest[];
+};
+
+type Gift = {
+  eventId: string;
+  householdId?: string;
+  thankyou: boolean;
+  description?: string | null | undefined;
 };
 
 type Guest = {
@@ -98,7 +105,7 @@ type HouseholdFormData = {
   phone?: string;
   email?: string;
   notes?: string;
-  gift?: string;
+  gifts: Gift[];
   guestParty: GuestFormData[];
 };
 
@@ -106,6 +113,7 @@ export {
   type Event,
   type Invitation,
   type Household,
+  type Gift,
   type Guest,
   type User,
   type WeddingData,

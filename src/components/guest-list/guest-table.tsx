@@ -126,6 +126,7 @@ const DefaultTableRow = ({
       phone: household.phone ?? undefined,
       email: household.email ?? undefined,
       notes: household.notes ?? undefined,
+      gifts: household.gifts,
       guestParty: household.guests.map((guest) => {
         const invitations: FormInvites = {};
         guest?.invitations?.forEach((inv) => {
@@ -225,6 +226,9 @@ const SingleEventTableRow = ({
 }: SingleEventTableRowProps) => {
   const toggleGuestForm = useToggleGuestForm();
   if (selectedEvent === undefined || household.guests.length < 1) return null;
+  const selectedEventGift = household.gifts.find(
+    (gift) => gift.eventId === selectedEvent.id
+  );
 
   const handleEditHousehold = () => {
     setPrefillHousehold({
@@ -238,6 +242,8 @@ const SingleEventTableRow = ({
       phone: household.phone ?? undefined,
       email: household.email ?? undefined,
       notes: household.notes ?? undefined,
+      // TODO: should pass single gift i think for the matching single event
+      gifts: household.gifts,
       guestParty: household.guests.map((guest) => {
         const invitations: FormInvites = {};
         guest?.invitations?.forEach((inv) => {
@@ -318,7 +324,7 @@ const SingleEventTableRow = ({
 
       <p className={sharedStyles.ellipsisOverflow}>{household.notes ?? '-'}</p>
 
-      <p>{household.gift ?? '-'}</p>
+      <p>{selectedEventGift?.description ?? '-'}</p>
 
       <div>
         <input
@@ -329,7 +335,9 @@ const SingleEventTableRow = ({
           type='checkbox'
           id={`thank-you-${selectedEvent.id}`}
           onClick={(e) => e.stopPropagation()}
-          // checked={household.thankyou}
+          checked={selectedEventGift?.thankyou}
+          // TODO: update gift table when toggling checkbox
+          onChange={() => console.log('update Gift table here')}
         />
       </div>
     </div>

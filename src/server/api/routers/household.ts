@@ -46,7 +46,21 @@ export const householdRouter = createTRPCRouter({
           phone: input?.phoneNumber,
           email: input?.email,
           notes: input?.notes,
-          thankyou: false,
+          gifts: {
+            createMany: {
+              data: Object.entries(input.guestParty[0]!.invites).map(
+                ([eventId, _]) => {
+                  return {
+                    eventId,
+                    thankyou: false,
+                  };
+                }
+              ),
+            },
+          },
+        },
+        include: {
+          gifts: true,
         },
       });
 
@@ -91,24 +105,6 @@ export const householdRouter = createTRPCRouter({
           message: 'Failed to create guests',
         });
       }
-
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      // newGuests.forEach(async (guest, i) => {
-      //   const invites = [];
-
-      //   for (const [eventId, rsvp] of Object.entries(input.guestParty[i]!.invites)) {
-      //     if (rsvp === 'Invited') invites.push(eventId);
-      //   }
-
-      //   await ctx.prisma.invitation.createMany({
-      //     data: invites.map((eventId) => ({
-      //       guestId: guest.id,
-      //       eventId,
-      //       rsvp: 'Invited',
-      //       userId,
-      //     })),
-      //   });
-      // });
 
       const householdData: Household = {
         ...household,
@@ -156,6 +152,13 @@ export const householdRouter = createTRPCRouter({
           .optional(),
         notes: z.string().nullish().optional(),
         deletedGuests: z.array(z.number()).optional(),
+        gifts: z.array(
+          z.object({
+            eventId: z.string(),
+            thankyou: z.boolean(),
+            description: z.string().optional().nullish(),
+          })
+        ),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -282,9 +285,34 @@ export const householdRouter = createTRPCRouter({
         });
       }
 
+      const updatedGifts = await Promise.all(
+        input.gifts.map(async (gift) => {
+          const updatedGuest = await ctx.prisma.gift.upsert({
+            where: {
+              GiftId: {
+                eventId: gift.eventId,
+                householdId: input.householdId,
+              },
+            },
+            update: {
+              description: gift.description,
+              thankyou: gift.thankyou,
+            },
+            create: {
+              householdId: input.householdId,
+              eventId: gift.eventId,
+              description: gift.description,
+              thankyou: gift.thankyou,
+            },
+          });
+          return updatedGuest;
+        })
+      );
+
       return {
         ...updatedHousehold,
         guests: updatedGuestParty,
+        gifts: updatedGifts,
       };
     }),
 
