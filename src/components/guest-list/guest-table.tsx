@@ -208,6 +208,7 @@ const DefaultTableRow = ({
                   guest={guest}
                   event={event}
                   rsvp={rsvp ?? 'Not Invited'}
+                  householdId={household.id}
                   setHouseholds={setHouseholds}
                 />
               );
@@ -348,6 +349,7 @@ const SingleEventTableRow = ({
               guest={guest}
               event={selectedEvent}
               rsvp={rsvp ?? 'Not Invited'}
+              householdId={household.id}
               setHouseholds={setHouseholds}
             />
           );
@@ -389,6 +391,7 @@ type InvitationDropdownProps = {
   guest: Guest;
   event: Event;
   rsvp: string;
+  householdId: string;
   setHouseholds: Dispatch<SetStateAction<Household[] | undefined>>;
 };
 
@@ -396,6 +399,7 @@ const InvitationDropdown = ({
   guest,
   event,
   rsvp,
+  householdId,
   setHouseholds,
 }: InvitationDropdownProps) => {
   const [rsvpValue, setRsvpValue] = useState(rsvp);
@@ -404,8 +408,28 @@ const InvitationDropdown = ({
     api.invitation.update.useMutation({
       onSuccess: (updatedInvitation) => {
         setRsvpValue(updatedInvitation.rsvp ?? 'Not Invited');
-
-        // TODO: also need to update household state in parejnt to reflect current invitation state across table
+        // TODO: need to modify this to handle batch updates to multiple guests when that feature is implemented
+        setHouseholds((prevHouseholds) =>
+          prevHouseholds?.map((prevHousehold) => {
+            return prevHousehold.id === householdId
+              ? {
+                  ...prevHousehold,
+                  guests: prevHousehold.guests.map((guest) => {
+                    return guest.id === updatedInvitation.guestId
+                      ? {
+                          ...guest,
+                          invitations: guest.invitations?.map((inv) =>
+                            inv.eventId === updatedInvitation.eventId
+                              ? updatedInvitation
+                              : inv
+                          ),
+                        }
+                      : guest;
+                  }),
+                }
+              : prevHousehold;
+          })
+        );
       },
       onError: () => {
         window.alert('Failed to update invitation! Please try again later.');
