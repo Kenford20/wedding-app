@@ -21,6 +21,7 @@ type GuestTableProps = {
   households: Household[];
   selectedEventId: string;
   setPrefillHousehold: Dispatch<SetStateAction<HouseholdFormData | undefined>>;
+  setHouseholds: Dispatch<SetStateAction<Household[] | undefined>>;
 };
 
 export default function GuestTable({
@@ -28,6 +29,7 @@ export default function GuestTable({
   households,
   selectedEventId,
   setPrefillHousehold,
+  setHouseholds,
 }: GuestTableProps) {
   const gridColumns =
     selectedEventId === 'all'
@@ -84,6 +86,7 @@ export default function GuestTable({
                 household={household}
                 events={events}
                 setPrefillHousehold={setPrefillHousehold}
+                setHouseholds={setHouseholds}
               />
             ) : (
               <SingleEventTableRow
@@ -91,6 +94,7 @@ export default function GuestTable({
                 household={household}
                 selectedEvent={selectedEvent}
                 setPrefillHousehold={setPrefillHousehold}
+                setHouseholds={setHouseholds}
               />
             )
           )}
@@ -104,12 +108,14 @@ type DefaultTableRowProps = {
   household: Household;
   events: Event[];
   setPrefillHousehold: Dispatch<SetStateAction<HouseholdFormData | undefined>>;
+  setHouseholds: Dispatch<SetStateAction<Household[] | undefined>>;
 };
 
 const DefaultTableRow = ({
   household,
   events,
   setPrefillHousehold,
+  setHouseholds,
 }: DefaultTableRowProps) => {
   const toggleGuestForm = useToggleGuestForm();
   if (household.guests.length < 1) return null;
@@ -202,6 +208,7 @@ const DefaultTableRow = ({
                   guest={guest}
                   event={event}
                   rsvp={rsvp ?? 'Not Invited'}
+                  setHouseholds={setHouseholds}
                 />
               );
             })}
@@ -217,20 +224,42 @@ type SingleEventTableRowProps = {
   household: Household;
   selectedEvent: Event | undefined;
   setPrefillHousehold: Dispatch<SetStateAction<HouseholdFormData | undefined>>;
+  setHouseholds: Dispatch<SetStateAction<Household[] | undefined>>;
 };
 
 const SingleEventTableRow = ({
   household,
   selectedEvent,
   setPrefillHousehold,
+  setHouseholds,
 }: SingleEventTableRowProps) => {
   const toggleGuestForm = useToggleGuestForm();
+  const { mutate: updateGift, isLoading: isUpdatingGift } =
+    api.gift.update.useMutation({
+      onSuccess: (updatedGift) => {
+        console.log('updatedGift', updatedGift);
+        setHouseholds((prevHouseholds) =>
+          prevHouseholds?.map((prevHousehold) => {
+            return prevHousehold.id === household.id
+              ? {
+                  ...prevHousehold,
+                  gifts: prevHousehold.gifts.map((gift) =>
+                    gift.eventId === updatedGift.eventId ? updatedGift : gift
+                  ),
+                }
+              : prevHousehold;
+          })
+        );
+      },
+    });
+
   if (selectedEvent === undefined || household.guests.length < 1) return null;
   const selectedEventGift = household.gifts.find(
     (gift) => gift.eventId === selectedEvent.id
   );
 
   const handleEditHousehold = () => {
+    console.log('editz', household.gifts);
     setPrefillHousehold({
       householdId: household.id,
       address1: household.address1 ?? undefined,
@@ -242,8 +271,9 @@ const SingleEventTableRow = ({
       phone: household.phone ?? undefined,
       email: household.email ?? undefined,
       notes: household.notes ?? undefined,
-      // TODO: should pass single gift i think for the matching single event
-      gifts: household.gifts,
+      gifts: household.gifts.filter(
+        (gift) => gift.eventId === selectedEvent.id
+      ),
       guestParty: household.guests.map((guest) => {
         const invitations: FormInvites = {};
         guest?.invitations?.forEach((inv) => {
@@ -317,6 +347,7 @@ const SingleEventTableRow = ({
               guest={guest}
               event={selectedEvent}
               rsvp={rsvp ?? 'Not Invited'}
+              setHouseholds={setHouseholds}
             />
           );
         })}
@@ -326,20 +357,29 @@ const SingleEventTableRow = ({
 
       <p>{selectedEventGift?.description ?? '-'}</p>
 
-      <div>
-        <input
-          className='h-6 w-6 cursor-pointer'
-          style={{
-            accentColor: sharedStyles.primaryColorHex,
-          }}
-          type='checkbox'
-          id={`thank-you-${selectedEvent.id}`}
-          onClick={(e) => e.stopPropagation()}
-          checked={selectedEventGift?.thankyou}
-          // TODO: update gift table when toggling checkbox
-          onChange={() => console.log('update Gift table here')}
-        />
-      </div>
+      {isUpdatingGift ? (
+        <LoadingSpinner />
+      ) : (
+        <div>
+          <input
+            className='h-6 w-6 cursor-pointer'
+            style={{
+              accentColor: sharedStyles.primaryColorHex,
+            }}
+            type='checkbox'
+            id={`thank-you-${selectedEvent.id}`}
+            onClick={(e) => e.stopPropagation()}
+            checked={selectedEventGift?.thankyou}
+            onChange={(e) =>
+              updateGift({
+                householdId: household.id,
+                eventId: selectedEvent.id,
+                thankyou: e.target.checked,
+              })
+            }
+          />
+        </div>
+      )}
     </div>
   );
 };
@@ -348,12 +388,14 @@ type InvitationDropdownProps = {
   guest: Guest;
   event: Event;
   rsvp: string;
+  setHouseholds: Dispatch<SetStateAction<Household[] | undefined>>;
 };
 
 const InvitationDropdown = ({
   guest,
   event,
   rsvp,
+  setHouseholds,
 }: InvitationDropdownProps) => {
   const [rsvpValue, setRsvpValue] = useState(rsvp);
 
@@ -361,6 +403,8 @@ const InvitationDropdown = ({
     api.invitation.update.useMutation({
       onSuccess: (updatedInvitation) => {
         setRsvpValue(updatedInvitation.rsvp ?? 'Not Invited');
+
+        // TODO: also need to update household state in parejnt to reflect current invitation state across table
       },
       onError: () => {
         window.alert('Failed to update invitation! Please try again later.');

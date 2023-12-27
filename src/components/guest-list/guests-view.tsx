@@ -20,6 +20,7 @@ type GuestsViewProps = {
   selectedEventId: string;
   setPrefillHousehold: Dispatch<SetStateAction<HouseholdFormData | undefined>>;
   setPrefillEvent: Dispatch<SetStateAction<EventFormData | undefined>>;
+  setHouseholds: Dispatch<SetStateAction<Household[] | undefined>>;
 };
 
 export default function GuestsView({
@@ -29,6 +30,7 @@ export default function GuestsView({
   selectedEventId,
   setPrefillHousehold,
   setPrefillEvent,
+  setHouseholds,
 }: GuestsViewProps) {
   const toggleGuestForm = useToggleGuestForm();
   return (
@@ -71,6 +73,7 @@ export default function GuestsView({
         households={households}
         selectedEventId={selectedEventId}
         setPrefillHousehold={setPrefillHousehold}
+        setHouseholds={setHouseholds}
       />
     </section>
   );

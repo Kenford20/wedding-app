@@ -288,9 +288,9 @@ type GiftSectionProps = {
 };
 
 const GiftSection = ({
+  events,
   householdFormData,
   setHouseholdFormData,
-  events,
 }: GiftSectionProps) => {
   const handleOnChange = (
     key: string,
@@ -312,6 +312,7 @@ const GiftSection = ({
       };
     });
   };
+
   return (
     <>
       <h2 className='my-4 text-2xl font-bold'>Gifts</h2>

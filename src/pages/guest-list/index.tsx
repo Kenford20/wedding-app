@@ -104,6 +104,7 @@ export default function Dashboard() {
             selectedEventId={selectedEventId}
             setPrefillHousehold={setPrefillHousehold}
             setPrefillEvent={setPrefillEvent}
+            setHouseholds={setHouseholds}
           />
         ) : (
           <NoGuestsView setPrefillHousehold={setPrefillHousehold} />
