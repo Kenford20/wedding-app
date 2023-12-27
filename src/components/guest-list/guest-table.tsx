@@ -237,7 +237,6 @@ const SingleEventTableRow = ({
   const { mutate: updateGift, isLoading: isUpdatingGift } =
     api.gift.update.useMutation({
       onSuccess: (updatedGift) => {
-        console.log('updatedGift', updatedGift);
         setHouseholds((prevHouseholds) =>
           prevHouseholds?.map((prevHousehold) => {
             return prevHousehold.id === household.id
@@ -251,6 +250,9 @@ const SingleEventTableRow = ({
           })
         );
       },
+      onError: () => {
+        window.alert('Failed to update gift! Please try again later.');
+      },
     });
 
   if (selectedEvent === undefined || household.guests.length < 1) return null;
@@ -259,7 +261,6 @@ const SingleEventTableRow = ({
   );
 
   const handleEditHousehold = () => {
-    console.log('editz', household.gifts);
     setPrefillHousehold({
       householdId: household.id,
       address1: household.address1 ?? undefined,

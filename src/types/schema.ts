@@ -35,6 +35,9 @@ type Gift = {
   householdId?: string;
   thankyou: boolean;
   description?: string | null | undefined;
+  event?: {
+    name: string;
+  };
 };
 
 type Guest = {

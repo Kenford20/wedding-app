@@ -317,10 +317,9 @@ const GiftSection = ({
     <>
       <h2 className='my-4 text-2xl font-bold'>Gifts</h2>
       {householdFormData.gifts?.map((gift) => {
-        const event = events.find((event) => event.id === gift.eventId);
         return (
           <div key={gift.eventId} className='mb-6'>
-            <h3 className='mb-3 text-lg font-semibold'>{event?.name}</h3>
+            <h3 className='mb-3 text-lg font-semibold'>{gift.event?.name}</h3>
             <div className='flex flex-col gap-3'>
               <div className='flex items-center gap-3'>
                 <input
