@@ -37,34 +37,30 @@ export const GuestNameForm = ({
     index: number
   ) => {
     setHouseholdFormData((prev) => {
-      const updatedParty = prev.guestParty.slice();
-      const oldInvites = updatedParty[index]?.invites;
-      updatedParty[index] = {
-        ...updatedParty[index]!,
-        invites: {
-          ...oldInvites,
-          [event.id]: e.target.checked ? 'Invited' : 'Not Invited',
-        },
-      };
-
       return {
         ...prev,
-        guestParty: updatedParty,
+        guestParty: prev.guestParty.map((guest, i) =>
+          i === index
+            ? {
+                ...guest,
+                invites: {
+                  ...guest.invites,
+                  [event.id]: e.target.checked ? 'Invited' : 'Not Invited',
+                },
+              }
+            : guest
+        ),
       };
     });
   };
 
   const handleNameChange = (field: string, input: string, index: number) => {
     setHouseholdFormData((prev) => {
-      const updatedParty = prev.guestParty.slice();
-      updatedParty[index] = {
-        ...updatedParty[index]!,
-        [field]: input,
-      };
-
       return {
         ...prev,
-        guestParty: updatedParty,
+        guestParty: prev.guestParty.map((guest, i) =>
+          i === index ? { ...guest, [field]: input } : guest
+        ),
       };
     });
   };

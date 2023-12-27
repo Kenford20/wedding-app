@@ -467,12 +467,9 @@ const EditFormButtons = ({
         setHouseholdFormData(defaultHouseholdFormData(events));
         setHouseholds((prevHouseholds: Household[] | undefined) => {
           if (!prevHouseholds) return [updatedHousehold];
-          const updatedHouseholds = prevHouseholds.slice();
-          const oldHousehold = prevHouseholds
-            .map((household) => household.id)
-            .indexOf(updatedHousehold.id);
-          updatedHouseholds.splice(oldHousehold, 1, updatedHousehold);
-          return updatedHouseholds;
+          return prevHouseholds.map((prev) =>
+            prev.id === updatedHousehold.id ? updatedHousehold : prev
+          );
         });
       },
       onError: (err) => {

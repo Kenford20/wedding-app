@@ -55,12 +55,9 @@ export default function EventForm({
         toggleEventForm();
         setEvents((prevEvents) => {
           if (!prevEvents) return [updatedEvent];
-          const updatedEvents = prevEvents.slice();
-          const oldEvent = prevEvents
-            .map((event) => event.id)
-            .indexOf(updatedEvent.id);
-          updatedEvents.splice(oldEvent, 1, updatedEvent);
-          return updatedEvents;
+          return prevEvents.map((prev) =>
+            prev.id === updatedEvent.id ? updatedEvent : prev
+          );
         });
       },
       onError: (err) => {
