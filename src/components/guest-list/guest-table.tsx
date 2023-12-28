@@ -193,6 +193,7 @@ const DefaultTableRow = ({
           guestId: guest.id,
           firstName: guest.firstName,
           lastName: guest.lastName,
+          isPrimaryContact: guest.isPrimaryContact,
           invites: invitations,
         };
       }),
@@ -336,6 +337,7 @@ const SingleEventTableRow = ({
           guestId: guest.id,
           firstName: guest.firstName,
           lastName: guest.lastName,
+          isPrimaryContact: guest.isPrimaryContact,
           invites: invitations,
         };
       }),

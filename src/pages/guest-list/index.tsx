@@ -100,7 +100,6 @@ export default function Dashboard() {
           <GuestsView
             events={events}
             households={filteredHouseholdsByEvent}
-            totalGuests={totalGuests}
             selectedEventId={selectedEventId}
             setPrefillHousehold={setPrefillHousehold}
             setPrefillEvent={setPrefillEvent}

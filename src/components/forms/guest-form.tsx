@@ -97,7 +97,9 @@ export default function GuestForm({
 
   const getTitle = () => {
     if (!isEditMode || !prefillFormData) return 'Add Party';
-    const primaryContact = prefillFormData.guestParty[0];
+    const primaryContact = prefillFormData.guestParty.find(
+      (guest) => guest.isPrimaryContact
+    );
     const primaryContactName =
       primaryContact?.firstName + ' ' + primaryContact?.lastName;
     const numGuests = prefillFormData.guestParty.length;
@@ -253,7 +255,6 @@ export default function GuestForm({
           />
           {isEditMode && (
             <GiftSection
-              events={events}
               setHouseholdFormData={setHouseholdFormData}
               householdFormData={householdFormData}
             />
@@ -282,13 +283,11 @@ export default function GuestForm({
 }
 
 type GiftSectionProps = {
-  events: Event[];
   setHouseholdFormData: Dispatch<SetStateAction<HouseholdFormData>>;
   householdFormData: HouseholdFormData;
 };
 
 const GiftSection = ({
-  events,
   householdFormData,
   setHouseholdFormData,
 }: GiftSectionProps) => {

@@ -21,7 +21,7 @@ export const guestListRouter = createTRPCRouter({
       select: {
         guests: {
           orderBy: {
-            createdAt: 'asc',
+            firstName: 'asc',
           },
         },
         id: true,

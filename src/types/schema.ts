@@ -94,6 +94,7 @@ type GuestFormData = {
   guestId?: number;
   firstName: string;
   lastName: string;
+  isPrimaryContact?: boolean;
   invites: FormInvites;
 };
 
