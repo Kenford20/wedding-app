@@ -5,7 +5,13 @@ import { useToggleEventForm } from '~/contexts/event-form-context';
 import GuestSearchFilter from './guest-search-filter';
 import GuestTable from './guest-table';
 
-import { useMemo, type Dispatch, type SetStateAction } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from 'react';
 import {
   type Household,
   type Event,
@@ -16,7 +22,6 @@ import {
 type GuestsViewProps = {
   events: Event[];
   households: Household[];
-  totalGuests: number;
   selectedEventId: string;
   setPrefillHousehold: Dispatch<SetStateAction<HouseholdFormData | undefined>>;
   setPrefillEvent: Dispatch<SetStateAction<EventFormData | undefined>>;
@@ -26,25 +31,40 @@ type GuestsViewProps = {
 export default function GuestsView({
   events,
   households,
-  totalGuests,
   selectedEventId,
   setPrefillHousehold,
   setPrefillEvent,
   setHouseholds,
 }: GuestsViewProps) {
   const toggleGuestForm = useToggleGuestForm();
+  const [filteredHouseholds, setFilteredHouseholds] = useState(households);
+
+  const totalGuests =
+    useMemo(
+      () =>
+        filteredHouseholds?.reduce(
+          (acc, household) => acc + household.guests.length,
+          0
+        ),
+      [filteredHouseholds]
+    ) ?? 0;
+
+  useEffect(() => {
+    setFilteredHouseholds(households);
+  }, [households]);
+
   return (
     <section>
       {selectedEventId === 'all' ? (
         <DefaultTableHeader
-          households={households}
+          households={filteredHouseholds}
           totalGuests={totalGuests}
           numEvents={events.length}
         />
       ) : (
         <SelectedEventTableHeader
           totalGuests={totalGuests}
-          households={households}
+          households={filteredHouseholds}
           selectedEvent={events.find((event) => event.id === selectedEventId)}
           setPrefillEvent={setPrefillEvent}
         />
@@ -52,7 +72,10 @@ export default function GuestsView({
       <div
         className={`mb-8 flex justify-between ${sharedStyles.desktopPaddingSidesGuestList}`}
       >
-        <GuestSearchFilter />
+        <GuestSearchFilter
+          setFilteredHouseholds={setFilteredHouseholds}
+          households={households}
+        />
         <div>
           <button className={sharedStyles.secondaryButton()}>
             Download List
@@ -70,7 +93,7 @@ export default function GuestsView({
       </div>
       <GuestTable
         events={events}
-        households={households}
+        households={filteredHouseholds}
         selectedEventId={selectedEventId}
         setPrefillHousehold={setPrefillHousehold}
         setHouseholds={setHouseholds}

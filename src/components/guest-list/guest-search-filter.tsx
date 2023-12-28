@@ -1,14 +1,39 @@
 import { sharedStyles } from '../shared-styles';
 
-type GuestSearchFilterProps = object;
+import { useState, type Dispatch, type SetStateAction } from 'react';
+import { type Household } from '~/types/schema';
 
-export default function GuestSearchFilter({}: GuestSearchFilterProps) {
+type GuestSearchFilterProps = {
+  households: Household[];
+  setFilteredHouseholds: Dispatch<SetStateAction<Household[]>>;
+};
+
+export default function GuestSearchFilter({
+  households,
+  setFilteredHouseholds,
+}: GuestSearchFilterProps) {
+  const [searchInput, setSearchInput] = useState('');
+  const handleOnChange = (searchText: string) => {
+    setSearchInput(searchText);
+    setFilteredHouseholds(() =>
+      households.filter((household) =>
+        household.guests.some(
+          (guest) =>
+            guest.firstName.includes(searchText) ||
+            guest.lastName.includes(searchText)
+        )
+      )
+    );
+  };
+
   return (
     <div className='flex'>
       <div>
         <input
           className='w-64 border-2 px-3 py-2'
           placeholder='Find Guests'
+          value={searchInput}
+          onChange={(e) => handleOnChange(e.target.value)}
         ></input>
         <button className={`h-11 w-24 bg-${sharedStyles.primaryColor}`}>
           <i className='text-white'>Search</i>

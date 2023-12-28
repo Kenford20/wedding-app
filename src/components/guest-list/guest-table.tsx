@@ -7,7 +7,7 @@ import { sharedStyles } from '../shared-styles';
 import { api } from '~/utils/api';
 import { LoadingSpinner } from '../loader';
 
-import { useState, type Dispatch, type SetStateAction } from 'react';
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import {
   type Household,
   type Event,
@@ -31,12 +31,57 @@ export default function GuestTable({
   setPrefillHousehold,
   setHouseholds,
 }: GuestTableProps) {
+  const [nameSort, setNameSort] = useState('none');
+  const [partySort, setPartySort] = useState('none');
+  const [sortedHouseholds, setSortedHouseholds] = useState(households);
+  const selectedEvent = events.find((event) => event.id === selectedEventId);
   const gridColumns =
     selectedEventId === 'all'
       ? `40px 240px 100px 125px repeat(${events.length}, 175px) 175px`
       : '40px 240px 100px 125px 175px 175px 150px 100px';
 
-  const selectedEvent = events.find((event) => event.id === selectedEventId);
+  useEffect(() => {
+    setSortedHouseholds(households);
+  }, [households]);
+
+  const sortByName = () => {
+    setSortedHouseholds(() => {
+      if (nameSort === 'none') {
+        setNameSort('ascending');
+        return [...households].sort((a, b) =>
+          a.guests[0]!.firstName.localeCompare(b.guests[0]!.firstName)
+        );
+      } else if (nameSort === 'ascending') {
+        setNameSort('descending');
+        return [...households].sort((a, b) =>
+          b.guests[0]!.firstName.localeCompare(a.guests[0]!.firstName)
+        );
+      } else {
+        setNameSort('none');
+        return households;
+      }
+    });
+  };
+
+  const sortByParty = () => {
+    setSortedHouseholds(() => {
+      if (partySort === 'none') {
+        setPartySort('ascending');
+        return [...households].sort(
+          (a, b) => a.guests.length - b.guests.length
+        );
+      } else if (partySort === 'ascending') {
+        setPartySort('descending');
+        return [...households].sort(
+          (a, b) => b.guests.length - a.guests.length
+        );
+      } else {
+        setPartySort('none');
+        return households;
+      }
+    });
+  };
+
   return (
     <div className={sharedStyles.desktopPaddingSidesGuestList}>
       <div className='box-border max-h-[80vh] overflow-auto'>
@@ -54,11 +99,17 @@ export default function GuestTable({
               className='h-6 w-6 cursor-pointer'
             />
           </div>
-          <div className='flex cursor-pointer items-center gap-2'>
+          <div
+            className='flex cursor-pointer items-center gap-2'
+            onClick={() => sortByName()}
+          >
             <h5>Name</h5>
             <FaSort size={14} />
           </div>
-          <div className='flex cursor-pointer items-center gap-2'>
+          <div
+            className='flex cursor-pointer items-center gap-2'
+            onClick={() => sortByParty()}
+          >
             <h5>Party Of</h5>
             <FaSort size={14} />
           </div>
@@ -79,7 +130,7 @@ export default function GuestTable({
         </div>
 
         <div className='text-md min-w-fit border-l border-r'>
-          {households?.map((household) =>
+          {sortedHouseholds?.map((household) =>
             selectedEventId === 'all' ? (
               <DefaultTableRow
                 key={household.id}
