@@ -84,72 +84,84 @@ export default function GuestTable({
 
   return (
     <div className={sharedStyles.desktopPaddingSidesGuestList}>
-      <div className='box-border max-h-[80vh] overflow-auto'>
-        <div
-          className='guest-table grid min-w-fit items-center gap-12 border-b px-8 py-6 font-light italic text-gray-600'
-          style={{
-            gridTemplateColumns: gridColumns,
-          }}
-        >
-          <div>
-            <input
-              style={{ accentColor: sharedStyles.primaryColorHex }}
-              type='checkbox'
-              id='check-all'
-              className='h-6 w-6 cursor-pointer'
-            />
-          </div>
-          <div
-            className='flex cursor-pointer items-center gap-2'
-            onClick={() => sortByName()}
-          >
-            <h5>Name</h5>
-            <FaSort size={14} />
-          </div>
-          <div
-            className='flex cursor-pointer items-center gap-2'
-            onClick={() => sortByParty()}
-          >
-            <h5>Party Of</h5>
-            <FaSort size={14} />
-          </div>
-          <h5>Contact</h5>
-          {selectedEventId === 'all' ? (
-            events?.map((event) => {
-              return <h5 key={event.id}>{event.name} RSVP</h5>;
-            })
-          ) : (
-            <h5>{selectedEvent?.name} RSVP</h5>
-          )}
+      <div className='max-h-[75vh] overflow-auto'>
+        <table>
+          <tbody>
+            <tr
+              className='sticky top-0 grid min-w-fit items-center gap-12 border-b bg-white px-8 py-6 italic text-gray-600'
+              style={{
+                gridTemplateColumns: gridColumns,
+              }}
+            >
+              <th>
+                <input
+                  style={{ accentColor: sharedStyles.primaryColorHex }}
+                  type='checkbox'
+                  id='check-all'
+                  className='h-6 w-6 cursor-pointer'
+                />
+              </th>
+              <th
+                className='flex cursor-pointer items-center gap-2 font-light'
+                onClick={() => sortByName()}
+              >
+                Name
+                <FaSort size={14} />
+              </th>
+              <th
+                className='flex cursor-pointer items-center gap-2 font-light'
+                onClick={() => sortByParty()}
+              >
+                Party Of
+                <FaSort size={14} />
+              </th>
+              <th className='font-light'>Contact</th>
+              {selectedEventId === 'all' ? (
+                events?.map((event) => {
+                  return (
+                    <th key={event.id} className='font-light'>
+                      {event.name} RSVP
+                    </th>
+                  );
+                })
+              ) : (
+                <th className='font-light'>{selectedEvent?.name} RSVP</th>
+              )}
 
-          <h5>My Notes</h5>
+              <th className='font-light'>My Notes</th>
 
-          {selectedEventId !== 'all' && <h5>Gift</h5>}
+              {selectedEventId !== 'all' && (
+                <th className='font-light'>Gift</th>
+              )}
 
-          {selectedEventId !== 'all' && <h5>Thank You</h5>}
-        </div>
+              {selectedEventId !== 'all' && (
+                <th className='font-light'>Thank You</th>
+              )}
+            </tr>
 
-        <div className='text-md min-w-fit border-l border-r'>
-          {sortedHouseholds?.map((household) =>
-            selectedEventId === 'all' ? (
-              <DefaultTableRow
-                key={household.id}
-                household={household}
-                events={events}
-                setPrefillHousehold={setPrefillHousehold}
-                setHouseholds={setHouseholds}
-              />
-            ) : (
-              <SingleEventTableRow
-                key={household.id}
-                household={household}
-                selectedEvent={selectedEvent}
-                setPrefillHousehold={setPrefillHousehold}
-                setHouseholds={setHouseholds}
-              />
-            )
-          )}
-        </div>
+            <div className='text-md box-border min-w-fit border-l border-r'>
+              {sortedHouseholds?.map((household) =>
+                selectedEventId === 'all' ? (
+                  <DefaultTableRow
+                    key={household.id}
+                    household={household}
+                    events={events}
+                    setPrefillHousehold={setPrefillHousehold}
+                    setHouseholds={setHouseholds}
+                  />
+                ) : (
+                  <SingleEventTableRow
+                    key={household.id}
+                    household={household}
+                    selectedEvent={selectedEvent}
+                    setPrefillHousehold={setPrefillHousehold}
+                    setHouseholds={setHouseholds}
+                  />
+                )
+              )}
+            </div>
+          </tbody>
+        </table>
       </div>
     </div>
   );
@@ -202,7 +214,7 @@ const DefaultTableRow = ({
   };
 
   return (
-    <div
+    <tr
       key={household.id}
       className='guest-table grid min-w-fit cursor-pointer items-center gap-12 border-b px-8 py-5'
       style={{
@@ -210,7 +222,7 @@ const DefaultTableRow = ({
       }}
       onClick={() => handleEditHousehold()}
     >
-      <div className='flex flex-col gap-1'>
+      <td className='flex flex-col gap-1'>
         {household.guests.map((guest) => {
           return (
             <div key={guest.id}>
@@ -226,9 +238,9 @@ const DefaultTableRow = ({
             </div>
           );
         })}
-      </div>
+      </td>
 
-      <div className='flex flex-col gap-2'>
+      <td className='flex flex-col gap-2'>
         {household.guests.map((guest) => {
           return (
             <span
@@ -237,19 +249,19 @@ const DefaultTableRow = ({
             >{`${guest.firstName} ${guest.lastName}`}</span>
           );
         })}
-      </div>
+      </td>
 
       <p>{household.guests.length}</p>
 
-      <div className='flex gap-2'>
+      <td className='flex gap-2'>
         <AiOutlineHome size={22} />
         <HiOutlinePhone size={22} />
         <CiMail size={23} />
-      </div>
+      </td>
 
       {events?.map((event) => {
         return (
-          <div key={event.id} className='flex flex-col gap-3'>
+          <td key={event.id} className='flex flex-col gap-3'>
             {household.guests.map((guest) => {
               const rsvp = guest.invitations?.find(
                 (inv) => inv.eventId === event.id
@@ -265,11 +277,11 @@ const DefaultTableRow = ({
                 />
               );
             })}
-          </div>
+          </td>
         );
       })}
       <p className={sharedStyles.ellipsisOverflow}>{household.notes ?? '-'}</p>
-    </div>
+    </tr>
   );
 };
 
@@ -346,7 +358,7 @@ const SingleEventTableRow = ({
   };
 
   return (
-    <div
+    <tr
       key={household.id}
       className='guest-table grid min-w-fit cursor-pointer items-center gap-12 border-b px-8 py-5'
       style={{
@@ -354,7 +366,7 @@ const SingleEventTableRow = ({
       }}
       onClick={() => handleEditHousehold()}
     >
-      <div className='flex flex-col gap-1'>
+      <td className='flex flex-col gap-1'>
         {household.guests.map((guest) => {
           return (
             <div key={guest.id}>
@@ -370,9 +382,9 @@ const SingleEventTableRow = ({
             </div>
           );
         })}
-      </div>
+      </td>
 
-      <div className='flex flex-col gap-2'>
+      <td className='flex flex-col gap-2'>
         {household.guests.map((guest) => {
           return (
             <span
@@ -381,17 +393,17 @@ const SingleEventTableRow = ({
             >{`${guest.firstName} ${guest.lastName}`}</span>
           );
         })}
-      </div>
+      </td>
 
-      <p>{household.guests.length}</p>
+      <td>{household.guests.length}</td>
 
-      <div className='flex gap-2'>
+      <td className='flex gap-2'>
         <AiOutlineHome size={22} />
         <HiOutlinePhone size={22} />
         <CiMail size={23} />
-      </div>
+      </td>
 
-      <div key={selectedEvent.id} className='flex flex-col gap-3'>
+      <td key={selectedEvent.id} className='flex flex-col gap-3'>
         {household.guests.map((guest) => {
           const rsvp = guest.invitations?.find(
             (inv) => inv.eventId === selectedEvent.id
@@ -407,16 +419,18 @@ const SingleEventTableRow = ({
             />
           );
         })}
-      </div>
+      </td>
 
-      <p className={sharedStyles.ellipsisOverflow}>{household.notes ?? '-'}</p>
+      <td className={sharedStyles.ellipsisOverflow}>
+        {household.notes ?? '-'}
+      </td>
 
       <p>{selectedEventGift?.description ?? '-'}</p>
 
       {isUpdatingGift ? (
         <LoadingSpinner />
       ) : (
-        <div>
+        <td>
           <input
             className='h-6 w-6 cursor-pointer'
             style={{
@@ -434,9 +448,9 @@ const SingleEventTableRow = ({
               })
             }
           />
-        </div>
+        </td>
       )}
-    </div>
+    </tr>
   );
 };
 
