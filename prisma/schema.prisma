@@ -3,7 +3,7 @@
 
 datasource db {
     provider     = "mysql"
-    url          = env("DATABASE_URL_DEVELOPMENT")
+    url          = env("DATABASE_URL")
     relationMode = "prisma"
 }
 
@@ -76,6 +76,8 @@ model Gift {
     event       Event     @relation(name: "Event_Gifts", fields: [eventId], references: [id], onDelete: Cascade)
     description String?
     thankyou    Boolean   @default(false)
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
 
     @@id(name: "GiftId", [householdId, eventId])
     @@index([householdId])
@@ -107,11 +109,35 @@ model Event {
     attire      String?
     description String?
     userId      String
+    collectRsvp Boolean      @default(false)
     createdAt   DateTime     @default(now())
     updatedAt   DateTime     @updatedAt
     invitations Invitation[] @relation(name: "Event_Invitation")
     gifts       Gift[]       @relation(name: "Event_Gifts")
+    questions   Question[]   @relation(name: "Event_Question")
     // subEvents   SubEvent[]   @relation(name: "Event_SubEvent")
+}
+
+model Question {
+    id         String           @id @default(uuid())
+    eventId    String
+    event      Event            @relation(name: "Event_Question", fields: [eventId], references: [id], onDelete: Cascade)
+    text       String
+    answerType String
+    isRequired Boolean          @default(false)
+    options    QuestionOption[] @relation(name: "Question_Options")
+
+    @@index([eventId])
+}
+
+model QuestionOption {
+    id          String   @id @default(uuid())
+    text        String
+    description String
+    questionId  String
+    question    Question @relation(name: "Question_Options", fields: [questionId], references: [id], onDelete: Cascade)
+
+    @@index([questionId])
 }
 
 // model SubEvent {
