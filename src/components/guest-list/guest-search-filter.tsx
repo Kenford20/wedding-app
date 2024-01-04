@@ -1,11 +1,12 @@
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { sharedStyles } from '../shared-styles';
-import { IoIosArrowDown, IoMdCheckmark } from 'react-icons/io';
 import { useOuterClick } from '../helpers';
+import { IoIosArrowDown, IoMdCheckmark } from 'react-icons/io';
+import { FaMagnifyingGlass } from 'react-icons/fa6';
 
 import { type Event, type Household } from '~/types/schema';
 
-type TSelectedOption = {
+type TSelectedRsvpFilter = {
   eventId: string;
   rsvpValue: string;
 };
@@ -25,15 +26,14 @@ export default function GuestSearchFilter({
 }: GuestSearchFilterProps) {
   const [searchInput, setSearchInput] = useState('');
   const [showInvitationDropdown, setShowInvitationDropdown] = useState(false);
-  const [selectedOption, setSelectedOption] = useState<TSelectedOption | null>(
-    null
-  );
+  const [selectedRsvpFilter, setSelectedRsvpFilter] =
+    useState<TSelectedRsvpFilter | null>(null);
   const invitationFilterRef = useOuterClick(() =>
     setShowInvitationDropdown(false)
   );
 
   useEffect(() => {
-    setSelectedOption(null);
+    setSelectedRsvpFilter(null);
   }, [selectedEventId]);
 
   const eventsToMap =
@@ -41,48 +41,56 @@ export default function GuestSearchFilter({
       ? events
       : [events.find((event) => event.id === selectedEventId)];
 
-  const filterHouseholdsBySearch = (searchText: string) => {
-    setSearchInput(searchText);
+  const filterHouseholds = (
+    searchText: string,
+    rsvpFilter: TSelectedRsvpFilter | null
+  ) => {
     setFilteredHouseholds(() =>
       households.filter((household) =>
-        household.guests.some(
-          (guest) =>
-            guest.firstName.includes(searchText) ||
-            guest.lastName.includes(searchText)
+        household.guests.some((guest) =>
+          !!rsvpFilter
+            ? (guest.firstName.includes(searchText) ||
+                guest.lastName.includes(searchText)) &&
+              guest.invitations?.some(
+                (inv) =>
+                  inv.eventId === rsvpFilter?.eventId &&
+                  inv.rsvp === rsvpFilter?.rsvpValue
+              )
+            : guest.firstName.includes(searchText) ||
+              guest.lastName.includes(searchText)
         )
       )
     );
+  };
+
+  const filterHouseholdsBySearch = (searchText: string) => {
+    setSearchInput(searchText);
+    filterHouseholds(searchText, selectedRsvpFilter);
   };
 
   const filterHouseholdsByInvitation = ({
     eventId,
     rsvpValue,
-  }: TSelectedOption) => {
+  }: TSelectedRsvpFilter) => {
     setShowInvitationDropdown(false);
-    setSelectedOption({ eventId, rsvpValue });
-    setFilteredHouseholds(() =>
-      households.filter((household) =>
-        household.guests.some((guest) =>
-          guest.invitations?.some(
-            (inv) => inv.eventId === eventId && inv.rsvp === rsvpValue
-          )
-        )
-      )
-    );
+    setSelectedRsvpFilter({ eventId, rsvpValue });
+    filterHouseholds(searchInput, { eventId, rsvpValue });
   };
 
   return (
-    <div className='flex'>
-      <div>
+    <div className='flex items-center'>
+      <div className='flex'>
         <input
           className='h-12 w-64 border-2 px-3 py-2'
           placeholder='Find Guests'
           value={searchInput}
           onChange={(e) => filterHouseholdsBySearch(e.target.value)}
         ></input>
-        <button className={`h-12 w-24 bg-${sharedStyles.primaryColor}`}>
-          <i className='text-white'>Search</i>
-        </button>
+        <div
+          className={`flex h-12 w-16 items-center justify-center bg-${sharedStyles.primaryColor}`}
+        >
+          <FaMagnifyingGlass className='text-white' size={20} />
+        </div>
       </div>
 
       <div className='pl-7' ref={invitationFilterRef}>
@@ -91,16 +99,16 @@ export default function GuestSearchFilter({
             onClick={() => setShowInvitationDropdown((prev) => !prev)}
             className='flex cursor-pointer items-center justify-between p-3'
           >
-            {selectedOption === null ? (
+            {selectedRsvpFilter === null ? (
               <span>Filter By</span>
             ) : (
               <div className='flex items-center gap-1.5'>
                 <span
                   className={`h-1.5 w-1.5 rounded-full ${sharedStyles.getRSVPcolor(
-                    selectedOption.rsvpValue
+                    selectedRsvpFilter.rsvpValue
                   )}`}
                 />
-                <p>{selectedOption.rsvpValue}</p>
+                <p>{selectedRsvpFilter.rsvpValue}</p>
               </div>
             )}
             <IoIosArrowDown size={20} />
@@ -126,10 +134,10 @@ export default function GuestSearchFilter({
                             filterHouseholdsByInvitation={
                               filterHouseholdsByInvitation
                             }
-                            setSelectedOption={setSelectedOption}
+                            setSelectedRsvpFilter={setSelectedRsvpFilter}
                             isSelected={
-                              event.id === selectedOption?.eventId &&
-                              rsvp === selectedOption?.rsvpValue
+                              event.id === selectedRsvpFilter?.eventId &&
+                              rsvp === selectedRsvpFilter?.rsvpValue
                             }
                           />
                         )
@@ -141,6 +149,18 @@ export default function GuestSearchFilter({
           )}
         </div>
       </div>
+      {!!selectedRsvpFilter && (
+        <span
+          className={`ml-3 cursor-pointer text-${sharedStyles.primaryColor}`}
+          onClick={() => {
+            setFilteredHouseholds(households);
+            setSearchInput('');
+            setSelectedRsvpFilter(null);
+          }}
+        >
+          Clear
+        </span>
+      )}
     </div>
   );
 }
@@ -148,21 +168,21 @@ export default function GuestSearchFilter({
 type InvitationOptionProps = {
   rsvpValue: string;
   eventId: string;
-  setSelectedOption: Dispatch<SetStateAction<TSelectedOption | null>>;
-  filterHouseholdsByInvitation: ({}: TSelectedOption) => void;
+  setSelectedRsvpFilter: Dispatch<SetStateAction<TSelectedRsvpFilter | null>>;
+  filterHouseholdsByInvitation: ({}: TSelectedRsvpFilter) => void;
   isSelected: boolean;
 };
 
 const InvitationOption = ({
   rsvpValue,
   eventId,
-  setSelectedOption,
+  setSelectedRsvpFilter,
   filterHouseholdsByInvitation,
   isSelected,
 }: InvitationOptionProps) => {
   const handleChangeOption = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;
-    setSelectedOption({ eventId, rsvpValue: target.innerText });
+    setSelectedRsvpFilter({ eventId, rsvpValue: target.innerText });
     filterHouseholdsByInvitation({ eventId, rsvpValue: target.innerText });
   };
 
