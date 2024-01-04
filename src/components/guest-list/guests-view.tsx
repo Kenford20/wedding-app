@@ -75,6 +75,8 @@ export default function GuestsView({
         <GuestSearchFilter
           setFilteredHouseholds={setFilteredHouseholds}
           households={households}
+          events={events}
+          selectedEventId={selectedEventId}
         />
         <div>
           <button className={sharedStyles.secondaryButton()}>

@@ -35,6 +35,21 @@ const secondaryButton = (options?: ButtonOptions) => {
   return `rounded-full border font-semibold ${px} ${py} ${hover} ${cursor} ${border} ${text}`;
 };
 
+const getRSVPcolor = (rsvp: string | null | undefined) => {
+  switch (rsvp) {
+    case 'Not Invited':
+      return 'bg-gray-500';
+    case 'Invited':
+      return 'bg-gray-300';
+    case 'Attending':
+      return 'bg-green-400';
+    case 'Declined':
+      return 'bg-red-400';
+    default:
+      return 'bg-gray-400';
+  }
+};
+
 export const sharedStyles = {
   desktopPaddingSides,
   desktopPaddingSidesGuestList,
@@ -46,4 +61,5 @@ export const sharedStyles = {
   requiredAsterisk,
   primaryButton,
   secondaryButton,
+  getRSVPcolor,
 };

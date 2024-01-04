@@ -503,25 +503,10 @@ const InvitationDropdown = ({
       },
     });
 
-  const getRSVPcolor = (rsvp: string | null | undefined) => {
-    switch (rsvp) {
-      case 'Not Invited':
-        return 'bg-gray-500';
-      case 'Invited':
-        return 'bg-gray-300';
-      case 'Attending':
-        return 'bg-green-400';
-      case 'Declined':
-        return 'bg-red-400';
-      default:
-        return 'bg-gray-400';
-    }
-  };
-
   return (
     <div key={guest.id} className='flex items-center'>
       <span
-        className={`mr-2 inline-block h-1.5 w-1.5 rounded-full ${getRSVPcolor(
+        className={`mr-2 inline-block h-1.5 w-1.5 rounded-full ${sharedStyles.getRSVPcolor(
           rsvpValue
         )}`}
       ></span>

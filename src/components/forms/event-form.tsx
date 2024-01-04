@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { api } from '~/utils/api';
 import { sharedStyles } from '../shared-styles';
 import { useToggleEventForm } from '~/contexts/event-form-context';
@@ -87,7 +87,6 @@ export default function EventForm({
   const [eventFormData, setEventFormData] = useState<EventFormData>(
     prefillFormData ?? defaultFormData
   );
-  const formRef = useRef<HTMLInputElement>(null);
 
   useDisablePageScroll();
 
@@ -111,10 +110,7 @@ export default function EventForm({
   const isProcessing = isCreatingEvent || isUpdatingEvent || isDeletingEvent;
 
   return (
-    <div
-      ref={formRef}
-      className='fixed top-0 z-10 flex h-screen w-screen justify-end overflow-y-auto bg-transparent/[0.5]'
-    >
+    <div className='fixed top-0 z-10 flex h-screen w-screen justify-end overflow-y-auto bg-transparent/[0.5]'>
       {showDeleteConfirmation && (
         <DeleteConfirmation
           isProcessing={isProcessing}
