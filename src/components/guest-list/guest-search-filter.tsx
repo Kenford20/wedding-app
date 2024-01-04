@@ -1,6 +1,7 @@
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { sharedStyles } from '../shared-styles';
 import { IoIosArrowDown, IoMdCheckmark } from 'react-icons/io';
+import { useOuterClick } from '../helpers';
 
 import { type Event, type Household } from '~/types/schema';
 
@@ -26,6 +27,9 @@ export default function GuestSearchFilter({
   const [showInvitationDropdown, setShowInvitationDropdown] = useState(false);
   const [selectedOption, setSelectedOption] = useState<TSelectedOption | null>(
     null
+  );
+  const invitationFilterRef = useOuterClick(() =>
+    setShowInvitationDropdown(false)
   );
 
   const eventsToMap =
@@ -77,7 +81,7 @@ export default function GuestSearchFilter({
         </button>
       </div>
 
-      <div className='pl-7'>
+      <div className='pl-7' ref={invitationFilterRef}>
         <div className='relative h-12 w-48 border'>
           <div
             onClick={() => setShowInvitationDropdown((prev) => !prev)}
