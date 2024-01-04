@@ -139,27 +139,25 @@ export default function GuestTable({
               )}
             </tr>
 
-            <div className='text-md box-border min-w-fit border-l border-r'>
-              {sortedHouseholds?.map((household) =>
-                selectedEventId === 'all' ? (
-                  <DefaultTableRow
-                    key={household.id}
-                    household={household}
-                    events={events}
-                    setPrefillHousehold={setPrefillHousehold}
-                    setHouseholds={setHouseholds}
-                  />
-                ) : (
-                  <SingleEventTableRow
-                    key={household.id}
-                    household={household}
-                    selectedEvent={selectedEvent}
-                    setPrefillHousehold={setPrefillHousehold}
-                    setHouseholds={setHouseholds}
-                  />
-                )
-              )}
-            </div>
+            {sortedHouseholds?.map((household) =>
+              selectedEventId === 'all' ? (
+                <DefaultTableRow
+                  key={household.id}
+                  household={household}
+                  events={events}
+                  setPrefillHousehold={setPrefillHousehold}
+                  setHouseholds={setHouseholds}
+                />
+              ) : (
+                <SingleEventTableRow
+                  key={household.id}
+                  household={household}
+                  selectedEvent={selectedEvent}
+                  setPrefillHousehold={setPrefillHousehold}
+                  setHouseholds={setHouseholds}
+                />
+              )
+            )}
           </tbody>
         </table>
       </div>
@@ -216,7 +214,7 @@ const DefaultTableRow = ({
   return (
     <tr
       key={household.id}
-      className='guest-table grid min-w-fit cursor-pointer items-center gap-12 border-b px-8 py-5'
+      className='box-border grid min-w-fit cursor-pointer items-center gap-12 border-b border-l border-r px-8 py-5'
       style={{
         gridTemplateColumns: `40px 240px 100px 125px repeat(${events.length}, 175px) 175px`,
       }}
@@ -251,7 +249,7 @@ const DefaultTableRow = ({
         })}
       </td>
 
-      <p>{household.guests.length}</p>
+      <td>{household.guests.length}</td>
 
       <td className='flex gap-2'>
         <AiOutlineHome size={22} />
@@ -280,7 +278,9 @@ const DefaultTableRow = ({
           </td>
         );
       })}
-      <p className={sharedStyles.ellipsisOverflow}>{household.notes ?? '-'}</p>
+      <td className={sharedStyles.ellipsisOverflow}>
+        {household.notes ?? '-'}
+      </td>
     </tr>
   );
 };
@@ -360,7 +360,7 @@ const SingleEventTableRow = ({
   return (
     <tr
       key={household.id}
-      className='guest-table grid min-w-fit cursor-pointer items-center gap-12 border-b px-8 py-5'
+      className='box-border grid min-w-fit cursor-pointer items-center gap-12 border-b border-l border-r px-8 py-5'
       style={{
         gridTemplateColumns: '40px 240px 100px 125px 175px 175px 150px 100px',
       }}
@@ -425,7 +425,7 @@ const SingleEventTableRow = ({
         {household.notes ?? '-'}
       </td>
 
-      <p>{selectedEventGift?.description ?? '-'}</p>
+      <td>{selectedEventGift?.description ?? '-'}</td>
 
       {isUpdatingGift ? (
         <LoadingSpinner />
