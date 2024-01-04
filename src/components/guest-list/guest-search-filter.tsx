@@ -1,4 +1,4 @@
-import { useState, type Dispatch, type SetStateAction } from 'react';
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { sharedStyles } from '../shared-styles';
 import { IoIosArrowDown, IoMdCheckmark } from 'react-icons/io';
 import { useOuterClick } from '../helpers';
@@ -31,6 +31,10 @@ export default function GuestSearchFilter({
   const invitationFilterRef = useOuterClick(() =>
     setShowInvitationDropdown(false)
   );
+
+  useEffect(() => {
+    setSelectedOption(null);
+  }, [selectedEventId]);
 
   const eventsToMap =
     selectedEventId === 'all'
