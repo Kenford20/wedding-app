@@ -128,7 +128,7 @@ export const guestListRouter = createTRPCRouter({
           invited: 0,
           attending: 0,
           declined: 0,
-          noResponse: 0,
+          notInvited: 0,
         };
 
         invitations.forEach((rsvp) => {
@@ -144,7 +144,7 @@ export const guestListRouter = createTRPCRouter({
                 guestResponses.declined += 1;
                 break;
               default:
-                guestResponses.noResponse += 1;
+                guestResponses.notInvited += 1;
                 break;
             }
           }

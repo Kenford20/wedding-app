@@ -41,6 +41,8 @@ export default function Dashboard() {
   }
   if (!dashboardData || !events) return <OopsPage />;
 
+  console.log('dash', dashboardData);
+
   return (
     <Layout>
       <main>
@@ -73,7 +75,10 @@ export default function Dashboard() {
             <PageSectionsTemplate title={'Travel'} />
             <PageSectionsTemplate title={'Things to Do'} />
             <PageSectionsTemplate title={'RSVP'}>
-              <RsvpContent />
+              <RsvpContent
+                events={dashboardData.events}
+                totalGuests={dashboardData.totalGuests}
+              />
             </PageSectionsTemplate>
           </div>
           <SidebarPanel />

@@ -110,7 +110,9 @@ export default function HomeContent({
                 >
                   <BsPencil size={24} color={sharedStyles.primaryColorHex} />
                 </button>
-                <h3 className='mb-4 text-lg font-semibold'>{event.name}</h3>
+                <h3 className='mb-4 pr-5 text-lg font-semibold'>
+                  {event.name}
+                </h3>
                 <div className='flex flex-col gap-3 text-sm font-light'>
                   <div className='flex gap-2'>
                     <AiOutlineCalendar size={20} />
