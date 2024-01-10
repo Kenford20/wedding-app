@@ -26,19 +26,21 @@ export default function RsvpContent({ events, totalGuests }: RsvpContentProps) {
   return (
     <div className='border-t'>
       {events.map((event) => {
+        const numInvitedGuests = totalGuests - event.guestResponses.notInvited;
         return (
           <div key={event.id} className='border-b px-10 pb-20 pt-10'>
             <div className='flex items-center gap-3 pb-5'>
               <h3 className='text-xl font-semibold'>{event.name}</h3>
               <div className='flex gap-2'>
                 <MdPeopleOutline size={24} />
-                <span>
-                  {totalGuests - event.guestResponses.notInvited} Guests Invited
-                </span>
+                <span>{numInvitedGuests} Guests Invited</span>
               </div>
             </div>
             <div className='grid auto-rows-[minmax(300px,max-content)] grid-cols-2 gap-x-7 gap-y-20'>
-              <AttendanceChart event={event} />
+              <AttendanceChart
+                event={event}
+                numInvitedGuests={numInvitedGuests}
+              />
               <QuestionCards event={event} />
             </div>
           </div>
@@ -51,9 +53,10 @@ export default function RsvpContent({ events, totalGuests }: RsvpContentProps) {
 
 type AttendanceChartProps = {
   event: EventWithGuestResponses;
+  numInvitedGuests: number;
 };
 
-const AttendanceChart = ({ event }: AttendanceChartProps) => {
+const AttendanceChart = ({ event, numInvitedGuests }: AttendanceChartProps) => {
   const getChartData = (guestResponses: GuestResponses | null) => {
     return {
       labels: ['Accepted', 'Declined', 'No Response'],
@@ -91,11 +94,19 @@ const AttendanceChart = ({ event }: AttendanceChartProps) => {
       <div className='mb-4 h-[100%] rounded-lg border p-7 pb-0'>
         <h5 className='pb-6 text-lg font-semibold'>Will you be attending?</h5>
         <div className='flex items-center justify-between gap-7'>
-          <div className='h-48'>
+          <div className='relative h-48'>
             <Doughnut
               data={getChartData(event.guestResponses)}
               options={chartOptions}
             />
+            <div className='absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col justify-center text-center font-bold leading-tight'>
+              <span className='text-3xl'>
+                {event.guestResponses.attending + event.guestResponses.declined}
+              </span>
+              <div className='w-16 text-center text-xs leading-3'>
+                of {numInvitedGuests} responded
+              </div>
+            </div>
           </div>
           <div className='flex w-48 flex-col pr-4'>
             <div className='flex items-center justify-between border-b'>
@@ -172,6 +183,8 @@ const QuestionCards = ({ event }: QuestionCardsProps) => {
       },
     },
   };
+  const questionResponses = 1337;
+
   return (
     <>
       {/* TODO: map through event questions there once its implemented */}
@@ -198,11 +211,15 @@ const QuestionCards = ({ event }: QuestionCardsProps) => {
             What&apos;s your meal preference?
           </h5>
           <div className='flex items-center justify-between gap-7'>
-            <div className='h-48'>
+            <div className='relative h-48'>
               <Doughnut
                 data={getChartData(event.guestResponses)}
                 options={chartOptions}
               />
+              <div className='absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col justify-center text-center font-bold leading-snug'>
+                <span className='text-3xl'>{questionResponses}</span>
+                <span className='text-xs'>responded</span>
+              </div>
             </div>
             <div className='flex w-48 flex-col pr-4'>
               <div className='flex items-center justify-between border-b'>
@@ -252,6 +269,8 @@ const GeneralQuestions = () => {
       },
     },
   };
+  const questionResponses = 8008;
+
   return (
     <div className='p-10'>
       <h3 className='pb-6 text-2xl font-semibold'>General Questions</h3>
@@ -278,8 +297,12 @@ const GeneralQuestions = () => {
               What&apos;s your meal preference?
             </h5>
             <div className='flex items-center justify-between gap-7'>
-              <div className='h-48'>
+              <div className='relative h-48'>
                 <Doughnut data={getChartData()} options={chartOptions} />
+                <div className='absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col justify-center text-center font-bold leading-snug'>
+                  <span className='text-3xl'>{questionResponses}</span>
+                  <span className='text-xs'>responded</span>
+                </div>
               </div>
               <div className='flex w-48 flex-col pr-4'>
                 <div className='flex items-center justify-between border-b'>
