@@ -21,6 +21,7 @@ export default function Dashboard() {
   const [showRegistrySetup, setShowRegistrySetup] = useState<boolean>(true);
   const [events, setEvents] = useState<Event[]>();
   const [prefillEvent, setPrefillEvent] = useState<EventFormData | undefined>();
+  const [collapseSections, setCollapseSections] = useState(false);
 
   useEffect(() => {
     setShowRegistrySetup(
@@ -59,22 +60,40 @@ export default function Dashboard() {
           <div>
             <div className='flex justify-between pb-8'>
               <h2 className='text-xl font-semibold'>Pages</h2>
-              <DashboardControls />
+              <DashboardControls
+                collapseSections={collapseSections}
+                setCollapseSections={setCollapseSections}
+              />
             </div>
-            <PageSectionsTemplate title={'Home'}>
+            <PageSectionsTemplate title={'Home'} collapse={collapseSections}>
               <HomeContent
                 dashboardData={dashboardData}
                 events={events}
                 setPrefillEvent={setPrefillEvent}
               />
             </PageSectionsTemplate>
-            <PageSectionsTemplate title={'Our Story'} />
-            <PageSectionsTemplate title={'Wedding Party'} />
-            <PageSectionsTemplate title={'Photos'} />
-            <PageSectionsTemplate title={'Q + A'} />
-            <PageSectionsTemplate title={'Travel'} />
-            <PageSectionsTemplate title={'Things to Do'} />
-            <PageSectionsTemplate title={'RSVP'}>
+            <PageSectionsTemplate
+              title={'Our Story'}
+              collapse={collapseSections}
+            />
+            <PageSectionsTemplate
+              title={'Wedding Party'}
+              collapse={collapseSections}
+            />
+            <PageSectionsTemplate
+              title={'Photos'}
+              collapse={collapseSections}
+            />
+            <PageSectionsTemplate title={'Q + A'} collapse={collapseSections} />
+            <PageSectionsTemplate
+              title={'Travel'}
+              collapse={collapseSections}
+            />
+            <PageSectionsTemplate
+              title={'Things to Do'}
+              collapse={collapseSections}
+            />
+            <PageSectionsTemplate title={'RSVP'} collapse={collapseSections}>
               <RsvpContent
                 events={dashboardData.events}
                 totalGuests={dashboardData.totalGuests}
