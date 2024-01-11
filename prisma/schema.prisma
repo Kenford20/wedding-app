@@ -12,12 +12,14 @@ generator client {
 }
 
 model Website {
-    id        String   @id @default(uuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    userId    String
-    url       String
-    subUrl    String
+    id                String   @id @default(uuid())
+    createdAt         DateTime @default(now())
+    updatedAt         DateTime @updatedAt
+    userId            String   @unique
+    url               String   @unique
+    subUrl            String   @unique
+    isPasswordEnabled Boolean  @default(false)
+    password          String?
 }
 
 // model StoryItem {
@@ -95,6 +97,8 @@ model Guest {
     updatedAt        DateTime     @updatedAt
     household        Household    @relation(name: "Household_Guests", fields: [householdId], references: [id], onDelete: Cascade)
     invitations      Invitation[] @relation(name: "Guest_Invitation")
+    // optionResponses  OptionResponse[] @relation(name: "Guest_OptionResponse")
+    // answers          Answer[]         @relation(name: "Guest_Answer")
 
     @@index([householdId])
 }
@@ -114,31 +118,61 @@ model Event {
     updatedAt   DateTime     @updatedAt
     invitations Invitation[] @relation(name: "Event_Invitation")
     gifts       Gift[]       @relation(name: "Event_Gifts")
-    questions   Question[]   @relation(name: "Event_Question")
+    // questions   Question[]   @relation(name: "Event_Question")
     // subEvents   SubEvent[]   @relation(name: "Event_SubEvent")
 }
 
-model Question {
-    id         String           @id @default(uuid())
-    eventId    String
-    event      Event            @relation(name: "Event_Question", fields: [eventId], references: [id], onDelete: Cascade)
-    text       String
-    answerType String
-    isRequired Boolean          @default(false)
-    options    QuestionOption[] @relation(name: "Question_Options")
+// model Question {
+//     id         String   @id @default(uuid())
+//     eventId    String
+//     event      Event    @relation(name: "Event_Question", fields: [eventId], references: [id], onDelete: Cascade)
+//     text       String
+//     answerType String
+//     isRequired Boolean  @default(false)
+//     options    Option[] @relation(name: "Question_Options")
+//     answer     Answer[] @relation(name: "Question_Answer")
 
-    @@index([eventId])
-}
+//     @@index([eventId])
+// }
 
-model QuestionOption {
-    id          String   @id @default(uuid())
-    text        String
-    description String
-    questionId  String
-    question    Question @relation(name: "Question_Options", fields: [questionId], references: [id], onDelete: Cascade)
+// model Option {
+//     id              String           @id @default(uuid())
+//     responseCount   Int
+//     text            String
+//     description     String
+//     question        Question         @relation(name: "Question_Options", fields: [questionId], references: [id], onDelete: Cascade)
+//     questionId      String
+//     optionResponses OptionResponse[] @relation(name: "Option_OptionResponse")
 
-    @@index([questionId])
-}
+//     @@index([questionId])
+// }
+
+// model OptionResponse {
+//     guest     Guest?   @relation(name: "Guest_OptionResponse", fields: [guestId], references: [id], onDelete: Cascade)
+//     guestId   Int
+//     option    Option?  @relation(name: "Option_OptionResponse", fields: [optionId], references: [id], onDelete: Cascade)
+//     optionId  String
+//     invitedAt DateTime @default(now())
+//     updatedAt DateTime @updatedAt
+
+//     @@id(name: "OptionResponseId", [guestId, optionId])
+//     @@index([guestId])
+//     @@index([optionId])
+// }
+
+// model Answer {
+//     text       String
+//     guest      Guest?    @relation(name: "Guest_Answer", fields: [guestId], references: [id], onDelete: Cascade)
+//     guestId    Int
+//     question   Question? @relation(name: "Question_Answer", fields: [questionId], references: [id], onDelete: Cascade)
+//     questionId String
+//     invitedAt  DateTime  @default(now())
+//     updatedAt  DateTime  @updatedAt
+
+//     @@id(name: "answerId", [guestId, questionId])
+//     @@index([guestId])
+//     @@index([questionId])
+// }
 
 // model SubEvent {
 //     id          String    @id @default(uuid())

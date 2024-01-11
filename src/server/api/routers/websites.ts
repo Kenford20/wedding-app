@@ -87,15 +87,16 @@ export const websitesRouter = createTRPCRouter({
     return websiteUrlByUserId;
   }),
 
-  find: publicProcedure
-    .input(z.object({ websiteUrl: z.string() }))
+  getByUrl: publicProcedure
+    .input(z.object({ websiteUrl: z.string().nullish() }))
     .query(async ({ ctx, input }) => {
+      if (input.websiteUrl === undefined) return null;
       const website = await ctx.prisma.website.findFirst({
         where: {
-          subUrl: input.websiteUrl,
+          subUrl: input.websiteUrl ?? '',
         },
       });
-      return !!website;
+      return website;
     }),
 
   fetchWeddingData: publicProcedure
@@ -106,6 +107,7 @@ export const websitesRouter = createTRPCRouter({
           subUrl: input.subUrl,
         },
       });
+      console.log('weeb,', currentWebsite);
 
       if (!currentWebsite) {
         throw new TRPCError({
@@ -152,6 +154,7 @@ export const websitesRouter = createTRPCRouter({
             }) ?? 'October 30, 2024',
           numberFormat: formatDateNumber(weddingDate) ?? '10.30.2024',
         },
+        password: currentWebsite.password,
         daysRemaining: 100,
         events,
       };
