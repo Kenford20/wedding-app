@@ -151,7 +151,7 @@ export default function GuestForm({
         />
       )}
       <div
-        className={`relative h-fit ${sharedStyles.eventGuestFormWidth} bg-white`}
+        className={`relative h-fit ${sharedStyles.sidebarFormWidth} bg-white`}
       >
         <div className='flex justify-between border-b p-5'>
           <h1 className='text-2xl font-bold'>{getTitle()}</h1>
