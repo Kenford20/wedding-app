@@ -13,6 +13,7 @@ import OopsPage from '~/components/oops';
 import RsvpContent from '~/components/dashboard/rsvp-content';
 import DashboardControls from '~/components/dashboard/controls';
 import SidebarPanel from '~/components/dashboard/sidebar-panel';
+import WebsiteSettingsForm from '~/components/forms/website-settings';
 
 import { type EventFormData, type Event } from '~/types/schema';
 
@@ -21,7 +22,9 @@ export default function Dashboard() {
   const [showRegistrySetup, setShowRegistrySetup] = useState<boolean>(true);
   const [events, setEvents] = useState<Event[]>();
   const [prefillEvent, setPrefillEvent] = useState<EventFormData | undefined>();
-  const [collapseSections, setCollapseSections] = useState(false);
+  const [collapseSections, setCollapseSections] = useState<boolean>(false);
+  const [isWebsiteSettingsOpen, setIsWebsiteSettingsOpen] =
+    useState<boolean>(false);
 
   useEffect(() => {
     setShowRegistrySetup(
@@ -50,7 +53,16 @@ export default function Dashboard() {
         {isEventFormOpen && (
           <EventForm setEvents={setEvents} prefillFormData={prefillEvent} />
         )}
-        <DashboardHeader websiteUrl={dashboardData?.weddingData?.websiteUrl} />
+        {isWebsiteSettingsOpen && (
+          <WebsiteSettingsForm
+            setIsWebsiteSettingsOpen={setIsWebsiteSettingsOpen}
+            website={dashboardData?.weddingData?.website}
+          />
+        )}
+        <DashboardHeader
+          websiteUrl={dashboardData?.weddingData?.website?.url}
+          setIsWebsiteSettingsOpen={setIsWebsiteSettingsOpen}
+        />
         {showRegistrySetup && (
           <RegistrySetup setShowRegistrySetup={setShowRegistrySetup} />
         )}
@@ -100,7 +112,7 @@ export default function Dashboard() {
               />
             </PageSectionsTemplate>
           </div>
-          <SidebarPanel />
+          <SidebarPanel setIsWebsiteSettingsOpen={setIsWebsiteSettingsOpen} />
         </div>
       </main>
     </Layout>

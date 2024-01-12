@@ -71,7 +71,6 @@ type WeddingData = {
   brideFirstName: string;
   brideLastName: string;
   daysRemaining: number;
-  websiteUrl: string;
   date: WeddingDate;
 };
 
@@ -113,6 +112,17 @@ type HouseholdFormData = {
   guestParty: GuestFormData[];
 };
 
+type Website = {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  userId: string;
+  url: string;
+  subUrl: string;
+  isPasswordEnabled: boolean;
+  password: string | null;
+};
+
 export {
   type Event,
   type Invitation,
@@ -125,4 +135,5 @@ export {
   type GuestFormData,
   type HouseholdFormData,
   type FormInvites,
+  type Website,
 };

@@ -46,7 +46,7 @@ export const websitesRouter = createTRPCRouter({
         `${firstName}${lastName}and${partnerFirstName}${partnerLastName}`.toLowerCase();
       const url = `${basePath}/websites/${subUrl}`;
 
-      const websiteUrl = await ctx.prisma.website.create({
+      const website = await ctx.prisma.website.create({
         data: {
           userId,
           url,
@@ -73,7 +73,32 @@ export const websitesRouter = createTRPCRouter({
         },
       });
 
-      return websiteUrl;
+      return website;
+    }),
+
+  update: privateProcedure
+    .input(
+      z.object({
+        isPasswordEnabled: z.boolean().optional(),
+        password: z.string().optional(),
+        url: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const userId = ctx.userId;
+
+      const updatedWebsite = await ctx.prisma.website.update({
+        where: {
+          userId: userId,
+        },
+        data: {
+          isPasswordEnabled: input.isPasswordEnabled ?? undefined,
+          password: input.password ?? undefined,
+          url: input.url ?? undefined,
+        },
+      });
+
+      return updatedWebsite;
     }),
 
   getByUserId: publicProcedure.query(async ({ ctx }) => {

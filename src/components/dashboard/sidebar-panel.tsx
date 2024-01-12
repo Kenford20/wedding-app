@@ -1,20 +1,30 @@
-import Link from 'next/link';
 import { sharedStyles } from '../shared-styles';
 
-export default function SidebarPanel() {
+import { type Dispatch, type SetStateAction } from 'react';
+
+type SidebarPanelProps = {
+  setIsWebsiteSettingsOpen: Dispatch<SetStateAction<boolean>>;
+};
+
+export default function SidebarPanel({
+  setIsWebsiteSettingsOpen,
+}: SidebarPanelProps) {
   return (
     <section className='px-3'>
       <div className='flex items-end justify-between border-b pb-8'>
         <h2 className='text-xl font-semibold'>Your Theme</h2>
-        <Link href='' className={`text-${sharedStyles.primaryColor} text-lg`}>
+        <span className={`text-${sharedStyles.primaryColor} text-lg`}>
           Browse Themes
-        </Link>
+        </span>
       </div>
       <div className='flex items-end justify-between border-b py-8'>
         <h2 className='text-xl font-semibold'>Privacy Settings</h2>
-        <Link href='' className={`text-${sharedStyles.primaryColor} text-lg`}>
+        <span
+          className={`text-${sharedStyles.primaryColor} text-lg`}
+          onClick={() => setIsWebsiteSettingsOpen(true)}
+        >
           Manage
-        </Link>
+        </span>
       </div>
     </section>
   );

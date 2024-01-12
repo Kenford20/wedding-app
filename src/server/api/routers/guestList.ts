@@ -64,16 +64,22 @@ export const guestListRouter = createTRPCRouter({
       },
     });
 
+    const website = await ctx.prisma.website.findFirst({
+      where: {
+        userId: ctx.userId,
+      },
+    });
+
     const weddingDate = events.find(
       (event) => event.name === 'Wedding Day'
     )?.date;
 
     const weddingData = {
+      website,
       groomFirstName: currentUser.groomFirstName,
       groomLastName: currentUser.groomLastName,
       brideFirstName: currentUser.brideFirstName,
       brideLastName: currentUser.brideLastName,
-      websiteUrl: currentUser.websiteUrl,
       date: {
         standardFormat:
           weddingDate?.toLocaleDateString('en-us', {

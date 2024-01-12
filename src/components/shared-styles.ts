@@ -3,7 +3,7 @@ const desktopPaddingSidesGuestList = 'px-20';
 const verticalDivider = 'px-3 text-neutral-300';
 const primaryColor = 'pink-400';
 const primaryColorHex = '#f472b6';
-const eventGuestFormWidth = 'w-[525px]';
+const sidebarFormWidth = 'w-[525px]';
 const ellipsisOverflow = 'overflow-hidden overflow-ellipsis whitespace-nowrap';
 const requiredAsterisk =
   'before:ml-0.5 before:text-red-500 before:content-["*"]';
@@ -56,7 +56,7 @@ export const sharedStyles = {
   verticalDivider,
   primaryColor,
   primaryColorHex,
-  eventGuestFormWidth,
+  sidebarFormWidth,
   ellipsisOverflow,
   requiredAsterisk,
   primaryButton,
